@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { BaseErrorListener, CharStream, CommonTokenStream, Token } from 'antlr4ng';
+import { BaseErrorListener, CharStream, CommonTokenStream, ParserRuleContext, type ParseTree, TerminalNode, Token } from 'antlr4ng';
 import { prepareConditional } from '../../src/conditional.ts';
 import { PlSqlLexer } from './generated/PlSqlLexer.ts';
 import { PlSqlParser } from './generated/PlSqlParser.ts';
@@ -30,6 +31,7 @@ type Observation = {
 	sllAttempts: number;
 	llAttempts: number;
 	peakRssBytes: number;
+	parseTreeSha256?: string;
 };
 
 const manifestPath = process.env['LAB_MANIFEST'];
@@ -115,7 +117,7 @@ const parse = (source: string, entry: FileEntry): Observation => {
 	const parserErrors = new ErrorCollector();
 	let parser = parserFor('sll');
 	const sllStarted = performance.now();
-	parser.sql_script();
+	let tree = parser.sql_script();
 	const sllParseMs = performance.now() - sllStarted;
 	let llParseMs = 0;
 	let llAttempts = 0;
@@ -125,7 +127,7 @@ const parse = (source: string, entry: FileEntry): Observation => {
 		stream.seek(0);
 		parser = parserFor('ll');
 		const llStarted = performance.now();
-		parser.sql_script();
+		tree = parser.sql_script();
 		llParseMs = performance.now() - llStarted;
 		llAttempts = 1;
 	}
@@ -145,7 +147,38 @@ const parse = (source: string, entry: FileEntry): Observation => {
 		sllAttempts: 1,
 		llAttempts,
 		peakRssBytes: process.resourceUsage().maxRSS * 1024,
+		...(process.env['LAB_TREE_HASH'] === '1' ? { parseTreeSha256: treeSha256(tree) } : {}),
 	};
+};
+
+const treeSha256 = (tree: ParseTree): string => {
+	const digest = createHash('sha256');
+	const addInteger = (value: number): void => {
+		digest.update(Buffer.from([value >>> 24, value >>> 16, value >>> 8, value]));
+	};
+	const addTree = (node: ParseTree): void => {
+		if (node instanceof ParserRuleContext) {
+			digest.update(Buffer.from([1]));
+			addInteger(node.ruleIndex);
+			addInteger(node.getChildCount());
+		} else if (node instanceof TerminalNode) {
+			digest.update(Buffer.from([2]));
+			addInteger(node.symbol.type);
+		} else {
+			digest.update(Buffer.from([3]));
+		}
+
+		for (let childIndex = 0; childIndex < node.getChildCount(); childIndex += 1) {
+			const child = node.getChild(childIndex);
+
+			if (child !== null) {
+				addTree(child);
+			}
+		}
+	};
+
+	addTree(tree);
+	return digest.digest('hex');
 };
 
 const median = (values: readonly number[]): number => [...values].sort((left, right) => left - right)[Math.floor((values.length - 1) / 2)] ?? 0;
