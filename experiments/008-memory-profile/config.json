@@ -1,0 +1,34 @@
+{
+	"experiment": "008-memory-profile",
+	"question": "Which retained and allocated memory sources dominate parser execution on the frozen production corpus, and how much of the process high-water mark is generated DFA cache, parse-tree and token retention, or runtime overhead?",
+	"hypothesis": "Generated DFA caches account for most retained heap after a cache-reuse pass, while per-file parse trees and token streams are released and contribute comparatively little retained memory; ATN and DFA closure allocation dominates allocation volume.",
+	"command": "node scripts/profileMemory.ts --selection all --experiment 008-memory-profile --publish experiments/008-memory-profile",
+	"selection": "Full 1,244-file opaque corpus, the 311-file largest byte-size quartile, and the 12-file highest median parser-core tail from experiment 004.",
+	"profilers": {
+		"typescript": "Node.js with --expose-gc and an 8 GB old-space cap; forced-GC retained deltas after clearing decision DFAs; staged parse-tree, source, and token-stream drops; inspector sampling heap profiler at 32 KiB; per-file DFA state counts.",
+		"java": "Temurin 21 in Docker; forced-GC retained deltas after clearDFA; staged drops with the parser removed before the tree; jcmd GC.class_histogram -all; ThreadMXBean allocated bytes; /proc/self/status VmHWM."
+	},
+	"config": {
+		"repeats": "2 for q4 and tail; 1 for the full corpus",
+		"gcEvery": 25,
+		"samplingIntervalBytes": 32768,
+		"selection": "reused from experiments/003 and experiments/004; selection fingerprint must match the latency campaign",
+		"overhead": "one uninstrumented pass per adapter and selection; instrumented cost is reported separately"
+	},
+	"acceptance": [
+		"Major retained-memory and allocation sources are quantified with evidence.",
+		"DFA cache growth, parse-tree/context retention, token storage, and runtime overhead are distinguishable where tooling permits.",
+		"At least one repeat verifies the dominant allocation result.",
+		"No optimization is proposed solely from RSS observations.",
+		"Published artifacts contain no private path, source text, object name, or original identity."
+	],
+	"limitations": [
+		"V8 heap snapshots were rejected: a 12-file tail snapshot was 2.7 GB and exceeded in-process read limits; forced-GC deltas replace snapshot attribution.",
+		"The Node memory harness uses an 8 GB old-space cap, which changes GC thresholds relative to the default production run.",
+		"The Java class histogram reports shallow live bytes by class; arrays and hash maps are not attributed to a parser owner.",
+		"Sampling allocation bytes are estimates; Java thread allocation bytes are cumulative allocation, not retained memory.",
+		"Forced garbage collection and allocation sampling change wall time; instrumented results are not production benchmarks.",
+		"One representative file isolates tree, source, and token retention; it is not a corpus average.",
+		"No optimization follows from this experiment without a paired control and candidate campaign."
+	]
+}

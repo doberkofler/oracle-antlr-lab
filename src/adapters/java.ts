@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { type MemoryPassBody, summarizeJavaHistogram } from '../memory.ts';
 import { type CorpusManifest, type ParseObservation, type ParserAdapter } from '../types.ts';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
@@ -149,6 +150,143 @@ export const runJavaProfile = async (
 		conformance: readonly JavaConformanceProfile[];
 	}>;
 };
+
+/**
+ * Runs the Java memory harness in a fresh container.
+ *
+ * @param input - Manifest, selected ids, garbage-collection interval, and tree position.
+ * @returns Instrumented memory pass.
+ */
+export const runJavaMemory = async (
+	input: Readonly<{ manifestPath: string; indexes: readonly number[]; gcEvery: number; treePosition: number }>,
+): Promise<MemoryPassBody> => {
+	await ensureImage();
+	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
+	const corpusRoot = path.dirname(input.manifestPath);
+	const byId = new Map(manifest.files.map((file) => [file.id, file]));
+	const ordered = input.indexes.map((index) => {
+		const entry = byId.get(index);
+
+		if (entry === undefined) {
+			throw new Error(`No corpus entry with index ${String(index)}`);
+		}
+
+		return entry;
+	});
+	const output = await docker(
+		[
+			'run',
+			'--rm',
+			'--network',
+			'none',
+			'-v',
+			`${corpusRoot}:/corpus:ro`,
+			image,
+			'memory',
+			String(input.gcEvery),
+			String(input.treePosition),
+			...ordered.map((entry) => `/corpus/files/${entry.file}`),
+		],
+		false,
+		true,
+	);
+	const parsed = JSON.parse(output.slice(output.indexOf('{'))) as JavaMemoryOutput;
+
+	if (parsed.files.length !== input.indexes.length) {
+		throw new Error(`Java memory harness reported ${String(parsed.files.length)} of ${String(input.indexes.length)} files`);
+	}
+
+	if (parsed.histogram.length === 0) {
+		throw new Error('Java memory harness produced no class histogram');
+	}
+
+	const histogram = summarizeJavaHistogram(parsed.histogram);
+	const retentionEntry = parsed.retention === null ? undefined : ordered[parsed.retention.position - 1];
+
+	return {
+		files: parsed.files.length,
+		coreMs: parsed.coreMs,
+		elapsedMs: parsed.elapsedMs,
+		startupHeapBytes: parsed.startupHeapBytes,
+		retainedEndBytes: parsed.retainedEndBytes,
+		afterCacheClearBytes: parsed.afterCacheClearBytes,
+		afterParserDropBytes: parsed.afterParserDropBytes,
+		peakRssBytes: parsed.peakRssBytes,
+		peakHeapUsedBytes: parsed.peakHeapUsedBytes,
+		dfa: parsed.dfa,
+		retention:
+			parsed.retention === null || retentionEntry === undefined
+				? null
+				: {
+						file: retentionEntry.path,
+						tokens: parsed.retention.tokens,
+						withTreeBytes: parsed.retention.withTreeBytes,
+						withoutTreeBytes: parsed.retention.withoutTreeBytes,
+						withoutSourceBytes: parsed.retention.withoutSourceBytes,
+						withoutStreamBytes: parsed.retention.withoutStreamBytes,
+						treeBytes: parsed.retention.treeBytes,
+						sourceBytes: parsed.retention.sourceBytes,
+						tokenBytes: parsed.retention.tokenBytes,
+					},
+		representativeHeap: null,
+		allocation:
+			parsed.allocation.bytes === 0 ? null : { source: 'jvm-thread-allocation', bytes: parsed.allocation.bytes, samplingIntervalBytes: null, top: [] },
+		heap: histogram,
+		checkpoints: parsed.files.map((entry) => {
+			const corpusFile = ordered[entry.position - 1];
+
+			if (corpusFile === undefined) {
+				throw new Error(`Java memory harness reported unknown position ${String(entry.position)}`);
+			}
+
+			return {
+				file: corpusFile.path,
+				position: entry.position,
+				coreMs: entry.coreMs,
+				heapUsedBytes: entry.heapUsedBytes,
+				retainedHeapBytes: entry.retainedHeapBytes,
+				rssBytes: entry.rssBytes,
+				dfaStates: entry.dfaStates,
+				allocatedBytes: entry.allocatedBytes,
+			};
+		}),
+		evidence: [],
+	};
+};
+
+type JavaMemoryOutput = Readonly<{
+	files: readonly Readonly<{
+		position: number;
+		coreMs: number;
+		heapUsedBytes: number;
+		retainedHeapBytes: number | null;
+		rssBytes: number;
+		dfaStates: number;
+		allocatedBytes: number;
+	}>[];
+	elapsedMs: number;
+	coreMs: number;
+	startupHeapBytes: number;
+	retainedEndBytes: number;
+	afterCacheClearBytes: number;
+	afterParserDropBytes: number;
+	peakRssBytes: number;
+	peakHeapUsedBytes: number;
+	dfa: Readonly<{ decisions: number; states: number; retainedBytes: number }>;
+	retention: Readonly<{
+		position: number;
+		tokens: number;
+		withTreeBytes: number;
+		withoutTreeBytes: number;
+		withoutSourceBytes: number;
+		withoutStreamBytes: number;
+		treeBytes: number;
+		sourceBytes: number;
+		tokenBytes: number;
+	}> | null;
+	allocation: Readonly<{ source: string; bytes: number }>;
+	histogram: readonly Readonly<{ className: string; instances: number; bytes: number }>[];
+}>;
 
 /**
  * Java-target adapter.

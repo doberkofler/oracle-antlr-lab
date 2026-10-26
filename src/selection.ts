@@ -217,6 +217,53 @@ export const fullSelection = (manifest: CorpusManifest, manifestPath: string, wo
 	});
 
 /**
+ * Resolves a selection from the current manifest and its audited source.
+ *
+ * @param input - Mode, manifest, optional source override, and tail size.
+ * @returns Reproducible selection with provenance and fingerprint.
+ * @throws Error when a report-backed selection does not reproduce the manifest.
+ */
+export const resolveBenchmarkSelection = (
+	input: Readonly<{
+		mode: SelectionMode;
+		manifest: CorpusManifest;
+		manifestPath: string;
+		workspaceRoot: string;
+		source?: string | undefined;
+		tailSize: number;
+		q4Source?: string | undefined;
+		tailSource?: string | undefined;
+	}>,
+): BenchmarkSelection => {
+	if (input.mode === 'full') {
+		return fullSelection(input.manifest, input.manifestPath, input.workspaceRoot);
+	}
+
+	if (input.mode === 'q4' && input.source === 'manifest') {
+		return q4FromManifest(input.manifest, input.manifestPath, input.workspaceRoot);
+	}
+
+	const defaultSource =
+		input.mode === 'q4'
+			? (input.q4Source ?? path.join(input.workspaceRoot, 'experiments', '003-production-scale', 'report.json'))
+			: (input.tailSource ?? path.join(input.workspaceRoot, 'experiments', '004-bottleneck-profile', 'report.json'));
+	const source = path.resolve(input.source ?? defaultSource);
+	const artifact = readSelectionArtifact(source, input.workspaceRoot);
+
+	if (input.mode === 'q4') {
+		return q4FromReport(input.manifest, artifact.artifactPath, artifact.digest, artifact.report);
+	}
+
+	return tailFromReport({
+		manifest: input.manifest,
+		artifactPath: artifact.artifactPath,
+		artifactDigest: artifact.digest,
+		report: artifact.report,
+		limit: input.tailSize,
+	});
+};
+
+/**
  * Resolves a workspace-relative path without leaking an external absolute path.
  *
  * @param file - Candidate path.

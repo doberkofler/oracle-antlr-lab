@@ -63,6 +63,19 @@ fingerprint. Add `--dry-run` to resolve and print a selection without starting a
 campaign. Comparison rejects different fingerprints and reports paired per-file
 deltas. Full-corpus validation remains required before accepting an optimization.
 
+Memory attribution is a separate instrumented campaign:
+
+```bash
+pnpm profile:memory -- --selection all --experiment 008-memory-profile \
+  --publish experiments/008-memory-profile
+```
+
+It measures retained heap after forced GC, DFA cache retention, parse-tree and
+token retention, allocation volume and sites, and per-file DFA growth for the
+same `full`, `q4`, and `tail` selections. Instrumented wall time is reported
+separately from uninstrumented timing and is never a production benchmark
+result. See [`docs/memory-profiling.md`](docs/memory-profiling.md).
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,

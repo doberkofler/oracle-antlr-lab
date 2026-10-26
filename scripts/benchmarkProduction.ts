@@ -4,17 +4,9 @@ import path from 'node:path';
 import { javaAdapter } from '../src/adapters/java.ts';
 import { typeScriptAdapter } from '../src/adapters/typescript.ts';
 import { loadManifest } from '../src/corpus.ts';
-import {
-	type BenchmarkSelection,
-	fullSelection,
-	q4FromManifest,
-	q4FromReport,
-	readSelectionArtifact,
-	type SelectionMode,
-	tailFromReport,
-} from '../src/selection.ts';
+import { type BenchmarkSelection, resolveBenchmarkSelection, type SelectionMode } from '../src/selection.ts';
 import { statistics } from '../src/stats.ts';
-import { type CorpusFile, type CorpusManifest, type MetricStatistics, type ParseObservation, type ParserAdapter } from '../src/types.ts';
+import { type CorpusFile, type MetricStatistics, type ParseObservation, type ParserAdapter } from '../src/types.ts';
 
 type PassRun = Readonly<{
 	repeat: number;
@@ -71,8 +63,6 @@ Selections:
 `;
 
 const root = path.resolve(import.meta.dirname, '..');
-const auditedQ4Source = path.join(root, 'experiments', '003-production-scale', 'report.json');
-const auditedTailSource = path.join(root, 'experiments', '004-bottleneck-profile', 'report.json');
 const parsed = parseArguments(process.argv.slice(2));
 const manifestPath = path.resolve(parsed.manifest);
 const repeats = parsed.repeats;
@@ -88,10 +78,11 @@ if (manifest.visibility === 'private') {
 	}
 }
 
-const selection = resolveSelection({
+const selection = resolveBenchmarkSelection({
 	mode: parsed.selection,
 	manifest,
 	manifestPath,
+	workspaceRoot: root,
 	source: parsed.selectionSource,
 	tailSize: parsed.tailSize,
 });
@@ -356,39 +347,6 @@ function parseArguments(args: readonly string[]): Readonly<{
 	}
 
 	return { manifest: manifestValue, repeats: repeatCount, experiment: experimentName, selection: selectionMode, tailSize, selectionSource, dryRun };
-}
-
-function resolveSelection(
-	input: Readonly<{
-		mode: SelectionMode;
-		manifest: CorpusManifest;
-		manifestPath: string;
-		source: string | undefined;
-		tailSize: number;
-	}>,
-): BenchmarkSelection {
-	if (input.mode === 'full') {
-		return fullSelection(input.manifest, input.manifestPath, root);
-	}
-
-	if (input.mode === 'q4' && input.source === 'manifest') {
-		return q4FromManifest(input.manifest, input.manifestPath, root);
-	}
-
-	const source = path.resolve(input.source ?? (input.mode === 'q4' ? auditedQ4Source : auditedTailSource));
-	const artifact = readSelectionArtifact(source, root);
-
-	if (input.mode === 'q4') {
-		return q4FromReport(input.manifest, artifact.artifactPath, artifact.digest, artifact.report);
-	}
-
-	return tailFromReport({
-		manifest: input.manifest,
-		artifactPath: artifact.artifactPath,
-		artifactDigest: artifact.digest,
-		report: artifact.report,
-		limit: input.tailSize,
-	});
 }
 
 function positiveInteger(value: string): number {
