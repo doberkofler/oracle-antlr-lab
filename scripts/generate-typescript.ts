@@ -1,7 +1,36 @@
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { optimizeGeneralElementPart } from '../src/generatedParserOptimization.ts';
+import { type GeneratedParserOptimization, optimizeGeneratedParser } from '../src/generatedParserOptimization.ts';
+
+const KNOWN_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = ['generalElement', 'generalElementPart', 'routineName'];
+
+const parseOptimizations = (value: string): readonly GeneratedParserOptimization[] => {
+	const selected = value
+		.split(',')
+		.map((name) => name.trim())
+		.filter((name) => name.length > 0);
+
+	if (selected.length === 0) {
+		throw new Error('LAB_GENERATED_OPTIMIZATIONS must name at least one optimization');
+	}
+
+	const known = selected.map((name) => {
+		const optimization = KNOWN_OPTIMIZATIONS.find((candidate) => candidate === name);
+
+		if (optimization === undefined) {
+			throw new Error(`Unknown generated-parser optimization: ${name}`);
+		}
+
+		return optimization;
+	});
+
+	if (new Set(known).size !== known.length) {
+		throw new Error('LAB_GENERATED_OPTIMIZATIONS contains a duplicate optimization');
+	}
+
+	return known;
+};
 
 const root = path.resolve(import.meta.dirname, '..');
 const output = path.join(root, 'grammar', 'typescript', 'generated');
@@ -9,6 +38,7 @@ const runner = path.join(root, 'node_modules', 'antlr-ng', 'dist', 'cli', 'runne
 const lexer = path.join(output, 'PlSqlLexer.ts');
 const parser = path.join(output, 'PlSqlParser.ts');
 const visitor = path.join(output, 'PlSqlParserVisitor.ts');
+const optimizations = parseOptimizations(process.env['LAB_GENERATED_OPTIMIZATIONS'] ?? 'generalElement,generalElementPart,routineName');
 
 rmSync(output, { recursive: true, force: true });
 
@@ -84,7 +114,7 @@ const lexerText = useTypeScriptExtensions(
 		.replaceAll('_sempred(localContext: antlr.ParserRuleContext | null', '_sempred(_localContext: antlr.ParserRuleContext | null'),
 );
 const parserText = useTypeScriptExtensions(
-	optimizeGeneralElementPart(
+	optimizeGeneratedParser(
 		stripUnusedPreviousContext(
 			readFileSync(parser, 'utf8')
 				.replace(
@@ -93,6 +123,7 @@ const parserText = useTypeScriptExtensions(
 				)
 				.replaceAll(/_sempred\(localContext: (?<context>\w+)Context \| null/gu, '_sempred(_localContext: $<context>Context | null'),
 		),
+		optimizations,
 	),
 );
 const visitorText = useTypeScriptExtensions(readFileSync(visitor, 'utf8').replace('import {PlSqlParserBase} from "../plSqlParserBase.js";\n\n', ''));
