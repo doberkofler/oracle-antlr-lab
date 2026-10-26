@@ -19,3 +19,16 @@ Corpus: private-production-20261027, 1244 opaque files. Three fresh-process cach
 | java       | Q4 largest   |   311 | 17.0 kB–370.0 kB |    32178.255 |  32051.465–32352.093 |               110 |
 
 Wall time includes child process/container startup and source loading. Core time is lexer plus SLL and LL parsing. Peak RSS is the process high-water mark.
+
+## Independent 12-file tail candidates
+
+| State             | Core mean [bootstrap 95% CI] | Standard deviation |    CV |  Change |
+| ----------------- | ---------------------------: | -----------------: | ----: | ------: |
+| Control           |    49.190 s [48.821, 49.390] |            0.320 s | 0.65% |       — |
+| `general_element` |    48.855 s [48.664, 48.988] |            0.169 s | 0.35% |  -0.68% |
+| `routine_name`    |    40.784 s [40.511, 41.104] |            0.299 s | 0.73% | -17.09% |
+| Combined          |    41.541 s [40.795, 42.693] |            1.012 s | 2.44% | -15.55% |
+
+The `general_element` confidence interval overlaps control. See
+[`independent-tail.json`](independent-tail.json) for aggregate samples and the
+retained invalidated high-noise run.

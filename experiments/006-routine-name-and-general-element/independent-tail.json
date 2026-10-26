@@ -1,0 +1,75 @@
+{
+	"schemaVersion": 1,
+	"experiment": "006-routine-name-and-general-element",
+	"generatedAt": "2026-10-26T18:06:42Z",
+	"scope": "Twelve highest-cost opaque files from experiment 004; three fresh-process TypeScript passes per state.",
+	"control": "generalElementPart",
+	"measurements": {
+		"control": {
+			"optimizations": ["generalElementPart"],
+			"coreMs": {
+				"samples": [48820.807747000006, 49389.55308399998, 49358.96354300003],
+				"mean": 49189.77479133334,
+				"standardDeviation": 319.9006718619116,
+				"coefficientOfVariation": 0.006503397773601402,
+				"meanCi95": { "lower": 48820.807747000006, "upper": 49389.55308399998 }
+			}
+		},
+		"generalElement": {
+			"optimizations": ["generalElementPart", "generalElement"],
+			"changePercent": -0.6811880953336513,
+			"coreMs": {
+				"samples": [48664.35033, 48911.371793, 48988.377581000015],
+				"mean": 48854.69990133334,
+				"standardDeviation": 169.2843534602793,
+				"coefficientOfVariation": 0.003465057687431608,
+				"meanCi95": { "lower": 48664.35033000001, "upper": 48988.377581000015 }
+			},
+			"interpretation": "Directionally faster, but its confidence interval overlaps the control interval."
+		},
+		"routineName": {
+			"optimizations": ["generalElementPart", "routineName"],
+			"changePercent": -17.088663143898664,
+			"coreMs": {
+				"samples": [41104.22658299999, 40736.41495900001, 40511.05808600002],
+				"mean": 40783.899876,
+				"standardDeviation": 299.4216583101049,
+				"coefficientOfVariation": 0.007341663235258793,
+				"meanCi95": { "lower": 40511.05808600002, "upper": 41104.22658299999 }
+			}
+		},
+		"combined": {
+			"optimizations": ["generalElementPart", "generalElement", "routineName"],
+			"changePercent": -15.548583277272666,
+			"coreMs": {
+				"samples": [41136.298, 40794.67358399999, 42693.41349800001],
+				"mean": 41541.461694,
+				"standardDeviation": 1012.1371100083197,
+				"coefficientOfVariation": 0.024364504009605104,
+				"meanCi95": { "lower": 40794.67358399999, "upper": 42693.41349800001 }
+			}
+		}
+	},
+	"excludedDiagnosticRun": {
+		"candidate": "routineName",
+		"reason": "Rejected as an uncertainty estimate because progressive host slowdown produced 36.02% CV; retained here to avoid selective omission.",
+		"coreMs": {
+			"samples": [40674.116418000005, 46980.35378499999, 77802.19658300001],
+			"mean": 55152.222262,
+			"standardDeviation": 19867.263525425602,
+			"coefficientOfVariation": 0.3602259838424351,
+			"meanCi95": { "lower": 40674.116418000005, "upper": 77802.19658300001 }
+		}
+	},
+	"conformanceReproducedAt": "2026-10-26T18:06:42Z",
+	"conformanceDifferences": {
+		"parseTreeSha256": 0,
+		"lexerDiagnostics": 0,
+		"parseDiagnostics": 0,
+		"tokens": 0,
+		"hiddenTokens": 0,
+		"prediction": 0,
+		"sllAttempts": 0,
+		"llAttempts": 0
+	}
+}

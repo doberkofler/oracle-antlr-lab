@@ -31,6 +31,27 @@ visitor surface are unchanged.
 Full-corpus wall time fell from 141.241 s to 125.148 s. Peak TypeScript RSS was
 effectively unchanged: 4.680 GB control versus 4.698 GB candidate.
 
+### Independent candidate measurements
+
+Each candidate was also measured independently against a standalone post-#1
+control. These tail values are not directly comparable with tail values extracted
+from full-corpus passes because their generated DFA warm state differs.
+
+| State             | Core mean [bootstrap 95% CI] | Standard deviation |    CV |  Change |
+| ----------------- | ---------------------------: | -----------------: | ----: | ------: |
+| Control           |    49.190 s [48.821, 49.390] |            0.320 s | 0.65% |       — |
+| `general_element` |    48.855 s [48.664, 48.988] |            0.169 s | 0.35% |  -0.68% |
+| `routine_name`    |    40.784 s [40.511, 41.104] |            0.299 s | 0.73% | -17.09% |
+| Combined          |    41.541 s [40.795, 42.693] |            1.012 s | 2.44% | -15.55% |
+
+`routine_name` accounts for the measurable wall-time gain. The
+`general_element` result is directionally positive, but its confidence interval
+overlaps the control interval; it is retained because the `PERIOD` guard safely
+eliminates impossible prediction calls, not because this campaign proves a
+standalone wall-time improvement. The complete aggregate samples and an excluded
+36.02%-CV diagnostic run are retained in
+[`independent-tail.json`](independent-tail.json).
+
 ## Conformance
 
 One complete-corpus control pass and one candidate pass were parsed with the
@@ -42,6 +63,10 @@ Both states reported 181 parser diagnostics and 129 fallback files. The
 per-file digest evidence is retained in [`conformance.json`](conformance.json).
 Three full-corpus measurement repetitions also had no per-file token,
 diagnostic, prediction-mode, or fallback-attempt differences.
+
+The complete-corpus control/candidate comparison was independently reproduced
+on 2026-10-26 with zero differences in the same eight fields. The reproduced
+opaque identities and tree hashes matched the promoted conformance artifact.
 
 ## Rejected candidates
 

@@ -6,6 +6,7 @@
 	"profileControl": "experiments/005-general-element-part-optimization/profile-baseline.json",
 	"command": "node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 006-routine-name-and-general-element",
 	"conformanceCommand": "LAB_TREE_HASH=1 node grammar/typescript/harness.ts with LAB_GENERATED_OPTIMIZATIONS=generalElementPart for the control and generalElement,generalElementPart,routineName for the candidate",
+	"independentTailCommand": "Generate each optimization state separately, then run node scripts/benchmarkProduction.ts .work/private-production/tail-manifest.json 3 <opaque-result-name>",
 	"selection": "Complete frozen 1,244-file opaque production corpus; tail statistics reuse the 12 opaque ids selected by experiment 004.",
 	"candidate": "Post-process the generated TypeScript routine_name loop with PERIOD plus id_expression lookahead on clean input, and gate both general_element dotted-part loop predictions with the PERIOD FIRST token.",
 	"acceptance": [
