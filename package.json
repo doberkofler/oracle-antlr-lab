@@ -12,6 +12,8 @@
 		"corpus:select": "node scripts/select-corpus.ts",
 		"benchmark": "node scripts/benchmark.ts",
 		"benchmark:quick": "node scripts/benchmark.ts --files 15 --iterations 3 --warmups 1 --cold-repeats 1",
+		"benchmark:production": "node scripts/benchmarkProduction.ts",
+		"benchmark:compare": "node scripts/compareReports.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint",
 		"format": "oxfmt --write",

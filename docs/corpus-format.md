@@ -51,6 +51,14 @@ The sample is not a semantic stratification. A production decision must use
 either the full manifest or a construct-stratified sample that is declared in
 the experiment.
 
+`pnpm benchmark:production --selection full|q4|tail` selects files from a
+manifest without rewriting it. Q4 is the largest byte-size quartile. Tail is the
+highest median TypeScript parser-core set from an audited ranking report. The
+campaign writes `selection.json` with the mode, criteria, source artifact digest,
+population counts, selected byte range, opaque identities, digests, and
+selection fingerprint. The fingerprint is the comparison identity; a control and
+candidate must share it.
+
 ## Privacy
 
 Private corpora must not be committed. A private report may contain:
