@@ -126,12 +126,22 @@ faster. Pairing does not turn a tail selection into a full-corpus result.
 5. Runtime and generator versions recorded.
 6. No result from a superseded report is mixed into a current comparison.
 
+## Memory campaigns
+
+Memory attribution uses the same selections and a separate
+[`memory-profiling.md`](./memory-profiling.md) contract. It forces garbage
+collection, records retained and allocated bytes, and reports instrumented cost
+separately from uninstrumented latency. Instrumented wall time is not a
+production benchmark result and must not be compared with a latency report.
+
 ## Invalid claims
 
 - Extrapolating a full build from a 15-file pass.
 - Reporting a Q4 or tail result as a full-corpus result.
 - Comparing control and candidate reports with different selection fingerprints.
 - Comparing SLL-only and SLL-first-with-LL-fallback without saying so.
+- Comparing forced-GC memory runs with production latency runs.
+- Proposing a memory optimization from RSS or a single allocation profile.
 - Reporting a speedup from a runtime switch as a grammar improvement.
 - Reporting aggregate parser time without lexer and fallback attribution.
 - Treating a benchmark pass as semantic correctness.

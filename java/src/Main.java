@@ -1,3 +1,7 @@
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryType;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -33,6 +37,13 @@ public final class Main {
 	}
 
 	private record ProfileObservation(String parseTreeSha256, int maxFunctionArgumentsPerPart, int parseDiagnostics) {
+	}
+
+	private record MemoryParse(Observation observation, ParseTree tree, PlSqlParser parser) {
+	}
+
+	private record MemoryStages(long withTreeBytes, long withoutTreeBytes, long withoutSourceBytes, long withoutStreamBytes,
+			long treeBytes, long sourceBytes, long tokenBytes) {
 	}
 
 	private static final class Errors extends BaseErrorListener {
@@ -75,6 +86,10 @@ public final class Main {
 	}
 
 	private static Observation parse(String source) {
+		return parseDetailed(source).observation();
+	}
+
+	private static MemoryParse parseDetailed(String source) {
 		long started = System.nanoTime();
 		long setupStarted = System.nanoTime();
 		var lexer = new PlSqlLexer(CharStreams.fromString(source));
@@ -103,7 +118,7 @@ public final class Main {
 		parser.addErrorListener(parserErrors);
 		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 		long parserStarted = System.nanoTime();
-		parser.sql_script();
+		ParseTree tree = parser.sql_script();
 		double sllParseMs = (System.nanoTime() - parserStarted) / 1_000_000.0;
 		double llParseMs = 0;
 		int llAttempts = 0;
@@ -118,15 +133,15 @@ public final class Main {
 			parser.addErrorListener(parserErrors);
 			parser.getInterpreter().setPredictionMode(PredictionMode.LL);
 			long llStarted = System.nanoTime();
-			parser.sql_script();
+			tree = parser.sql_script();
 			llParseMs = (System.nanoTime() - llStarted) / 1_000_000.0;
 			llAttempts = 1;
 		}
 		double adapterMs = (System.nanoTime() - started) / 1_000_000.0;
 
-		return new Observation(lexerMs + sllParseMs + llParseMs, adapterMs, setupMs, lexerMs, sllParseMs, llParseMs,
+		return new MemoryParse(new Observation(lexerMs + sllParseMs + llParseMs, adapterMs, setupMs, lexerMs, sllParseMs, llParseMs,
 				lexerErrors.count, parserErrors.count, tokenCount, allTokens.size() - tokenCount,
-				llAttempts > 0 ? "sll-fallback-ll" : "sll", 1, llAttempts);
+				llAttempts > 0 ? "sll-fallback-ll" : "sll", 1, llAttempts), tree, parser);
 	}
 
 	private static double median(List<Double> values) {
@@ -159,6 +174,11 @@ public final class Main {
 
 		if (args[0].equals("profile")) {
 			profileFiles(args);
+			return;
+		}
+
+		if (args[0].equals("memory")) {
+			memoryFiles(args);
 			return;
 		}
 
@@ -200,6 +220,156 @@ public final class Main {
 		print(new Observation(median(core), median(adapter), median(setup), median(lexer), median(sllParse), median(llParse),
 				last.lexerDiagnostics(), last.parseDiagnostics(), last.tokens(), last.hiddenTokens(), last.prediction(), last.sllAttempts(),
 				last.llAttempts()));
+	}
+
+	private static void memoryFiles(String[] args) throws Exception {
+		if (args.length < 4) {
+			throw new IllegalArgumentException("Usage: Main memory <gcEvery> <treePosition> <file>...");
+		}
+
+		int gcEvery = Math.max(1, Integer.parseInt(args[1]));
+		int fileCount = args.length - 3;
+		int treePosition = Math.min(Math.max(0, Integer.parseInt(args[2])), fileCount - 1);
+		long started = System.nanoTime();
+		collectGarbage();
+		long startupHeapBytes = usedHeapBytes();
+		long allocationStart = allocatedBytes();
+		long peakHeapUsedBytes = startupHeapBytes;
+		double coreMsTotal = 0;
+		List<String> files = new ArrayList<>();
+		PlSqlParser lastParser = null;
+
+		for (int index = 0; index < fileCount; index += 1) {
+			String path = args[index + 3];
+			MemoryParse parsed = parseDetailed(Files.readString(Path.of(path)));
+			double coreMs = parsed.observation().coreMs();
+			coreMsTotal += coreMs;
+			lastParser = parsed.parser();
+			long heapUsedBytes = usedHeapBytes();
+			peakHeapUsedBytes = Math.max(peakHeapUsedBytes, heapUsedBytes);
+			long allocated = allocatedBytes() - allocationStart;
+			parsed = null;
+			String retained = "null";
+			if ((index + 1) % gcEvery == 0 || index + 1 == fileCount) {
+				collectGarbage();
+				retained = Long.toString(usedHeapBytes());
+			}
+
+			files.add(String.format(
+					"{\"position\":%d,\"coreMs\":%.6f,\"heapUsedBytes\":%d,\"retainedHeapBytes\":%s,\"rssBytes\":%d,\"dfaStates\":%d,\"allocatedBytes\":%d}",
+					index + 1, coreMs, heapUsedBytes, retained, rssBytes(), dfaStates(lastParser), allocated));
+
+			if ((index + 1) % 10 == 0 || index + 1 == fileCount) {
+				double elapsedSeconds = (System.nanoTime() - started) / 1_000_000_000.0;
+				System.err.printf("[%d/%d] elapsed %s%n", index + 1, fileCount, formatDuration(elapsedSeconds));
+			}
+		}
+
+		double elapsedMs = (System.nanoTime() - started) / 1_000_000.0;
+		collectGarbage();
+		long retainedEndBytes = usedHeapBytes();
+		long dfaStateCount = lastParser == null ? 0 : dfaStates(lastParser);
+		int dfaDecisions = lastParser == null ? 0 : lastParser.getInterpreter().decisionToDFA.length;
+		String histogram = histogramJson();
+		if (lastParser != null) {
+			lastParser.getInterpreter().clearDFA();
+		}
+		collectGarbage();
+		long afterCacheClearBytes = usedHeapBytes();
+		lastParser = null;
+		collectGarbage();
+		long afterParserDropBytes = usedHeapBytes();
+
+		MemoryStages stages = null;
+		int treeTokens = 0;
+		if (fileCount > 0) {
+			String source = Files.readString(Path.of(args[treePosition + 3]));
+			MemoryParse parsed = parseDetailed(source);
+			treeTokens = parsed.observation().tokens();
+			ParseTree tree = parsed.tree();
+			PlSqlParser treeParser = parsed.parser();
+			parsed = null;
+			collectGarbage();
+			long withTreeBytes = usedHeapBytes();
+			// The parser retains the root context; drop it before measuring the tree alone.
+			treeParser = null;
+			collectGarbage();
+			long withoutParserBytes = usedHeapBytes();
+			tree = null;
+			collectGarbage();
+			long withoutTreeBytes = usedHeapBytes();
+			source = null;
+			collectGarbage();
+			long withoutSourceBytes = usedHeapBytes();
+			long withoutStreamBytes = withoutSourceBytes;
+			stages = new MemoryStages(withTreeBytes, withoutTreeBytes, withoutSourceBytes, withoutStreamBytes,
+					Math.max(0, withoutParserBytes - withoutTreeBytes), Math.max(0, withoutTreeBytes - withoutSourceBytes),
+					Math.max(0, withTreeBytes - withoutParserBytes));
+		}
+
+		String retention = stages == null ? "null" : String.format(
+				"{\"position\":%d,\"tokens\":%d,\"withTreeBytes\":%d,\"withoutTreeBytes\":%d,\"withoutSourceBytes\":%d,\"withoutStreamBytes\":%d,\"treeBytes\":%d,\"sourceBytes\":%d,\"tokenBytes\":%d}",
+				treePosition + 1, treeTokens, stages.withTreeBytes(), stages.withoutTreeBytes(), stages.withoutSourceBytes(),
+				stages.withoutStreamBytes(), stages.treeBytes(), stages.sourceBytes(), stages.tokenBytes());
+		long totalAllocated = allocatedBytes() - allocationStart;
+
+		System.out.printf(
+				"{\"files\":[%s],\"elapsedMs\":%.6f,\"coreMs\":%.6f,\"startupHeapBytes\":%d,\"retainedEndBytes\":%d,\"afterCacheClearBytes\":%d,\"afterParserDropBytes\":%d,\"peakRssBytes\":%d,\"peakHeapUsedBytes\":%d,\"dfa\":{\"decisions\":%d,\"states\":%d,\"retainedBytes\":%d},\"retention\":%s,\"allocation\":{\"source\":\"jvm-thread-allocation\",\"bytes\":%d},\"histogram\":%s}%n",
+				String.join(",", files), elapsedMs, (double) coreMsTotal, startupHeapBytes, retainedEndBytes, afterCacheClearBytes,
+				afterParserDropBytes, rssBytes(), peakHeapUsedBytes, dfaDecisions, dfaStateCount, Math.max(0, retainedEndBytes - afterCacheClearBytes),
+				retention, totalAllocated, histogram);
+	}
+
+	private static void collectGarbage() {
+		System.gc();
+		System.gc();
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException interrupted) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	private static long usedHeapBytes() {
+		return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+	}
+
+	private static long allocatedBytes() {
+		java.lang.management.ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+		if (bean instanceof com.sun.management.ThreadMXBean threadBean && threadBean.isThreadAllocatedMemorySupported()) {
+			return threadBean.getCurrentThreadAllocatedBytes();
+		}
+		return 0;
+	}
+
+	private static long dfaStates(PlSqlParser parser) {
+		long total = 0;
+		for (var dfa : parser.getInterpreter().decisionToDFA) {
+			total += dfa.getStates().size();
+		}
+		return total;
+	}
+
+	private static String histogramJson() {
+		try {
+			Process process = new ProcessBuilder("jcmd", Long.toString(ProcessHandle.current().pid()), "GC.class_histogram", "-all")
+					.redirectErrorStream(true).start();
+			String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+			process.waitFor();
+			List<String> entries = new ArrayList<>();
+			for (String line : output.split("\\R")) {
+				java.util.regex.Matcher matcher = java.util.regex.Pattern
+						.compile("^\\s*\\d+:\\s+(\\d+)\\s+(\\d+)\\s+(.+?)(?:\\s+\\([^)]*\\))?\\s*$").matcher(line);
+				if (matcher.matches()) {
+					entries.add(String.format("{\"className\":\"%s\",\"instances\":%s,\"bytes\":%s}",
+							escape(matcher.group(3)), matcher.group(1), matcher.group(2)));
+				}
+			}
+			return "[" + String.join(",", entries) + "]";
+		} catch (Exception error) {
+			System.err.printf("Class histogram unavailable: %s%n", error.getMessage());
+			return "[]";
+		}
 	}
 
 	private static void profileFiles(String[] args) throws Exception {

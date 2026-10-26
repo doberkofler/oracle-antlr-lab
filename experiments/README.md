@@ -42,6 +42,9 @@ promoted.
   `BULK COLLECT` alias guard; LL fallback files fell from 129 to 20 and
   full-corpus parser core fell 24.64% with identical parse-tree digests,
   diagnostics, and token counts.
+- `008-memory-profile`: retained-memory and allocation attribution on full, Q4,
+  and tail selections; generated DFA caches hold 90–96% of retained heap and
+  `getEpsilonTarget` dominates Node allocation volume. No optimization claimed.
 
 ## Remaining queue
 
