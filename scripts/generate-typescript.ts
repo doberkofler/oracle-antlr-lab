@@ -11,8 +11,12 @@ const parseOptimizations = (value: string): readonly GeneratedParserOptimization
 		.map((name) => name.trim())
 		.filter((name) => name.length > 0);
 
+	if (selected.length === 1 && selected[0] === 'none') {
+		return [];
+	}
+
 	if (selected.length === 0) {
-		throw new Error('LAB_GENERATED_OPTIMIZATIONS must name at least one optimization');
+		throw new Error('LAB_GENERATED_OPTIMIZATIONS must name at least one optimization or "none"');
 	}
 
 	const known = selected.map((name) => {
@@ -37,7 +41,14 @@ const parseOptimizations = (value: string): readonly GeneratedParserOptimization
 };
 
 const root = path.resolve(import.meta.dirname, '..');
-const output = path.join(root, 'grammar', 'typescript', 'generated');
+const defaultOutput = path.join(root, 'grammar', 'typescript', 'generated');
+const output = process.env['LAB_GENERATED_OUTPUT'] === undefined ? defaultOutput : path.resolve(root, process.env['LAB_GENERATED_OUTPUT']);
+const relativeOutput = path.relative(root, output);
+
+if (relativeOutput === '' || relativeOutput.startsWith('..') || path.isAbsolute(relativeOutput)) {
+	throw new Error('LAB_GENERATED_OUTPUT must be a directory inside the repository');
+}
+
 const runner = path.join(root, 'node_modules', 'antlr-ng', 'dist', 'cli', 'runner.js');
 const lexer = path.join(output, 'PlSqlLexer.ts');
 const parser = path.join(output, 'PlSqlParser.ts');

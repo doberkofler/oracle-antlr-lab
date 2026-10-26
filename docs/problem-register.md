@@ -139,7 +139,34 @@ complete corpus and 24.45% on the tail. Parse-tree digests, diagnostics, and
 token counts remained identical for all files. The remaining 20 files split into
 14 genuine grammar gaps that also fail under LL and 6 other SLL-only conflicts.
 
-## 8. Out of scope
+## 8. Optimizations are semantically gated
+
+Experiment
+[`009-semantic-conformance`](../experiments/009-semantic-conformance/conclusion.md)
+gates issues #1–#3 separately and the combined final state against the
+unoptimized parser. The oracle compares accepted units, structural parse-tree
+digests, visible and hidden tokens, lexer and parser diagnostics, diagnostic
+sequences, and recovery behavior.
+
+- Every gate passed with no defect.
+- Issues #1 and #2 had no observable differences.
+- Issue #3 and the combined final state had only the intended full-file LL
+  fallback removal: 109 files changed prediction from `sll-fallback-ll` to
+  `sll` with identical parse trees, tokens, units, and diagnostics.
+- Declarations, references, and dependencies are not extracted by this
+  laboratory; identical parse trees bound the semantic consumer input and
+  external qualification remains required.
+
+Final status of the optimization sequence:
+
+| Dimension            | Result                                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| Latency              | 156.093 s → 92.241 s full-corpus TypeScript parser core; −40.9%, 1.69× speedup.          |
+| Memory               | DFA caches retain 90–96% of heap; no memory optimization is claimed by the latency work. |
+| Semantic conformance | All per-change gates pass; only intended fallback differences remain.                    |
+| Java                 | Faster constant factor, but 486 diagnostics remain unresolved; not viable evidence.      |
+
+## 9. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.
 - PL/Scope normalization and release gates.

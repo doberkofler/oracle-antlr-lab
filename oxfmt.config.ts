@@ -13,6 +13,7 @@ export default {
 		'grammar/adapted/**',
 		'.work/**',
 		'results/**',
+		'experiments/**/conformance.md',
 		'pnpm-lock.yaml',
 	],
 };

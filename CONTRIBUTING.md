@@ -19,6 +19,7 @@ A grammar change is a new reviewed patch in `grammar/patches/` plus:
 - the affected rule;
 - a reduced fixture;
 - an acceptance run and a prediction-cost run;
+- a per-change semantic-conformance result from `pnpm conformance`;
 - an upstream issue or pull request when the defect is target-independent.
 
 ## Benchmarks

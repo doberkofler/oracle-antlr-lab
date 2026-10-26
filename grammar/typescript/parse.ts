@@ -1,8 +1,10 @@
-import { BaseErrorListener, CharStream, CommonTokenStream, ParserRuleContext, type ParseTree, TerminalNode, Token } from 'antlr4ng';
-import { createHash } from 'node:crypto';
+import { BaseErrorListener, CharStream, CommonTokenStream, type ParseTree, Token } from 'antlr4ng';
 import { prepareConditional } from '../../src/conditional.ts';
 import { PlSqlLexer } from './generated/PlSqlLexer.ts';
 import { PlSqlParser } from './generated/PlSqlParser.ts';
+import { treeSha256 } from './treeDigest.ts';
+
+export { treeSha256 } from './treeDigest.ts';
 
 /** Corpus entry as recorded in a manifest. */
 export type FileEntry = Readonly<{ id: number; path: string; file: string; bytes: number; lines: number; sha256: string }>;
@@ -149,40 +151,4 @@ export const parseSource = (source: string, entry: FileEntry, options: Readonly<
 		parser,
 		source,
 	};
-};
-
-/**
- * Structural parse-tree digest used for conformance checks.
- *
- * @param tree - Parse tree root.
- * @returns SHA-256 over rule indices, child counts, and terminal token types.
- */
-export const treeSha256 = (tree: ParseTree): string => {
-	const digest = createHash('sha256');
-	const addInteger = (value: number): void => {
-		digest.update(Buffer.from([value >>> 24, value >>> 16, value >>> 8, value]));
-	};
-	const addTree = (node: ParseTree): void => {
-		if (node instanceof ParserRuleContext) {
-			digest.update(Buffer.from([1]));
-			addInteger(node.ruleIndex);
-			addInteger(node.getChildCount());
-		} else if (node instanceof TerminalNode) {
-			digest.update(Buffer.from([2]));
-			addInteger(node.symbol.type);
-		} else {
-			digest.update(Buffer.from([3]));
-		}
-
-		for (let childIndex = 0; childIndex < node.getChildCount(); childIndex += 1) {
-			const child = node.getChild(childIndex);
-
-			if (child !== null) {
-				addTree(child);
-			}
-		}
-	};
-
-	addTree(tree);
-	return digest.digest('hex');
 };

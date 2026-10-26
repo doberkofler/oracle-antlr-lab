@@ -1,0 +1,44 @@
+{
+	"experiment": "009-semantic-conformance",
+	"question": "Do the grammar and parser-recovery optimizations from issues #1–#3 preserve accepted units, parse structure, tokens, diagnostics, and recovery behavior on the frozen production corpus?",
+	"hypothesis": "Each optimization preserves the structural parse tree, accepted-unit count, token counts, and diagnostics. The only intended difference is the removal of full-file LL fallback in issue #3 and the combined final state.",
+	"control": "The optimization state immediately before each change: none for #1, generalElementPart for #2, and generalElement,generalElementPart,routineName for #3. The combined gate uses the unoptimized state.",
+	"candidate": "Each issue's reviewed generated-parser transform state, plus the combined final state with all five transforms.",
+	"command": {
+		"gates": "pnpm conformance -- --manifest <private-manifest> --experiment 009-semantic-conformance --publish experiments/009-semantic-conformance",
+		"singleGate": "pnpm conformance -- --manifest <private-manifest> --change-set issue-3-full-file-ll-fallback"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus; every file is compared in every gate.",
+	"oracle": {
+		"required": [
+			"top-level script_unit count",
+			"structural parse-tree SHA-256",
+			"visible and hidden token counts",
+			"lexer and parser diagnostic counts",
+			"ordered diagnostic SHA-256",
+			"recovery behavior as final tree, units, and diagnostics"
+		],
+		"notAvailable": ["declaration extraction", "reference extraction", "dependency extraction"],
+		"semanticBoundary": "Identical parse trees bound the input to a semantic consumer. The laboratory does not implement an Oracle symbol index or PL/Scope qualification."
+	},
+	"classification": {
+		"intended": "Only LL fallback removal: prediction sll-fallback-ll to sll and one LL attempt to zero, with identical tree, units, tokens, and diagnostics.",
+		"unsupported": "Explicitly allowlisted files that both states reject; none were required by these gates.",
+		"defect": "Any other difference; the gate fails."
+	},
+	"acceptance": [
+		"Every grammar or parser-recovery change from #1–#3 has its own conformance gate.",
+		"No unexplained semantic, diagnostic, token, unit, or recovery difference remains.",
+		"Intended differences are documented and covered by focused tests.",
+		"Java is not described as viable while its 486 production diagnostics remain unresolved.",
+		"Final performance conclusions include latency, memory, and semantic-conformance status.",
+		"Published evidence contains no private path, source text, object name, or original identity."
+	],
+	"limitations": [
+		"Parse-tree identity is a proxy for semantic equivalence, not a semantic proof.",
+		"The corpus is frozen and may not exercise every grammar and recovery path.",
+		"Declarations, references, and dependencies are not extracted by this laboratory; external qualification remains required.",
+		"Java has no equivalent generated-parser optimization states and cannot be compared on the same gates.",
+		"A passing gate does not replace the external qualification suite."
+	]
+}

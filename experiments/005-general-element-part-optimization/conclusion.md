@@ -30,6 +30,9 @@ diagnostics, parser diagnostics, visible tokens, hidden tokens, prediction mode,
 SLL attempts, or LL attempts. Both states retained 129 fallback files and 181
 diagnostics. Focused tests cover zero, one, and two adjacent argument groups.
 
+The independent per-change gate is retained in
+[`009-semantic-conformance`](../009-semantic-conformance/conclusion.md).
+
 ## Rejected candidates
 
 - An entry semantic predicate preserved fallback behavior but increased profiled

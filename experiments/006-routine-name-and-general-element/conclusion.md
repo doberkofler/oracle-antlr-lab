@@ -68,6 +68,9 @@ The complete-corpus control/candidate comparison was independently reproduced
 on 2026-10-26 with zero differences in the same eight fields. The reproduced
 opaque identities and tree hashes matched the promoted conformance artifact.
 
+The independent per-change gate is retained in
+[`009-semantic-conformance`](../009-semantic-conformance/conclusion.md).
+
 ## Rejected candidates
 
 - Direct `general_element` continuation on every `PERIOD` reduced tail core by

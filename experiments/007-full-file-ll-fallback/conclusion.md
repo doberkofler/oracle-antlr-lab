@@ -94,6 +94,9 @@ cover collection methods, dotted field access that must remain available,
 arguments, an empty `BULK COLLECT` target, and the unsupported `XMLTABLE`
 and `DATE NULL` constructs.
 
+The independent per-change gate is retained in
+[`009-semantic-conformance`](../009-semantic-conformance/conclusion.md).
+
 ## Threats to validity
 
 The tail is deliberately biased to the highest-cost files. Three repetitions

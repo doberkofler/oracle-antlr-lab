@@ -126,6 +126,28 @@ faster. Pairing does not turn a tail selection into a full-corpus result.
 5. Runtime and generator versions recorded.
 6. No result from a superseded report is mixed into a current comparison.
 
+## Conformance gate
+
+Every grammar or parser-recovery change must pass the semantic-conformance gate
+defined in [`semantic-conformance.md`](./semantic-conformance.md). The gate
+compares two complete passes over the same manifest and selection.
+
+Required equality boundaries are accepted-unit count, structural parse-tree
+SHA-256, visible and hidden token counts, lexer and parser diagnostic counts,
+and the ordered diagnostic digest. Prediction and LL-fallback counts are
+reported but are not semantic fields.
+
+A gate fails on any unexplained parse-tree, accepted-unit, token, or diagnostic
+difference. Only the documented LL-fallback removal is an intended difference,
+and only when the parse tree, units, tokens, and diagnostics remain identical.
+Declarations, references, and dependencies are not extracted by this laboratory;
+identical parse trees bound the semantic consumer input and external
+qualification remains required.
+
+A performance result without a matching conformance result is incomplete. The
+Java target's 486 production diagnostics remain unresolved, so its faster parser
+core is not semantic acceptance evidence.
+
 ## Memory campaigns
 
 Memory attribution uses the same selections and a separate
@@ -145,3 +167,7 @@ production benchmark result and must not be compared with a latency report.
 - Reporting a speedup from a runtime switch as a grammar improvement.
 - Reporting aggregate parser time without lexer and fallback attribution.
 - Treating a benchmark pass as semantic correctness.
+- Claiming a grammar or recovery optimization without a passing per-change
+  conformance result.
+- Calling Java viable because it is faster while its 486 production diagnostics
+  remain unresolved.

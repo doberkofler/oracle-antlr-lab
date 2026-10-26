@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { PlSqlLexer } from '../grammar/typescript/generated/PlSqlLexer.ts';
 import { PlSqlParser } from '../grammar/typescript/generated/PlSqlParser.ts';
+import { type FileEntry, parseSource } from '../grammar/typescript/parse.ts';
 
 type ParseMode = 'sll' | 'll';
 
@@ -31,6 +32,33 @@ const parse = (source: string, mode: ParseMode) => {
 };
 
 const modes: readonly ParseMode[] = ['sll', 'll'];
+
+const parseProduction = (source: string): ReturnType<typeof parseSource>['observation'] => {
+	const entry: FileEntry = {
+		id: 0,
+		path: 'fixture.sql',
+		file: 'fixture.sql',
+		bytes: source.length,
+		lines: source.split('\n').length,
+		sha256: '0'.repeat(64),
+	};
+
+	return parseSource(source, entry).observation;
+};
+
+describe('intended conformance differences stay observable', () => {
+	it.each([
+		'begin a.list.DELETE(1); a.list.EXTEND; a.list.TRIM; a.list.TRIM(1); end;',
+		'begin SELECT Matchcode BULK COLLECT INTO aRoles FROM las_role WHERE id = 1; end;',
+		'begin SELECT Matchcode BULK FROM las_role; end;',
+	] as const)('completes the SLL pass without a full-file LL fallback for %s', (source) => {
+		const observation = parseProduction(source);
+
+		expect(observation.parseDiagnostics).toBe(0);
+		expect(observation.prediction).toBe('sll');
+		expect(observation.llAttempts).toBe(0);
+	});
+});
 
 describe('collection-method recovery', () => {
 	it.each(modes)('accepts collection methods in %s mode', (mode) => {
