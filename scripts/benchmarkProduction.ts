@@ -43,12 +43,19 @@ const adapters: readonly ParserAdapter[] = [typeScriptAdapter, javaAdapter];
 const indexes = files.map((file) => file.id);
 const runs: Record<string, PassRun[]> = {};
 const campaignStartedAt = performance.now();
-const estimatedPassMs: Record<string, number> = { typescript: 180_000, java: 60_000 };
+const selectedBytes = files.reduce((total, file) => total + file.bytes, 0);
+const corpusFraction = manifest.sourceBytes === 0 ? 1 : selectedBytes / manifest.sourceBytes;
+const estimatedPassMs: Record<string, number> = {
+	typescript: Math.max(15_000, 180_000 * corpusFraction),
+	java: Math.max(10_000, 60_000 * corpusFraction),
+};
+const totalPasses = adapters.length * repeats;
+let completedPasses = 0;
+const initialEstimateMs = adapters.reduce((total, adapter) => total + (estimatedPassMs[adapter.identity.name] ?? 180_000) * repeats, 0);
+const initialCompletesAt = new Date(Date.now() + initialEstimateMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 process.stdout.write(
-	`Starting ${String(adapters.length * repeats)} full-corpus passes; initial campaign ETA ${formatDuration(
-		adapters.reduce((total, adapter) => total + (estimatedPassMs[adapter.identity.name] ?? 180_000) * repeats, 0),
-	)}.\n`,
+	`Starting ${String(totalPasses)} campaign passes over ${String(files.length)} files; initial ETA ${formatDuration(initialEstimateMs)} (~${initialCompletesAt}).\n`,
 );
 
 for (const adapter of adapters) {
@@ -61,7 +68,9 @@ for (const adapter of adapters) {
 	const adapterRuns: PassRun[] = [];
 
 	for (let repeat = 1; repeat <= repeats; repeat += 1) {
-		process.stdout.write(`${adapter.identity.name} pass ${String(repeat)}/${String(repeats)} starting.\n`);
+		process.stdout.write(
+			`Overall pass ${String(completedPasses + 1)}/${String(totalPasses)} (${formatPercentage(completedPasses, totalPasses)} complete): ${adapter.identity.name} ${String(repeat)}/${String(repeats)} starting.\n`,
+		);
 		const startedAt = performance.now();
 		const observations = await adapter.runPass?.({ manifestPath, filesDir, indexes });
 
@@ -80,6 +89,7 @@ for (const adapter of adapters) {
 		});
 		const run = summarizeRun(repeat, performance.now() - startedAt, ordered);
 		adapterRuns.push(run);
+		completedPasses += 1;
 		estimatedPassMs[adapter.identity.name] = adapterRuns.reduce((total, completedRun) => total + completedRun.wallMs, 0) / adapterRuns.length;
 		const remainingMs = adapters.reduce((total, pendingAdapter) => {
 			const completed = runs[pendingAdapter.identity.name]?.length ?? (pendingAdapter.identity.name === adapter.identity.name ? adapterRuns.length : 0);
@@ -87,7 +97,7 @@ for (const adapter of adapters) {
 		}, 0);
 		const completesAt = new Date(Date.now() + remainingMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 		process.stdout.write(
-			`${adapter.identity.name} pass ${String(repeat)}/${String(repeats)} complete in ${formatDuration(run.wallMs)}; core ${run.coreMs.toFixed(3)} ms; peak RSS ${formatBytes(run.peakRssBytes)}; campaign elapsed ${formatDuration(performance.now() - campaignStartedAt)}, ETA ${formatDuration(remainingMs)} (~${completesAt}).\n`,
+			`Overall ${String(completedPasses)}/${String(totalPasses)} (${formatPercentage(completedPasses, totalPasses)} complete); ${adapter.identity.name} pass completed in ${formatDuration(run.wallMs)}; core ${run.coreMs.toFixed(3)} ms; peak RSS ${formatBytes(run.peakRssBytes)}; campaign elapsed ${formatDuration(performance.now() - campaignStartedAt)}; remaining ETA ${formatDuration(remainingMs)} (~${completesAt}).\n`,
 		);
 	}
 
@@ -241,6 +251,10 @@ function renderMarkdown(
 function formatDuration(milliseconds: number): string {
 	const seconds = Math.round(milliseconds / 1_000);
 	return `${String(Math.floor(seconds / 60))}m ${String(seconds % 60).padStart(2, '0')}s`;
+}
+
+function formatPercentage(completed: number, total: number): string {
+	return `${((completed / total) * 100).toFixed(1)}%`;
 }
 
 function formatBytes(bytes: number): string {
