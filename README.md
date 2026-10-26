@@ -1,0 +1,142 @@
+# Oracle ANTLR Lab
+
+Reproducible experiments for the Oracle PL/SQL ANTLR grammar.
+
+This repository measures the parser, not the semantic indexer. It exists to
+answer questions such as:
+
+- Which grammar decisions dominate prediction time?
+- How often does SLL parsing need an LL fallback, and what does that cost?
+- Which valid production constructs still fail to parse?
+- Does error recovery amplify the cost of a grammar gap?
+- Does a runtime or target change improve the constant factor?
+- Does a grammar change improve acceptance without regressing prediction cost?
+
+It does **not** implement an Oracle symbol index, PL/Scope qualification, or a
+production adapter. Those remain in
+[`codeindex-mcp`](https://github.com/doberkofler/codeindex-mcp).
+
+Start with the [problem register](docs/problem-register.md) for the retained
+performance and quality facts, then use the
+[benchmark contract](docs/benchmark-contract.md) before comparing runs.
+
+## Non-goals
+
+- No claim that parser speed alone justifies production adoption.
+- No private source publication. Private corpora stay outside this repository;
+  only hashes and aggregates leave the source owner.
+- No semantic reference or dependency resolver.
+- No generated-parser commits.
+
+## Quick start
+
+```bash
+pnpm install
+pnpm grammar:download
+pnpm grammar:generate
+pnpm benchmark:quick
+```
+
+`pnpm grammar:download` fetches the pinned `antlr/grammars-v4` commit and
+verifies every upstream digest before applying local patches. The pinned
+identity and patch list are written to `grammar/pin.json`.
+
+`pnpm benchmark:quick` runs 15 files from the public synthetic corpus with one
+cold repetition. Full defaults use three cold repetitions, one warmup, and five
+warm samples per file.
+
+## What is measured
+
+`coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
+conditional compilation preparation, semantic visitors, and process startup.
+`phases.setupMs` records construction and ATN initialization separately.
+
+`adapterMs` is the complete harness call around the same source, including
+construction. Cold `adapterMs` is therefore the first-use cost; cold `coreMs` is
+the steady parser work after construction.
+
+The runner records:
+
+- cold distribution across fresh processes;
+- warm distribution after a declared warmup count;
+- a shared-DFA pass on the selected sample where the adapter supports it;
+- lexer and parser diagnostics;
+- visible and hidden token counts;
+- SLL/LL fallback behavior;
+- peak process RSS.
+
+The one-pass value is a sample approximation, not a full production build. Do
+not extrapolate without a full-corpus manifest and an external decision report.
+
+## Repository layout
+
+| Path                  | Purpose                                                                |
+| --------------------- | ---------------------------------------------------------------------- |
+| `grammar/`            | Pinned upstream sources, reviewed patches, generated TypeScript output |
+| `corpora/public/`     | Deterministic, redistributable source corpus                           |
+| `src/`                | Corpus manifest handling, statistics, runner, report assembly          |
+| `scripts/`            | Download, generation, corpus selection, benchmark entrypoints          |
+| `grammar/typescript/` | TypeScript parser harness                                              |
+| `java/`               | Java target harness, built in Docker                                   |
+| `experiments/`        | Promoted experiment records and conclusions                            |
+| `docs/`               | Benchmark and corpus contracts                                         |
+| `test/`               | Unit tests for lab infrastructure                                      |
+
+## Corpora
+
+The public corpus is generated from `scripts/make-public-corpus.ts`. It contains
+synthetic packages, nested blocks, CASE expressions, loops, conditional
+compilation, and alternative-quoted strings. It is redistributable but is not a
+representative production workload.
+
+Private corpora use the same manifest format:
+
+```bash
+pnpm corpus:select -- \
+  --root /path/to/oracle/source \
+  --output /path/to/private-corpus \
+  --id private-production \
+  --visibility private \
+  --files 40
+```
+
+The manifest records source paths, byte sizes, and SHA-256 digests. Do not commit
+a private corpus or a report that contains private paths. See
+[`docs/corpus-format.md`](docs/corpus-format.md).
+
+## Adapters
+
+The TypeScript adapter is the primary target. It runs the actual `antlr4ng`
+runtime against generated recognizers from the pinned grammar.
+
+The Java adapter uses an official ANTLR target in a Docker image. Its pass runs
+all selected files in one JVM with a parser instance per file. That is a
+process-level pass, not a shared-DFA measurement, and is recorded in the adapter
+identity.
+
+## Experiment protocol
+
+Every experiment must declare:
+
+1. the question and hypothesis;
+2. the corpus id, selection, and control;
+3. grammar, generator, runtime, and patch identities;
+4. warmup, iteration, and cold-repetition counts;
+5. acceptance criteria;
+6. the result and the decision.
+
+Only then promote `results/<name>/report.{json,md}` into
+`experiments/<name>/` and write the conclusion. Do not keep a result that
+contradicts the hypothesis without recording why.
+
+## Development
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm format:check
+pnpm test
+```
+
+Generated parsers are reproducible. Regenerate them after changing a grammar
+patch; never edit generated output.

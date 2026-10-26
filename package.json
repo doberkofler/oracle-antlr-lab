@@ -1,0 +1,36 @@
+{
+	"name": "oracle-antlr-lab",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Reproducible parse, recovery, prediction, and runtime experiments for the Oracle PL/SQL ANTLR grammar.",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"grammar:download": "node scripts/download-grammar.ts",
+		"grammar:generate": "node scripts/generate-typescript.ts",
+		"corpus:public": "node scripts/make-public-corpus.ts",
+		"corpus:select": "node scripts/select-corpus.ts",
+		"benchmark": "node scripts/benchmark.ts",
+		"benchmark:quick": "node scripts/benchmark.ts --files 15 --iterations 3 --warmups 1 --cold-repeats 1",
+		"typecheck": "tsc --noEmit",
+		"lint": "oxlint",
+		"format": "oxfmt --write",
+		"format:check": "oxfmt --check",
+		"test": "vitest run",
+		"verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
+	},
+	"dependencies": {
+		"antlr4ng": "3.0.16"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.5",
+		"antlr-ng": "1.0.10",
+		"oxfmt": "0.74.0",
+		"oxlint": "1.89.0",
+		"typescript": "6.0.3",
+		"vitest": "5.0.5"
+	},
+	"engines": {
+		"node": ">=26"
+	}
+}

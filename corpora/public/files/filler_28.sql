@@ -1,0 +1,43 @@
+declare
+	f_value_0 number := 0;
+	f_value_1 number := 1;
+	f_value_2 number := 2;
+	f_value_3 number := 3;
+	f_value_4 number := 4;
+	f_value_5 number := 5;
+	f_value_6 number := 6;
+	f_value_7 number := 7;
+	f_value_8 number := 8;
+	f_value_9 number := 9;
+	f_value_10 number := 10;
+	f_value_11 number := 11;
+	f_value_12 number := 12;
+	f_value_13 number := 13;
+	f_value_14 number := 14;
+	f_value_15 number := 15;
+	f_value_16 number := 16;
+	f_value_17 number := 17;
+	f_value_18 number := 18;
+	f_value_19 number := 19;
+	f_value_20 number := 20;
+	f_value_21 number := 21;
+	f_value_22 number := 22;
+	f_value_23 number := 23;
+	f_value_24 number := 24;
+	f_value_25 number := 25;
+	f_value_26 number := 26;
+	f_value_27 number := 27;
+	f_value_28 number := 28;
+	f_value_29 number := 29;
+	f_value_30 number := 30;
+	f_value_31 number := 31;
+	f_value_32 number := 32;
+	f_value_33 number := 33;
+	f_value_34 number := 34;
+	f_value_35 number := 35;
+	f_value_36 number := 36;
+	f_value_37 number := 37;
+begin
+	null;
+end;
+/

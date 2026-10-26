@@ -1,0 +1,11 @@
+.git
+.github
+node_modules
+.work
+results
+experiments
+corpora
+docs
+test
+grammar/typescript/generated
+*.log

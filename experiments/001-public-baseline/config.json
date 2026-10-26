@@ -1,0 +1,26 @@
+{
+	"experiment": "001-public-baseline",
+	"question": "Can the laboratory separate parser core work, construction cost, JVM startup, and SLL fallback on a reproducible corpus?",
+	"hypothesis": "Cold adapter cost differs materially from parser-core cost, especially for a fresh JVM.",
+	"command": "node scripts/benchmark.ts --files 48 --iterations 5 --warmups 1 --cold-repeats 1 --adapters typescript,java --experiment 001-public-baseline",
+	"corpus": "public-synthetic",
+	"selection": "all 48 files",
+	"config": {
+		"iterations": 5,
+		"warmups": 1,
+		"coldRepeats": 1,
+		"defaultSchema": "BENCH"
+	},
+	"adapters": ["typescript", "java"],
+	"acceptance": [
+		"Both adapters complete without harness failures.",
+		"Every public corpus file parses without lexer or parser diagnostics.",
+		"Cold adapter and setup metrics are reported separately from parser core."
+	],
+	"limitations": [
+		"Public synthetic corpus, not a production workload.",
+		"One cold repetition per file.",
+		"Both passes reuse one process; Java still constructs a parser per file.",
+		"No semantic qualification is performed."
+	]
+}

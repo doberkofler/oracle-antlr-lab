@@ -1,0 +1,7202 @@
+{
+	"schemaVersion": 1,
+	"experiment": "001-public-baseline",
+	"hypothesis": "A reproducible baseline on the public corpus separates parser work, construction, JVM startup, and SLL fallback.",
+	"generatedAt": "2026-10-26T09:47:35.080Z",
+	"environment": {
+		"node": "v26.10.0",
+		"platform": "darwin",
+		"arch": "arm64",
+		"release": "27.0.0",
+		"cpuModel": "Apple M5 Max",
+		"logicalCpus": 18,
+		"totalMemoryBytes": 68719476736
+	},
+	"corpus": {
+		"id": "public-synthetic",
+		"description": "Deterministically generated Oracle PL/SQL sources for reproducible parser experiments. No production source.",
+		"visibility": "public",
+		"sourceFiles": 48,
+		"sourceBytes": 54244,
+		"selection": "Size quantiles over 48 files; 48 selected",
+		"files": [
+			{
+				"id": 0,
+				"path": "edge_q_quote.sql",
+				"file": "edge_q_quote.sql",
+				"bytes": 93,
+				"lines": 5,
+				"sha256": "21defb7844f11c667122fb0256db7c213af1ccbb19d57a001acb7c8e84a210cc"
+			},
+			{
+				"id": 1,
+				"path": "synthetic_0.pks",
+				"file": "synthetic_0.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "0349635cdcdce3840b7d4c6046aacabbd606d7163a0ba20a4137f87cf0cf8a44"
+			},
+			{
+				"id": 2,
+				"path": "synthetic_1.pks",
+				"file": "synthetic_1.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "e6c0f48f00a30d2959b1df66e0be114f49c18502ba7b5ed637e2de957aa84e42"
+			},
+			{
+				"id": 3,
+				"path": "synthetic_2.pks",
+				"file": "synthetic_2.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "29cc7b72736e94263bb94166891fab5e2624ad48c3e4be63e19c052fe5020cd3"
+			},
+			{
+				"id": 4,
+				"path": "synthetic_3.pks",
+				"file": "synthetic_3.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "839a61ad6c5c0adf71960928f3c5cfcc58a03c9f22b30c1fada039e7181ce1e7"
+			},
+			{
+				"id": 5,
+				"path": "synthetic_4.pks",
+				"file": "synthetic_4.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "dc310e79304cb8a63f9416a9361bee080468179fdedbaba1b432a9f7a880faf6"
+			},
+			{
+				"id": 6,
+				"path": "synthetic_5.pks",
+				"file": "synthetic_5.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "f79259658f425754b808ca20c5cfc1b0acecb52d2f82790901ba5403fdb9d7c0"
+			},
+			{
+				"id": 7,
+				"path": "synthetic_6.pks",
+				"file": "synthetic_6.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "99238323f6fbade8a3368bb56b3bdc8f4ce9f0e7c4fb9cf4618fad4015e0a04c"
+			},
+			{
+				"id": 8,
+				"path": "edge_conditional.pkb",
+				"file": "edge_conditional.pkb",
+				"bytes": 216,
+				"lines": 12,
+				"sha256": "f75fd717fcc7f049388769747851e2e8ee2eea0e1d28860b8fb9e0f5601f0496"
+			},
+			{
+				"id": 9,
+				"path": "edge_nested.pkb",
+				"file": "edge_nested.pkb",
+				"bytes": 236,
+				"lines": 16,
+				"sha256": "b5cd86c7b0a1cc6caf53f07d041be9cc011bfe32775718e8476418e5865a4d33"
+			},
+			{
+				"id": 10,
+				"path": "filler_00.sql",
+				"file": "filler_00.sql",
+				"bytes": 268,
+				"lines": 16,
+				"sha256": "84c161c35b515ef5e96cd47767923aa2078182c05edfece9d1e396124e8e810d"
+			},
+			{
+				"id": 11,
+				"path": "filler_01.sql",
+				"file": "filler_01.sql",
+				"bytes": 294,
+				"lines": 17,
+				"sha256": "6def89a2c6e811ad9974ec2f93673dbbef64db09127570899d6ff804ac7fda0d"
+			},
+			{
+				"id": 12,
+				"path": "filler_02.sql",
+				"file": "filler_02.sql",
+				"bytes": 320,
+				"lines": 18,
+				"sha256": "8ecdfb7c5f0f44dcde900a836e9834ed5683c22bcd26145a1102d0be9f35d3b5"
+			},
+			{
+				"id": 13,
+				"path": "filler_03.sql",
+				"file": "filler_03.sql",
+				"bytes": 346,
+				"lines": 19,
+				"sha256": "61e450dcd7e1ae4beeb39e064ae9e078c8e5e49b599ac1f21229005a272b8dc2"
+			},
+			{
+				"id": 14,
+				"path": "filler_04.sql",
+				"file": "filler_04.sql",
+				"bytes": 372,
+				"lines": 20,
+				"sha256": "126a8bacc4e50e336a5106180046dd95c4f2a609302f1b885aa65a3ec32e1944"
+			},
+			{
+				"id": 15,
+				"path": "filler_05.sql",
+				"file": "filler_05.sql",
+				"bytes": 398,
+				"lines": 21,
+				"sha256": "f1e348ce31bab1020f3ebe07576af8df8a8dc2818304df278cbc20b1acf1d804"
+			},
+			{
+				"id": 16,
+				"path": "filler_06.sql",
+				"file": "filler_06.sql",
+				"bytes": 424,
+				"lines": 22,
+				"sha256": "fe5ea1e4f6247b9ff315302daf02cb27b4ae38fedebd160dcef44073adddf279"
+			},
+			{
+				"id": 17,
+				"path": "filler_07.sql",
+				"file": "filler_07.sql",
+				"bytes": 450,
+				"lines": 23,
+				"sha256": "7d0c4f88adbc70b7a58943f0edcb8563c265366942f3d304579b5dd34c58f47d"
+			},
+			{
+				"id": 18,
+				"path": "filler_08.sql",
+				"file": "filler_08.sql",
+				"bytes": 476,
+				"lines": 24,
+				"sha256": "1df201cd6760f55ed3375a861efc3daa259fa03cded28a4bd8d38df260916116"
+			},
+			{
+				"id": 19,
+				"path": "filler_09.sql",
+				"file": "filler_09.sql",
+				"bytes": 502,
+				"lines": 25,
+				"sha256": "5171a4e47507418ab25aa07b819e4e138c5d3a65f60f409e71afd1e6fc273f14"
+			},
+			{
+				"id": 20,
+				"path": "filler_10.sql",
+				"file": "filler_10.sql",
+				"bytes": 528,
+				"lines": 26,
+				"sha256": "12f17b515a0b704871575e6b4c6dbffd2a2e4795479601e91e67b91672b72b4a"
+			},
+			{
+				"id": 21,
+				"path": "filler_11.sql",
+				"file": "filler_11.sql",
+				"bytes": 554,
+				"lines": 27,
+				"sha256": "fa6d031e3edf164c165e9145e9c509d399bbae292bd0fe9610932888b7c9e69d"
+			},
+			{
+				"id": 22,
+				"path": "filler_12.sql",
+				"file": "filler_12.sql",
+				"bytes": 580,
+				"lines": 28,
+				"sha256": "120effa6df602ea2209a00d778ef251391182f633ab6632eed10e7bf866515a3"
+			},
+			{
+				"id": 23,
+				"path": "filler_13.sql",
+				"file": "filler_13.sql",
+				"bytes": 606,
+				"lines": 29,
+				"sha256": "eb9cc270935fd8f6a34a226d653c3e706a8ef0f4a27b627aa165c9955f4f90ad"
+			},
+			{
+				"id": 24,
+				"path": "filler_14.sql",
+				"file": "filler_14.sql",
+				"bytes": 632,
+				"lines": 30,
+				"sha256": "254d1aba235abe1baa335d9951b097879274dc2531965f246c4df0fba98ac236"
+			},
+			{
+				"id": 25,
+				"path": "filler_15.sql",
+				"file": "filler_15.sql",
+				"bytes": 658,
+				"lines": 31,
+				"sha256": "cd5eb0adeb1b32b0f624b776d675d2a456ba23ce7720399f955be73109bf9d92"
+			},
+			{
+				"id": 26,
+				"path": "synthetic_0.pkb",
+				"file": "synthetic_0.pkb",
+				"bytes": 680,
+				"lines": 32,
+				"sha256": "f4a725fc4b086f7c067df7dd04c45d79d2722ba287e563176153495f4f6e2a75"
+			},
+			{
+				"id": 27,
+				"path": "filler_16.sql",
+				"file": "filler_16.sql",
+				"bytes": 684,
+				"lines": 32,
+				"sha256": "aa76614f9a99cda68a58057c9161d500e39a1b5ab0fd949cacc20c730b5105c2"
+			},
+			{
+				"id": 28,
+				"path": "filler_17.sql",
+				"file": "filler_17.sql",
+				"bytes": 710,
+				"lines": 33,
+				"sha256": "5d3431c4d3d24cc9df25fb0210ac69019ef51b49a8bf3404e34fd21b752ec12c"
+			},
+			{
+				"id": 29,
+				"path": "filler_18.sql",
+				"file": "filler_18.sql",
+				"bytes": 736,
+				"lines": 34,
+				"sha256": "5d0103a63a1f2f9f8b03b9cd5a97d8b61f4303c9a59bf3413aff363c423b3b76"
+			},
+			{
+				"id": 30,
+				"path": "filler_19.sql",
+				"file": "filler_19.sql",
+				"bytes": 762,
+				"lines": 35,
+				"sha256": "b7126fa2ae01012109515bea76c2b030124b9a30e9ae757ae658a1eb75931cc2"
+			},
+			{
+				"id": 31,
+				"path": "filler_20.sql",
+				"file": "filler_20.sql",
+				"bytes": 788,
+				"lines": 36,
+				"sha256": "84179a5e96d60b93b7982d940e1fb76e3fa8f0f445abbf2084c8134f51cb124e"
+			},
+			{
+				"id": 32,
+				"path": "filler_21.sql",
+				"file": "filler_21.sql",
+				"bytes": 814,
+				"lines": 37,
+				"sha256": "72663ef42a30b64e046239175495b0bd01af2dfc267c4be59649fab3a99c2a6f"
+			},
+			{
+				"id": 33,
+				"path": "filler_22.sql",
+				"file": "filler_22.sql",
+				"bytes": 840,
+				"lines": 38,
+				"sha256": "ce4312a2278308f3e8f13f7f67f8b4cc2d30f6fc5989a298b69396b436171f94"
+			},
+			{
+				"id": 34,
+				"path": "filler_23.sql",
+				"file": "filler_23.sql",
+				"bytes": 866,
+				"lines": 39,
+				"sha256": "7190c1328774c4aa9e7f4e605d65354699346761221af972c3b5e372dda1d531"
+			},
+			{
+				"id": 35,
+				"path": "filler_24.sql",
+				"file": "filler_24.sql",
+				"bytes": 892,
+				"lines": 40,
+				"sha256": "969864c2607a45a3da56b224e6a253f64d2cddbf80ff56cec8ddfca01dd7e59d"
+			},
+			{
+				"id": 36,
+				"path": "synthetic_1.pkb",
+				"file": "synthetic_1.pkb",
+				"bytes": 910,
+				"lines": 41,
+				"sha256": "4aab9b10f19b99fef6ccc76914112afff435d79d54a57986cc70bb5473727381"
+			},
+			{
+				"id": 37,
+				"path": "filler_25.sql",
+				"file": "filler_25.sql",
+				"bytes": 918,
+				"lines": 41,
+				"sha256": "bf4ac3697ccfabdaaa23fb33492c0ff2c9e3114fc95fe3ef90015b867dc6cb2d"
+			},
+			{
+				"id": 38,
+				"path": "filler_26.sql",
+				"file": "filler_26.sql",
+				"bytes": 944,
+				"lines": 42,
+				"sha256": "73d194e0fbda16685555cbce1812376e3a7736a091f62c28a2d501dd88ab11ed"
+			},
+			{
+				"id": 39,
+				"path": "filler_27.sql",
+				"file": "filler_27.sql",
+				"bytes": 970,
+				"lines": 43,
+				"sha256": "9b613e08ed32c972bdf8c6842c73e2fe15c6c5f99912aa83662efd23ab95f236"
+			},
+			{
+				"id": 40,
+				"path": "filler_28.sql",
+				"file": "filler_28.sql",
+				"bytes": 996,
+				"lines": 44,
+				"sha256": "0144d383a7d8b0903566edc9e17562e90b450bdd8979a9990b65a19283c115bb"
+			},
+			{
+				"id": 41,
+				"path": "filler_29.sql",
+				"file": "filler_29.sql",
+				"bytes": 1022,
+				"lines": 45,
+				"sha256": "b55f663dbfb78b550f4f124811817fe2f3d614f2880047b872b811d930a8d9f9"
+			},
+			{
+				"id": 42,
+				"path": "filler_30.sql",
+				"file": "filler_30.sql",
+				"bytes": 1048,
+				"lines": 46,
+				"sha256": "c1927cb7d32b2dafa1cda7b3684bc3bb3e8ee5e37b7659a7d4e0f0b89940c0ba"
+			},
+			{
+				"id": 43,
+				"path": "synthetic_2.pkb",
+				"file": "synthetic_2.pkb",
+				"bytes": 1370,
+				"lines": 59,
+				"sha256": "d244edd398541056301a883cbab41a75cf07ce7d43e1315afaaa15daa3c0a8b1"
+			},
+			{
+				"id": 44,
+				"path": "synthetic_3.pkb",
+				"file": "synthetic_3.pkb",
+				"bytes": 2290,
+				"lines": 95,
+				"sha256": "1237c4d0cc632520aa55e89f017950805861131632171d49e5c83ca8b640bb26"
+			},
+			{
+				"id": 45,
+				"path": "synthetic_4.pkb",
+				"file": "synthetic_4.pkb",
+				"bytes": 4142,
+				"lines": 167,
+				"sha256": "581aebcab6df310718c6cca2c5ebd6aa92ce727866228c283ba2ed96c77e4354"
+			},
+			{
+				"id": 46,
+				"path": "synthetic_5.pkb",
+				"file": "synthetic_5.pkb",
+				"bytes": 7854,
+				"lines": 311,
+				"sha256": "2c273acaec8c4fdf80d5ea3d5d119437a5caee3586a47bbcbf490f3ef57bc55b"
+			},
+			{
+				"id": 47,
+				"path": "synthetic_6.pkb",
+				"file": "synthetic_6.pkb",
+				"bytes": 15278,
+				"lines": 599,
+				"sha256": "537ac5742b97ad0560f54dec8e22edd475f72bdb4d8b393b0b847cd64ecdb780"
+			}
+		]
+	},
+	"adapters": [
+		{
+			"name": "typescript",
+			"language": "TypeScript",
+			"grammar": "pinned grammars-v4 plus local adaptations",
+			"runtime": "antlr4ng@3.0.16",
+			"generator": "antlr-ng@1.0.10",
+			"extra": {
+				"metric": "lexer + SLL-first parse with LL fallback",
+				"process": "fresh Node.js process per benchmark stage",
+				"onePass": "one process, shared DFA across selected files"
+			}
+		},
+		{
+			"name": "java",
+			"language": "Java",
+			"grammar": "pinned upstream grammars-v4, unmodified target",
+			"runtime": "antlr4-runtime 4.13.2",
+			"generator": "antlr4-maven-plugin 4.13.2",
+			"extra": {
+				"metric": "lexer + SLL parse",
+				"process": "fresh Docker JVM per file",
+				"onePass": "one JVM over selected files; parser instance per file"
+			}
+		}
+	],
+	"config": {
+		"iterations": 5,
+		"warmups": 1,
+		"coldRepeats": 1,
+		"defaultSchema": "BENCH"
+	},
+	"aggregate": {
+		"typescript": {
+			"cold": {
+				"count": 48,
+				"mean": 95.64134045833333,
+				"p50": 63.40183400000001,
+				"p95": 293.8481271,
+				"p99": 308.274988,
+				"max": 316.97633299999995
+			},
+			"coldAdapter": {
+				"count": 48,
+				"mean": 96.1387595,
+				"p50": 63.901083,
+				"p95": 294.57925854999996,
+				"p99": 309.00529754,
+				"max": 317.845959
+			},
+			"coldSetup": {
+				"count": 48,
+				"mean": 0.23746599999999654,
+				"p50": 0.22285400000001232,
+				"p95": 0.3425618500000183,
+				"p99": 0.45589748000000846,
+				"max": 0.48758299999997234
+			},
+			"warm": {
+				"count": 48,
+				"mean": 1.9543480624999947,
+				"p50": 0.7468124999999759,
+				"p95": 8.859308099999986,
+				"p99": 21.61281319999999,
+				"max": 25.67245700000001
+			},
+			"pass": {
+				"count": 48,
+				"mean": 7.891158041666658,
+				"p50": 0.7186250000000882,
+				"p95": 23.33857520000007,
+				"p99": 119.06078873000003,
+				"max": 121.40845800000005
+			}
+		},
+		"java": {
+			"cold": {
+				"count": 48,
+				"mean": 88.81326052083334,
+				"p50": 71.43252100000001,
+				"p95": 208.49894365,
+				"p99": 212.90203621,
+				"max": 213.528291
+			},
+			"coldAdapter": {
+				"count": 48,
+				"mean": 1532.6404660208327,
+				"p50": 1516.5053135,
+				"p95": 1655.48910495,
+				"p99": 1667.57957878,
+				"max": 1672.837293
+			},
+			"coldSetup": {
+				"count": 48,
+				"mean": 1443.7371360000004,
+				"p50": 1444.1117924999999,
+				"p95": 1457.79135625,
+				"p99": 1462.60807948,
+				"max": 1465.742
+			},
+			"warm": {
+				"count": 48,
+				"mean": 0.49715710416666664,
+				"p50": 0.3259165,
+				"p95": 1.17829145,
+				"p99": 3.590883990000004,
+				"max": 5.348958
+			},
+			"pass": {
+				"count": 48,
+				"mean": 5.116871604166667,
+				"p50": 0.277271,
+				"p95": 18.85977039999999,
+				"p99": 90.82183047000007,
+				"max": 120.155
+			}
+		}
+	},
+	"perFile": [
+		{
+			"file": {
+				"id": 0,
+				"path": "edge_q_quote.sql",
+				"file": "edge_q_quote.sql",
+				"bytes": 93,
+				"lines": 5,
+				"sha256": "21defb7844f11c667122fb0256db7c213af1ccbb19d57a001acb7c8e84a210cc"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:43:45.918Z",
+					"cold": {
+						"file": "edge_q_quote.sql",
+						"coreMs": 121.83425000000005,
+						"adapterMs": 122.27337500000004,
+						"phases": {
+							"conditionalMs": 0.19249999999999545,
+							"setupMs": 0.19579099999998562,
+							"lexerMs": 6.754167000000052,
+							"sllParseMs": 115.080083,
+							"llParseMs": 0,
+							"totalMs": 122.27337500000004
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 15,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 466665472
+					},
+					"warmSamples": [
+						{
+							"file": "edge_q_quote.sql",
+							"coreMs": 0.4419160000000488,
+							"adapterMs": 0.47083400000002484,
+							"phases": {
+								"conditionalMs": 0.0016669999999976426,
+								"setupMs": 0.012333000000012362,
+								"lexerMs": 0.04845799999998235,
+								"sllParseMs": 0.200917000000004,
+								"llParseMs": 0,
+								"totalMs": 0.2657920000000331
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 15,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 466878464
+						}
+					],
+					"pass": {
+						"file": "edge_q_quote.sql",
+						"coreMs": 121.40845800000005,
+						"adapterMs": 121.83766699999995,
+						"phases": {
+							"conditionalMs": 0.18600000000003547,
+							"setupMs": 0.19729099999995015,
+							"lexerMs": 6.495750000000044,
+							"sllParseMs": 114.91270800000001,
+							"llParseMs": 0,
+							"totalMs": 121.83766699999995
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 15,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 466518016
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:43:49.337Z",
+					"cold": {
+						"coreMs": 116.451292,
+						"adapterMs": 1553.502251,
+						"phases": {
+							"setupMs": 1436.973333,
+							"lexerMs": 6.555958,
+							"parseMs": 109.895334
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 15,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 233119744,
+						"file": "edge_q_quote.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.2955,
+							"adapterMs": 0.3165,
+							"phases": {
+								"setupMs": 0.012833,
+								"lexerMs": 0.097541,
+								"parseMs": 0.15025
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 15,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 239706112,
+							"file": "edge_q_quote.sql"
+						}
+					],
+					"pass": {
+						"file": "edge_q_quote.sql",
+						"coreMs": 120.155,
+						"adapterMs": 1572.367626,
+						"phases": {
+							"setupMs": 1452.151125,
+							"lexerMs": 5.796583,
+							"parseMs": 114.358417
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 15,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 237522944
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 1,
+				"path": "synthetic_0.pks",
+				"file": "synthetic_0.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "0349635cdcdce3840b7d4c6046aacabbd606d7163a0ba20a4137f87cf0cf8a44"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:43:50.507Z",
+					"cold": {
+						"file": "synthetic_0.pks",
+						"coreMs": 42.960290999999984,
+						"adapterMs": 43.448958000000005,
+						"phases": {
+							"conditionalMs": 0.202083000000016,
+							"setupMs": 0.2273330000000442,
+							"lexerMs": 7.653624999999977,
+							"sllParseMs": 35.30666600000001,
+							"llParseMs": 0,
+							"totalMs": 43.448958000000005
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 460406784
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_0.pks",
+							"coreMs": 0.18304099999994605,
+							"adapterMs": 0.20549999999997226,
+							"phases": {
+								"conditionalMs": 0.001209000000017113,
+								"setupMs": 0.010874999999998636,
+								"lexerMs": 0.025209000000018023,
+								"sllParseMs": 0.12983400000001666,
+								"llParseMs": 0,
+								"totalMs": 0.16929099999998698
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461520896
+						}
+					],
+					"pass": {
+						"file": "synthetic_0.pks",
+						"coreMs": 14.954375000000027,
+						"adapterMs": 15.027709000000016,
+						"phases": {
+							"conditionalMs": 0.036582999999950516,
+							"setupMs": 0.03004100000003973,
+							"lexerMs": 1.7683749999999918,
+							"sllParseMs": 13.186000000000035,
+							"llParseMs": 0,
+							"totalMs": 15.027709000000016
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468008960
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:43:53.783Z",
+					"cold": {
+						"coreMs": 39.946,
+						"adapterMs": 1470.915959,
+						"phases": {
+							"setupMs": 1430.889334,
+							"lexerMs": 7.76675,
+							"parseMs": 32.17925
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 135634944,
+						"file": "synthetic_0.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.104833,
+							"adapterMs": 0.117417,
+							"phases": {
+								"setupMs": 0.011542,
+								"lexerMs": 0.041333,
+								"parseMs": 0.070875
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 140427264,
+							"file": "synthetic_0.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_0.pks",
+						"coreMs": 10.360084,
+						"adapterMs": 10.390917,
+						"phases": {
+							"setupMs": 0.025917,
+							"lexerMs": 2.180334,
+							"parseMs": 8.17975
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248741888
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 2,
+				"path": "synthetic_1.pks",
+				"file": "synthetic_1.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "e6c0f48f00a30d2959b1df66e0be114f49c18502ba7b5ed637e2de957aa84e42"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:43:54.962Z",
+					"cold": {
+						"file": "synthetic_1.pks",
+						"coreMs": 42.576374999999985,
+						"adapterMs": 43.02337499999999,
+						"phases": {
+							"conditionalMs": 0.19137499999999363,
+							"setupMs": 0.20858300000003283,
+							"lexerMs": 7.317542000000003,
+							"sllParseMs": 35.25883299999998,
+							"llParseMs": 0,
+							"totalMs": 43.02337499999999
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 460685312
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_1.pks",
+							"coreMs": 0.1900410000000079,
+							"adapterMs": 0.2104580000000169,
+							"phases": {
+								"conditionalMs": 0.0014170000000035543,
+								"setupMs": 0.011124999999992724,
+								"lexerMs": 0.031542000000001735,
+								"sllParseMs": 0.13087500000000318,
+								"llParseMs": 0,
+								"totalMs": 0.17708399999997937
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461193216
+						}
+					],
+					"pass": {
+						"file": "synthetic_1.pks",
+						"coreMs": 0.394333999999958,
+						"adapterMs": 0.430499999999995,
+						"phases": {
+							"conditionalMs": 0.00791700000002038,
+							"setupMs": 0.024416000000030635,
+							"lexerMs": 0.12274999999999636,
+							"sllParseMs": 0.27158399999996163,
+							"llParseMs": 0,
+							"totalMs": 0.430499999999995
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468172800
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:43:58.266Z",
+					"cold": {
+						"coreMs": 40.579249,
+						"adapterMs": 1476.575209,
+						"phases": {
+							"setupMs": 1435.929959,
+							"lexerMs": 7.767041,
+							"parseMs": 32.812208
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 138252288,
+						"file": "synthetic_1.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.341583,
+							"adapterMs": 0.362042,
+							"phases": {
+								"setupMs": 0.015375,
+								"lexerMs": 0.043333,
+								"parseMs": 0.167958
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 151801856,
+							"file": "synthetic_1.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_1.pks",
+						"coreMs": 0.296875,
+						"adapterMs": 0.3225,
+						"phases": {
+							"setupMs": 0.02175,
+							"lexerMs": 0.1265,
+							"parseMs": 0.170375
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248750080
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 3,
+				"path": "synthetic_2.pks",
+				"file": "synthetic_2.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "29cc7b72736e94263bb94166891fab5e2624ad48c3e4be63e19c052fe5020cd3"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:43:59.437Z",
+					"cold": {
+						"file": "synthetic_2.pks",
+						"coreMs": 42.849875,
+						"adapterMs": 43.30250000000001,
+						"phases": {
+							"conditionalMs": 0.19208399999996573,
+							"setupMs": 0.21412399999996978,
+							"lexerMs": 7.386458000000005,
+							"sllParseMs": 35.46341699999999,
+							"llParseMs": 0,
+							"totalMs": 43.30250000000001
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 461553664
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_2.pks",
+							"coreMs": 0.18675000000001774,
+							"adapterMs": 0.20625000000001137,
+							"phases": {
+								"conditionalMs": 0.0013749999999959073,
+								"setupMs": 0.010917000000006283,
+								"lexerMs": 0.026250000000004547,
+								"sllParseMs": 0.13024999999998954,
+								"llParseMs": 0,
+								"totalMs": 0.17091699999997445
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 460800000
+						}
+					],
+					"pass": {
+						"file": "synthetic_2.pks",
+						"coreMs": 0.1717079999999669,
+						"adapterMs": 0.19204199999995808,
+						"phases": {
+							"conditionalMs": 0.0031250000000113687,
+							"setupMs": 0.012123999999971602,
+							"lexerMs": 0.04133299999995188,
+							"sllParseMs": 0.130375000000015,
+							"llParseMs": 0,
+							"totalMs": 0.19204199999995808
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468221952
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:02.716Z",
+					"cold": {
+						"coreMs": 42.378584,
+						"adapterMs": 1465.918001,
+						"phases": {
+							"setupMs": 1423.46125,
+							"lexerMs": 8.005167,
+							"parseMs": 34.373417
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 140304384,
+						"file": "synthetic_2.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.112625,
+							"adapterMs": 0.125541,
+							"phases": {
+								"setupMs": 0.012333,
+								"lexerMs": 0.040083,
+								"parseMs": 0.074291
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 143003648,
+							"file": "synthetic_2.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_2.pks",
+						"coreMs": 0.179666,
+						"adapterMs": 0.199125,
+						"phases": {
+							"setupMs": 0.016167,
+							"lexerMs": 0.0715,
+							"parseMs": 0.108166
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248778752
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 4,
+				"path": "synthetic_3.pks",
+				"file": "synthetic_3.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "839a61ad6c5c0adf71960928f3c5cfcc58a03c9f22b30c1fada039e7181ce1e7"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:03.897Z",
+					"cold": {
+						"file": "synthetic_3.pks",
+						"coreMs": 43.15908400000001,
+						"adapterMs": 43.58175,
+						"phases": {
+							"conditionalMs": 0.1866250000000491,
+							"setupMs": 0.18741699999992534,
+							"lexerMs": 7.609584000000041,
+							"sllParseMs": 35.549499999999966,
+							"llParseMs": 0,
+							"totalMs": 43.58175
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 461307904
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_3.pks",
+							"coreMs": 0.17824999999999136,
+							"adapterMs": 0.1985000000000241,
+							"phases": {
+								"conditionalMs": 0.0014590000000112013,
+								"setupMs": 0.011123999999995249,
+								"lexerMs": 0.02483399999999847,
+								"sllParseMs": 0.12941699999998946,
+								"llParseMs": 0,
+								"totalMs": 0.16879200000005312
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462831616
+						}
+					],
+					"pass": {
+						"file": "synthetic_3.pks",
+						"coreMs": 0.16354200000000674,
+						"adapterMs": 0.18704200000001947,
+						"phases": {
+							"conditionalMs": 0.0020839999999680003,
+							"setupMs": 0.016915999999980613,
+							"lexerMs": 0.03750000000002274,
+							"sllParseMs": 0.126041999999984,
+							"llParseMs": 0,
+							"totalMs": 0.18704200000001947
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468238336
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:07.210Z",
+					"cold": {
+						"coreMs": 44.795417,
+						"adapterMs": 1492.487542,
+						"phases": {
+							"setupMs": 1447.600335,
+							"lexerMs": 12.790833,
+							"parseMs": 32.004584
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 137273344,
+						"file": "synthetic_3.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.096083,
+							"adapterMs": 0.109875,
+							"phases": {
+								"setupMs": 0.011332,
+								"lexerMs": 0.037875,
+								"parseMs": 0.058208
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 141737984,
+							"file": "synthetic_3.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_3.pks",
+						"coreMs": 0.182917,
+						"adapterMs": 0.207792,
+						"phases": {
+							"setupMs": 0.021,
+							"lexerMs": 0.068625,
+							"parseMs": 0.114292
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248827904
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 5,
+				"path": "synthetic_4.pks",
+				"file": "synthetic_4.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "dc310e79304cb8a63f9416a9361bee080468179fdedbaba1b432a9f7a880faf6"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:08.389Z",
+					"cold": {
+						"file": "synthetic_4.pks",
+						"coreMs": 42.22254199999992,
+						"adapterMs": 42.640458000000024,
+						"phases": {
+							"conditionalMs": 0.18737500000003138,
+							"setupMs": 0.18383400000004713,
+							"lexerMs": 7.359208999999964,
+							"sllParseMs": 34.863332999999955,
+							"llParseMs": 0,
+							"totalMs": 42.640458000000024
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 461340672
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_4.pks",
+							"coreMs": 0.18904100000003154,
+							"adapterMs": 0.20916599999998198,
+							"phases": {
+								"conditionalMs": 0.0013329999999882602,
+								"setupMs": 0.011167000000057214,
+								"lexerMs": 0.025792000000024018,
+								"sllParseMs": 0.12791600000002745,
+								"llParseMs": 0,
+								"totalMs": 0.16829100000001063
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461946880
+						}
+					],
+					"pass": {
+						"file": "synthetic_4.pks",
+						"coreMs": 0.179458000000011,
+						"adapterMs": 0.19837499999999864,
+						"phases": {
+							"conditionalMs": 0.0016249999999899956,
+							"setupMs": 0.01191599999998516,
+							"lexerMs": 0.03874999999999318,
+							"sllParseMs": 0.14070800000001782,
+							"llParseMs": 0,
+							"totalMs": 0.19837499999999864
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468467712
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:11.676Z",
+					"cold": {
+						"coreMs": 41.359292,
+						"adapterMs": 1467.564875,
+						"phases": {
+							"setupMs": 1426.137126,
+							"lexerMs": 9.334334,
+							"parseMs": 32.024958
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 138133504,
+						"file": "synthetic_4.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.103959,
+							"adapterMs": 0.117042,
+							"phases": {
+								"setupMs": 0.011375,
+								"lexerMs": 0.039625,
+								"parseMs": 0.068875
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 139845632,
+							"file": "synthetic_4.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_4.pks",
+						"coreMs": 0.093958,
+						"adapterMs": 0.11525,
+						"phases": {
+							"setupMs": 0.01825,
+							"lexerMs": 0.0435,
+							"parseMs": 0.050458
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248852480
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 6,
+				"path": "synthetic_5.pks",
+				"file": "synthetic_5.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "f79259658f425754b808ca20c5cfc1b0acecb52d2f82790901ba5403fdb9d7c0"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:12.851Z",
+					"cold": {
+						"file": "synthetic_5.pks",
+						"coreMs": 42.72204100000005,
+						"adapterMs": 43.182500000000005,
+						"phases": {
+							"conditionalMs": 0.18966699999998582,
+							"setupMs": 0.22270900000000893,
+							"lexerMs": 7.422791000000018,
+							"sllParseMs": 35.29925000000003,
+							"llParseMs": 0,
+							"totalMs": 43.182500000000005
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 460947456
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_5.pks",
+							"coreMs": 0.18670900000000756,
+							"adapterMs": 0.20770899999996573,
+							"phases": {
+								"conditionalMs": 0.0012919999999780885,
+								"setupMs": 0.010748999999975695,
+								"lexerMs": 0.02629100000001472,
+								"sllParseMs": 0.13354100000003655,
+								"llParseMs": 0,
+								"totalMs": 0.17404199999998582
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461111296
+						}
+					],
+					"pass": {
+						"file": "synthetic_5.pks",
+						"coreMs": 0.16216700000001083,
+						"adapterMs": 0.1764999999999759,
+						"phases": {
+							"conditionalMs": 0.0017080000000078144,
+							"setupMs": 0.010374000000012984,
+							"lexerMs": 0.03462500000000546,
+							"sllParseMs": 0.12754200000000537,
+							"llParseMs": 0,
+							"totalMs": 0.1764999999999759
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468533248
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:16.146Z",
+					"cold": {
+						"coreMs": 39.635126,
+						"adapterMs": 1475.524292,
+						"phases": {
+							"setupMs": 1435.823543,
+							"lexerMs": 7.732042,
+							"parseMs": 31.903084
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 136937472,
+						"file": "synthetic_5.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.107584,
+							"adapterMs": 0.120875,
+							"phases": {
+								"setupMs": 0.011625,
+								"lexerMs": 0.044292,
+								"parseMs": 0.063292
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 142802944,
+							"file": "synthetic_5.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_5.pks",
+						"coreMs": 0.155459,
+						"adapterMs": 0.179625,
+						"phases": {
+							"setupMs": 0.020584,
+							"lexerMs": 0.068584,
+							"parseMs": 0.086875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248864768
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 7,
+				"path": "synthetic_6.pks",
+				"file": "synthetic_6.pks",
+				"bytes": 111,
+				"lines": 5,
+				"sha256": "99238323f6fbade8a3368bb56b3bdc8f4ce9f0e7c4fb9cf4618fad4015e0a04c"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:17.324Z",
+					"cold": {
+						"file": "synthetic_6.pks",
+						"coreMs": 43.47029299999997,
+						"adapterMs": 43.92141700000002,
+						"phases": {
+							"conditionalMs": 0.19074999999998,
+							"setupMs": 0.20337400000005346,
+							"lexerMs": 7.766708999999992,
+							"sllParseMs": 35.70358399999998,
+							"llParseMs": 0,
+							"totalMs": 43.92141700000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 461045760
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_6.pks",
+							"coreMs": 0.1877499999999941,
+							"adapterMs": 0.207917000000009,
+							"phases": {
+								"conditionalMs": 0.0014999999999645297,
+								"setupMs": 0.014707999999984622,
+								"lexerMs": 0.022916000000009262,
+								"sllParseMs": 0.1305409999999938,
+								"llParseMs": 0,
+								"totalMs": 0.17195800000001782
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461455360
+						}
+					],
+					"pass": {
+						"file": "synthetic_6.pks",
+						"coreMs": 0.1964580000000069,
+						"adapterMs": 0.2094579999999837,
+						"phases": {
+							"conditionalMs": 0.0015000000000213731,
+							"setupMs": 0.009125000000040018,
+							"lexerMs": 0.02533299999998917,
+							"sllParseMs": 0.17112500000001774,
+							"llParseMs": 0,
+							"totalMs": 0.2094579999999837
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468566016
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:20.587Z",
+					"cold": {
+						"coreMs": 39.386417,
+						"adapterMs": 1465.412084,
+						"phases": {
+							"setupMs": 1425.940834,
+							"lexerMs": 7.896625,
+							"parseMs": 31.489792
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 138723328,
+						"file": "synthetic_6.pks"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.117417,
+							"adapterMs": 0.131209,
+							"phases": {
+								"setupMs": 0.011292,
+								"lexerMs": 0.04275,
+								"parseMs": 0.0675
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 20,
+							"hiddenTokens": 14,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 139640832,
+							"file": "synthetic_6.pks"
+						}
+					],
+					"pass": {
+						"file": "synthetic_6.pks",
+						"coreMs": 0.112042,
+						"adapterMs": 0.147041,
+						"phases": {
+							"setupMs": 0.031916,
+							"lexerMs": 0.056167,
+							"parseMs": 0.055875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 20,
+						"hiddenTokens": 14,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 248885248
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 8,
+				"path": "edge_conditional.pkb",
+				"file": "edge_conditional.pkb",
+				"bytes": 216,
+				"lines": 12,
+				"sha256": "f75fd717fcc7f049388769747851e2e8ee2eea0e1d28860b8fb9e0f5601f0496"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:21.836Z",
+					"cold": {
+						"file": "edge_conditional.pkb",
+						"coreMs": 67.72483399999999,
+						"adapterMs": 68.29954100000003,
+						"phases": {
+							"conditionalMs": 0.321708000000001,
+							"setupMs": 0.19437499999997954,
+							"lexerMs": 7.785249999999962,
+							"sllParseMs": 59.939584000000025,
+							"llParseMs": 0,
+							"totalMs": 68.29954100000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 26,
+						"hiddenTokens": 17,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462045184
+					},
+					"warmSamples": [
+						{
+							"file": "edge_conditional.pkb",
+							"coreMs": 0.3035419999999931,
+							"adapterMs": 0.33516700000001265,
+							"phases": {
+								"conditionalMs": 0.00741699999997536,
+								"setupMs": 0.015583000000049196,
+								"lexerMs": 0.04416700000001583,
+								"sllParseMs": 0.1875,
+								"llParseMs": 0,
+								"totalMs": 0.2571670000000381
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 26,
+							"hiddenTokens": 17,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462503936
+						}
+					],
+					"pass": {
+						"file": "edge_conditional.pkb",
+						"coreMs": 17.107624999999985,
+						"adapterMs": 17.268916000000047,
+						"phases": {
+							"conditionalMs": 0.1300420000000031,
+							"setupMs": 0.024875999999949272,
+							"lexerMs": 1.0769579999999905,
+							"sllParseMs": 16.030666999999994,
+							"llParseMs": 0,
+							"totalMs": 17.268916000000047
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 26,
+						"hiddenTokens": 17,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 468828160
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:25.231Z",
+					"cold": {
+						"coreMs": 90.174458,
+						"adapterMs": 1542.013918,
+						"phases": {
+							"setupMs": 1451.75825,
+							"lexerMs": 7.51175,
+							"parseMs": 82.662708
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 38,
+						"hiddenTokens": 23,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 170176512,
+						"file": "edge_conditional.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.197207,
+							"adapterMs": 0.215917,
+							"phases": {
+								"setupMs": 0.015251,
+								"lexerMs": 0.075333,
+								"parseMs": 0.121042
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 38,
+							"hiddenTokens": 23,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 170233856,
+							"file": "edge_conditional.pkb"
+						}
+					],
+					"pass": {
+						"file": "edge_conditional.pkb",
+						"coreMs": 20.546916,
+						"adapterMs": 20.57275,
+						"phases": {
+							"setupMs": 0.020584,
+							"lexerMs": 0.782583,
+							"parseMs": 19.764333
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 38,
+						"hiddenTokens": 23,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272703488
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 9,
+				"path": "edge_nested.pkb",
+				"file": "edge_nested.pkb",
+				"bytes": 236,
+				"lines": 16,
+				"sha256": "b5cd86c7b0a1cc6caf53f07d041be9cc011bfe32775718e8476418e5865a4d33"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:26.539Z",
+					"cold": {
+						"file": "edge_nested.pkb",
+						"coreMs": 85.07558399999999,
+						"adapterMs": 85.52804100000003,
+						"phases": {
+							"conditionalMs": 0.18770799999998644,
+							"setupMs": 0.21879200000000765,
+							"lexerMs": 7.978624999999965,
+							"sllParseMs": 77.09695900000003,
+							"llParseMs": 0,
+							"totalMs": 85.52804100000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 43,
+						"hiddenTokens": 35,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463912960
+					},
+					"warmSamples": [
+						{
+							"file": "edge_nested.pkb",
+							"coreMs": 0.5845010000000457,
+							"adapterMs": 0.6065409999999929,
+							"phases": {
+								"conditionalMs": 0.0022910000000138098,
+								"setupMs": 0.01995899999997164,
+								"lexerMs": 0.05795799999998508,
+								"sllParseMs": 0.3765419999999722,
+								"llParseMs": 0,
+								"totalMs": 0.45991599999996424
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 43,
+							"hiddenTokens": 35,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 464240640
+						}
+					],
+					"pass": {
+						"file": "edge_nested.pkb",
+						"coreMs": 22.071291000000087,
+						"adapterMs": 22.129291999999964,
+						"phases": {
+							"conditionalMs": 0.009833000000014636,
+							"setupMs": 0.03858300000001691,
+							"lexerMs": 1.5729580000000283,
+							"sllParseMs": 20.49833300000006,
+							"llParseMs": 0,
+							"totalMs": 22.129291999999964
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 43,
+						"hiddenTokens": 35,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 471777280
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:29.934Z",
+					"cold": {
+						"coreMs": 104.789375,
+						"adapterMs": 1539.229168,
+						"phases": {
+							"setupMs": 1434.365835,
+							"lexerMs": 8.430042,
+							"parseMs": 96.359333
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 43,
+						"hiddenTokens": 35,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 181129216,
+						"file": "edge_nested.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.279541,
+							"adapterMs": 0.298584,
+							"phases": {
+								"setupMs": 0.018624,
+								"lexerMs": 0.109,
+								"parseMs": 0.148083
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 43,
+							"hiddenTokens": 35,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 182722560,
+							"file": "edge_nested.pkb"
+						}
+					],
+					"pass": {
+						"file": "edge_nested.pkb",
+						"coreMs": 15.7265,
+						"adapterMs": 15.761625,
+						"phases": {
+							"setupMs": 0.028709,
+							"lexerMs": 0.708458,
+							"parseMs": 15.018042
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 43,
+						"hiddenTokens": 35,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272834560
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 10,
+				"path": "filler_00.sql",
+				"file": "filler_00.sql",
+				"bytes": 268,
+				"lines": 16,
+				"sha256": "84c161c35b515ef5e96cd47767923aa2078182c05edfece9d1e396124e8e810d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:31.182Z",
+					"cold": {
+						"file": "filler_00.sql",
+						"coreMs": 65.38441700000004,
+						"adapterMs": 65.849625,
+						"phases": {
+							"conditionalMs": 0.18616700000001174,
+							"setupMs": 0.2229990000000157,
+							"lexerMs": 7.745292000000006,
+							"sllParseMs": 57.639125000000035,
+							"llParseMs": 0,
+							"totalMs": 65.849625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 58,
+						"hiddenTokens": 45,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463224832
+					},
+					"warmSamples": [
+						{
+							"file": "filler_00.sql",
+							"coreMs": 0.4371669999999881,
+							"adapterMs": 0.4679580000000101,
+							"phases": {
+								"conditionalMs": 0.0019580000000019027,
+								"setupMs": 0.02075000000002092,
+								"lexerMs": 0.053334000000006654,
+								"sllParseMs": 0.30562500000002046,
+								"llParseMs": 0,
+								"totalMs": 0.38458300000002055
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 58,
+							"hiddenTokens": 45,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463323136
+						}
+					],
+					"pass": {
+						"file": "filler_00.sql",
+						"coreMs": 3.6230829999999514,
+						"adapterMs": 3.6563750000000255,
+						"phases": {
+							"conditionalMs": 0.007749999999987267,
+							"setupMs": 0.02112499999998363,
+							"lexerMs": 0.7990419999999858,
+							"sllParseMs": 2.8240409999999656,
+							"llParseMs": 0,
+							"totalMs": 3.6563750000000255
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 58,
+						"hiddenTokens": 45,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472252416
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:34.570Z",
+					"cold": {
+						"coreMs": 68.273541,
+						"adapterMs": 1515.467376,
+						"phases": {
+							"setupMs": 1447.125167,
+							"lexerMs": 7.627416,
+							"parseMs": 60.646125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 58,
+						"hiddenTokens": 45,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154243072,
+						"file": "filler_00.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.267209,
+							"adapterMs": 0.286792,
+							"phases": {
+								"setupMs": 0.01475,
+								"lexerMs": 0.096417,
+								"parseMs": 0.174333
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 58,
+							"hiddenTokens": 45,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 155222016,
+							"file": "filler_00.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_00.sql",
+						"coreMs": 1.790874,
+						"adapterMs": 1.826916,
+						"phases": {
+							"setupMs": 0.029375,
+							"lexerMs": 0.312833,
+							"parseMs": 1.478041
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 58,
+						"hiddenTokens": 45,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272863232
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 11,
+				"path": "filler_01.sql",
+				"file": "filler_01.sql",
+				"bytes": 294,
+				"lines": 17,
+				"sha256": "6def89a2c6e811ad9974ec2f93673dbbef64db09127570899d6ff804ac7fda0d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:35.819Z",
+					"cold": {
+						"file": "filler_01.sql",
+						"coreMs": 67.05025,
+						"adapterMs": 67.49287500000003,
+						"phases": {
+							"conditionalMs": 0.18662499999999227,
+							"setupMs": 0.2024579999999787,
+							"lexerMs": 7.69825000000003,
+							"sllParseMs": 59.351999999999975,
+							"llParseMs": 0,
+							"totalMs": 67.49287500000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 63,
+						"hiddenTokens": 49,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462405632
+					},
+					"warmSamples": [
+						{
+							"file": "filler_01.sql",
+							"coreMs": 0.43445800000000645,
+							"adapterMs": 0.46412499999996726,
+							"phases": {
+								"conditionalMs": 0.002082999999970525,
+								"setupMs": 0.017583999999999378,
+								"lexerMs": 0.036791999999991276,
+								"sllParseMs": 0.31799999999998363,
+								"llParseMs": 0,
+								"totalMs": 0.38170800000000327
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 63,
+							"hiddenTokens": 49,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462241792
+						}
+					],
+					"pass": {
+						"file": "filler_01.sql",
+						"coreMs": 0.511707999999885,
+						"adapterMs": 0.533333999999968,
+						"phases": {
+							"conditionalMs": 0.0034160000000156288,
+							"setupMs": 0.013499000000024353,
+							"lexerMs": 0.10645799999997507,
+							"sllParseMs": 0.40524999999990996,
+							"llParseMs": 0,
+							"totalMs": 0.533333999999968
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 63,
+						"hiddenTokens": 49,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472285184
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:39.177Z",
+					"cold": {
+						"coreMs": 70.497417,
+						"adapterMs": 1511.600876,
+						"phases": {
+							"setupMs": 1441.03496,
+							"lexerMs": 7.771667,
+							"parseMs": 62.72575
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 63,
+						"hiddenTokens": 49,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156545024,
+						"file": "filler_01.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.303791,
+							"adapterMs": 0.324792,
+							"phases": {
+								"setupMs": 0.018208,
+								"lexerMs": 0.112166,
+								"parseMs": 0.188625
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 63,
+							"hiddenTokens": 49,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 156610560,
+							"file": "filler_01.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_01.sql",
+						"coreMs": 0.304542,
+						"adapterMs": 0.344292,
+						"phases": {
+							"setupMs": 0.0245,
+							"lexerMs": 0.065417,
+							"parseMs": 0.239125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 63,
+						"hiddenTokens": 49,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272891904
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 12,
+				"path": "filler_02.sql",
+				"file": "filler_02.sql",
+				"bytes": 320,
+				"lines": 18,
+				"sha256": "8ecdfb7c5f0f44dcde900a836e9834ed5683c22bcd26145a1102d0be9f35d3b5"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:40.417Z",
+					"cold": {
+						"file": "filler_02.sql",
+						"coreMs": 65.243583,
+						"adapterMs": 65.697833,
+						"phases": {
+							"conditionalMs": 0.18708300000002964,
+							"setupMs": 0.21883299999996098,
+							"lexerMs": 7.443708000000015,
+							"sllParseMs": 57.799874999999986,
+							"llParseMs": 0,
+							"totalMs": 65.697833
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 68,
+						"hiddenTokens": 53,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462340096
+					},
+					"warmSamples": [
+						{
+							"file": "filler_02.sql",
+							"coreMs": 0.45883399999996755,
+							"adapterMs": 0.4869170000000054,
+							"phases": {
+								"conditionalMs": 0.0018750000000409273,
+								"setupMs": 0.01941599999997834,
+								"lexerMs": 0.0413340000000062,
+								"sllParseMs": 0.33933300000001054,
+								"llParseMs": 0,
+								"totalMs": 0.4053339999999821
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 68,
+							"hiddenTokens": 53,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462487552
+						}
+					],
+					"pass": {
+						"file": "filler_02.sql",
+						"coreMs": 0.42679100000009385,
+						"adapterMs": 0.45183399999996254,
+						"phases": {
+							"conditionalMs": 0.0017919999999094216,
+							"setupMs": 0.02075000000002092,
+							"lexerMs": 0.04170800000008512,
+							"sllParseMs": 0.3850830000000087,
+							"llParseMs": 0,
+							"totalMs": 0.45183399999996254
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 68,
+						"hiddenTokens": 53,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472301568
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:43.757Z",
+					"cold": {
+						"coreMs": 73.470209,
+						"adapterMs": 1500.5205,
+						"phases": {
+							"setupMs": 1426.978542,
+							"lexerMs": 7.848834,
+							"parseMs": 65.621375
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 68,
+						"hiddenTokens": 53,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 157954048,
+						"file": "filler_02.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.3005,
+							"adapterMs": 0.358,
+							"phases": {
+								"setupMs": 0.024166,
+								"lexerMs": 0.0915,
+								"parseMs": 0.200084
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 68,
+							"hiddenTokens": 53,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 157511680,
+							"file": "filler_02.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_02.sql",
+						"coreMs": 0.262125,
+						"adapterMs": 0.308375,
+						"phases": {
+							"setupMs": 0.040125,
+							"lexerMs": 0.076875,
+							"parseMs": 0.18525
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 68,
+						"hiddenTokens": 53,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272904192
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 13,
+				"path": "filler_03.sql",
+				"file": "filler_03.sql",
+				"bytes": 346,
+				"lines": 19,
+				"sha256": "61e450dcd7e1ae4beeb39e064ae9e078c8e5e49b599ac1f21229005a272b8dc2"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:45.004Z",
+					"cold": {
+						"file": "filler_03.sql",
+						"coreMs": 63.62750099999994,
+						"adapterMs": 64.07854200000003,
+						"phases": {
+							"conditionalMs": 0.18883400000004258,
+							"setupMs": 0.21320800000000872,
+							"lexerMs": 7.529458999999974,
+							"sllParseMs": 56.098041999999964,
+							"llParseMs": 0,
+							"totalMs": 64.07854200000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 73,
+						"hiddenTokens": 57,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462848000
+					},
+					"warmSamples": [
+						{
+							"file": "filler_03.sql",
+							"coreMs": 0.5252499999999714,
+							"adapterMs": 0.5499580000000037,
+							"phases": {
+								"conditionalMs": 0.0019159999999942556,
+								"setupMs": 0.021042000000079497,
+								"lexerMs": 0.03195800000003146,
+								"sllParseMs": 0.3538330000000087,
+								"llParseMs": 0,
+								"totalMs": 0.41583300000002055
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 73,
+							"hiddenTokens": 57,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463355904
+						}
+					],
+					"pass": {
+						"file": "filler_03.sql",
+						"coreMs": 0.4166259999999511,
+						"adapterMs": 0.4448330000000169,
+						"phases": {
+							"conditionalMs": 0.0013750000000527507,
+							"setupMs": 0.0244999999998754,
+							"lexerMs": 0.038291999999955806,
+							"sllParseMs": 0.3783339999999953,
+							"llParseMs": 0,
+							"totalMs": 0.4448330000000169
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 73,
+						"hiddenTokens": 57,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472334336
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:48.353Z",
+					"cold": {
+						"coreMs": 69.168542,
+						"adapterMs": 1513.809875,
+						"phases": {
+							"setupMs": 1444.570124,
+							"lexerMs": 7.944917,
+							"parseMs": 61.223625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 73,
+						"hiddenTokens": 57,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154099712,
+						"file": "filler_03.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.568541,
+							"adapterMs": 0.610292,
+							"phases": {
+								"setupMs": 0.023875,
+								"lexerMs": 0.089833,
+								"parseMs": 0.466167
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 73,
+							"hiddenTokens": 57,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158420992,
+							"file": "filler_03.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_03.sql",
+						"coreMs": 0.24125,
+						"adapterMs": 0.266375,
+						"phases": {
+							"setupMs": 0.019,
+							"lexerMs": 0.045042,
+							"parseMs": 0.196208
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 73,
+						"hiddenTokens": 57,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272924672
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 14,
+				"path": "filler_04.sql",
+				"file": "filler_04.sql",
+				"bytes": 372,
+				"lines": 20,
+				"sha256": "126a8bacc4e50e336a5106180046dd95c4f2a609302f1b885aa65a3ec32e1944"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:49.595Z",
+					"cold": {
+						"file": "filler_04.sql",
+						"coreMs": 62.731708000000026,
+						"adapterMs": 63.18508300000002,
+						"phases": {
+							"conditionalMs": 0.19037500000001728,
+							"setupMs": 0.20095800000001418,
+							"lexerMs": 7.448542000000032,
+							"sllParseMs": 55.283165999999994,
+							"llParseMs": 0,
+							"totalMs": 63.18508300000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 78,
+						"hiddenTokens": 61,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462929920
+					},
+					"warmSamples": [
+						{
+							"file": "filler_04.sql",
+							"coreMs": 0.5328329999999823,
+							"adapterMs": 0.5581659999999715,
+							"phases": {
+								"conditionalMs": 0.0017920000000231084,
+								"setupMs": 0.023042000000032203,
+								"lexerMs": 0.034874999999999545,
+								"sllParseMs": 0.3882910000000379,
+								"llParseMs": 0,
+								"totalMs": 0.4512499999999591
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 78,
+							"hiddenTokens": 61,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462487552
+						}
+					],
+					"pass": {
+						"file": "filler_04.sql",
+						"coreMs": 0.45491600000002563,
+						"adapterMs": 0.4686669999999822,
+						"phases": {
+							"conditionalMs": 0.0012500000000272848,
+							"setupMs": 0.010207999999920503,
+							"lexerMs": 0.0378329999999778,
+							"sllParseMs": 0.41708300000004783,
+							"llParseMs": 0,
+							"totalMs": 0.4686669999999822
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 78,
+						"hiddenTokens": 61,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472350720
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:52.956Z",
+					"cold": {
+						"coreMs": 69.411208,
+						"adapterMs": 1508.704334,
+						"phases": {
+							"setupMs": 1439.214126,
+							"lexerMs": 7.641375,
+							"parseMs": 61.769833
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 78,
+						"hiddenTokens": 61,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156078080,
+						"file": "filler_04.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.251625,
+							"adapterMs": 0.274875,
+							"phases": {
+								"setupMs": 0.019709,
+								"lexerMs": 0.035,
+								"parseMs": 0.216625
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 78,
+							"hiddenTokens": 61,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 153640960,
+							"file": "filler_04.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_04.sql",
+						"coreMs": 0.305792,
+						"adapterMs": 0.331125,
+						"phases": {
+							"setupMs": 0.019042,
+							"lexerMs": 0.030167,
+							"parseMs": 0.275625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 78,
+						"hiddenTokens": 61,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272932864
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 15,
+				"path": "filler_05.sql",
+				"file": "filler_05.sql",
+				"bytes": 398,
+				"lines": 21,
+				"sha256": "f1e348ce31bab1020f3ebe07576af8df8a8dc2818304df278cbc20b1acf1d804"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:54.194Z",
+					"cold": {
+						"file": "filler_05.sql",
+						"coreMs": 62.527792999999974,
+						"adapterMs": 62.963750000000005,
+						"phases": {
+							"conditionalMs": 0.18645899999995663,
+							"setupMs": 0.19991700000002766,
+							"lexerMs": 7.51358399999998,
+							"sllParseMs": 55.014208999999994,
+							"llParseMs": 0,
+							"totalMs": 62.963750000000005
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 83,
+						"hiddenTokens": 65,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462487552
+					},
+					"warmSamples": [
+						{
+							"file": "filler_05.sql",
+							"coreMs": 0.5672500000000014,
+							"adapterMs": 0.6034589999999866,
+							"phases": {
+								"conditionalMs": 0.004165999999997894,
+								"setupMs": 0.028957999999988715,
+								"lexerMs": 0.04199999999997317,
+								"sllParseMs": 0.4464590000000044,
+								"llParseMs": 0,
+								"totalMs": 0.5261249999999791
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 83,
+							"hiddenTokens": 65,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462372864
+						}
+					],
+					"pass": {
+						"file": "filler_05.sql",
+						"coreMs": 0.4429169999999658,
+						"adapterMs": 0.45325000000002547,
+						"phases": {
+							"conditionalMs": 0.0012080000000196378,
+							"setupMs": 0.006917000000044027,
+							"lexerMs": 0.03300000000001546,
+							"sllParseMs": 0.40991699999995035,
+							"llParseMs": 0,
+							"totalMs": 0.45325000000002547
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 83,
+						"hiddenTokens": 65,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472367104
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:44:57.567Z",
+					"cold": {
+						"coreMs": 70.722208,
+						"adapterMs": 1515.956167,
+						"phases": {
+							"setupMs": 1445.140666,
+							"lexerMs": 7.586292,
+							"parseMs": 63.135916
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 83,
+						"hiddenTokens": 65,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154284032,
+						"file": "filler_05.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.249626,
+							"adapterMs": 0.273041,
+							"phases": {
+								"setupMs": 0.017583,
+								"lexerMs": 0.059709,
+								"parseMs": 0.190583
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 83,
+							"hiddenTokens": 65,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 154222592,
+							"file": "filler_05.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_05.sql",
+						"coreMs": 0.247668,
+						"adapterMs": 0.301375,
+						"phases": {
+							"setupMs": 0.046666,
+							"lexerMs": 0.030209,
+							"parseMs": 0.217459
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 83,
+						"hiddenTokens": 65,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 272961536
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 16,
+				"path": "filler_06.sql",
+				"file": "filler_06.sql",
+				"bytes": 424,
+				"lines": 22,
+				"sha256": "fe5ea1e4f6247b9ff315302daf02cb27b4ae38fedebd160dcef44073adddf279"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:44:58.804Z",
+					"cold": {
+						"file": "filler_06.sql",
+						"coreMs": 63.00379200000003,
+						"adapterMs": 63.44541700000002,
+						"phases": {
+							"conditionalMs": 0.1876659999999788,
+							"setupMs": 0.20170900000005076,
+							"lexerMs": 7.475124999999991,
+							"sllParseMs": 55.52866700000004,
+							"llParseMs": 0,
+							"totalMs": 63.44541700000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 88,
+						"hiddenTokens": 69,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462651392
+					},
+					"warmSamples": [
+						{
+							"file": "filler_06.sql",
+							"coreMs": 0.5782920000000331,
+							"adapterMs": 0.6050409999999715,
+							"phases": {
+								"conditionalMs": 0.0018330000000332802,
+								"setupMs": 0.0185830000000351,
+								"lexerMs": 0.04233300000004192,
+								"sllParseMs": 0.46741700000001174,
+								"llParseMs": 0,
+								"totalMs": 0.5334159999999883
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 88,
+							"hiddenTokens": 69,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463142912
+						}
+					],
+					"pass": {
+						"file": "filler_06.sql",
+						"coreMs": 0.5197500000000446,
+						"adapterMs": 0.5296249999998963,
+						"phases": {
+							"conditionalMs": 0.001167000000009466,
+							"setupMs": 0.00641700000005585,
+							"lexerMs": 0.04466700000000401,
+							"sllParseMs": 0.47508300000004056,
+							"llParseMs": 0,
+							"totalMs": 0.5296249999998963
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 88,
+						"hiddenTokens": 69,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472367104
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:02.172Z",
+					"cold": {
+						"coreMs": 69.720209,
+						"adapterMs": 1510.796751,
+						"phases": {
+							"setupMs": 1440.972917,
+							"lexerMs": 7.730084,
+							"parseMs": 61.990125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 88,
+						"hiddenTokens": 69,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156180480,
+						"file": "filler_06.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.323791,
+							"adapterMs": 0.353833,
+							"phases": {
+								"setupMs": 0.023042,
+								"lexerMs": 0.060041,
+								"parseMs": 0.215708
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 88,
+							"hiddenTokens": 69,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 156909568,
+							"file": "filler_06.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_06.sql",
+						"coreMs": 0.316583,
+						"adapterMs": 0.343708,
+						"phases": {
+							"setupMs": 0.020041,
+							"lexerMs": 0.033791,
+							"parseMs": 0.282792
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 88,
+						"hiddenTokens": 69,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273006592
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 17,
+				"path": "filler_07.sql",
+				"file": "filler_07.sql",
+				"bytes": 450,
+				"lines": 23,
+				"sha256": "7d0c4f88adbc70b7a58943f0edcb8563c265366942f3d304579b5dd34c58f47d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:03.420Z",
+					"cold": {
+						"file": "filler_07.sql",
+						"coreMs": 62.306084,
+						"adapterMs": 62.73145800000003,
+						"phases": {
+							"conditionalMs": 0.17512500000003683,
+							"setupMs": 0.19966599999997925,
+							"lexerMs": 7.382208999999989,
+							"sllParseMs": 54.92387500000001,
+							"llParseMs": 0,
+							"totalMs": 62.73145800000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 93,
+						"hiddenTokens": 73,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462995456
+					},
+					"warmSamples": [
+						{
+							"file": "filler_07.sql",
+							"coreMs": 0.5736259999999902,
+							"adapterMs": 0.6032500000000027,
+							"phases": {
+								"conditionalMs": 0.0020419999999603533,
+								"setupMs": 0.014291000000014265,
+								"lexerMs": 0.04216700000000628,
+								"sllParseMs": 0.48495900000000347,
+								"llParseMs": 0,
+								"totalMs": 0.5470839999999839
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 93,
+							"hiddenTokens": 73,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463683584
+						}
+					],
+					"pass": {
+						"file": "filler_07.sql",
+						"coreMs": 0.5057499999999209,
+						"adapterMs": 0.5205420000000913,
+						"phases": {
+							"conditionalMs": 0.002124999999978172,
+							"setupMs": 0.009458999999992557,
+							"lexerMs": 0.04037499999992633,
+							"sllParseMs": 0.46537499999999454,
+							"llParseMs": 0,
+							"totalMs": 0.5205420000000913
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 93,
+						"hiddenTokens": 73,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472367104
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:06.794Z",
+					"cold": {
+						"coreMs": 71.506208,
+						"adapterMs": 1527.317084,
+						"phases": {
+							"setupMs": 1455.716376,
+							"lexerMs": 9.67275,
+							"parseMs": 61.833458
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 93,
+						"hiddenTokens": 73,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 153399296,
+						"file": "filler_07.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.29025,
+							"adapterMs": 0.321583,
+							"phases": {
+								"setupMs": 0.021625,
+								"lexerMs": 0.036125,
+								"parseMs": 0.242541
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 93,
+							"hiddenTokens": 73,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 154767360,
+							"file": "filler_07.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_07.sql",
+						"coreMs": 0.214166,
+						"adapterMs": 0.241584,
+						"phases": {
+							"setupMs": 0.020083,
+							"lexerMs": 0.032375,
+							"parseMs": 0.181791
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 93,
+						"hiddenTokens": 73,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273018880
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 18,
+				"path": "filler_08.sql",
+				"file": "filler_08.sql",
+				"bytes": 476,
+				"lines": 24,
+				"sha256": "1df201cd6760f55ed3375a861efc3daa259fa03cded28a4bd8d38df260916116"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:08.033Z",
+					"cold": {
+						"file": "filler_08.sql",
+						"coreMs": 62.40479199999993,
+						"adapterMs": 62.877250000000004,
+						"phases": {
+							"conditionalMs": 0.18520800000004556,
+							"setupMs": 0.22583299999996598,
+							"lexerMs": 7.498749999999973,
+							"sllParseMs": 54.90604199999996,
+							"llParseMs": 0,
+							"totalMs": 62.877250000000004
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 98,
+						"hiddenTokens": 77,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462487552
+					},
+					"warmSamples": [
+						{
+							"file": "filler_08.sql",
+							"coreMs": 0.532374999999945,
+							"adapterMs": 0.5531670000000304,
+							"phases": {
+								"conditionalMs": 0.0018749999999840838,
+								"setupMs": 0.01379199999996672,
+								"lexerMs": 0.03720799999996416,
+								"sllParseMs": 0.4951669999999808,
+								"llParseMs": 0,
+								"totalMs": 0.5513750000000073
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 98,
+							"hiddenTokens": 77,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463568896
+						}
+					],
+					"pass": {
+						"file": "filler_08.sql",
+						"coreMs": 0.5226249999999482,
+						"adapterMs": 0.5366669999999658,
+						"phases": {
+							"conditionalMs": 0.0019999999999527063,
+							"setupMs": 0.009250999999949272,
+							"lexerMs": 0.03804200000001856,
+							"sllParseMs": 0.4845829999999296,
+							"llParseMs": 0,
+							"totalMs": 0.5366669999999658
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 98,
+						"hiddenTokens": 77,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472367104
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:11.436Z",
+					"cold": {
+						"coreMs": 72.241082,
+						"adapterMs": 1538.069126,
+						"phases": {
+							"setupMs": 1465.742,
+							"lexerMs": 8.098541,
+							"parseMs": 64.142541
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 98,
+						"hiddenTokens": 77,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156274688,
+						"file": "filler_08.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.260542,
+							"adapterMs": 0.286792,
+							"phases": {
+								"setupMs": 0.019458,
+								"lexerMs": 0.037792,
+								"parseMs": 0.22275
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 98,
+							"hiddenTokens": 77,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158052352,
+							"file": "filler_08.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_08.sql",
+						"coreMs": 0.212583,
+						"adapterMs": 0.242583,
+						"phases": {
+							"setupMs": 0.022333,
+							"lexerMs": 0.032666,
+							"parseMs": 0.179917
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 98,
+						"hiddenTokens": 77,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273022976
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 19,
+				"path": "filler_09.sql",
+				"file": "filler_09.sql",
+				"bytes": 502,
+				"lines": 25,
+				"sha256": "5171a4e47507418ab25aa07b819e4e138c5d3a65f60f409e71afd1e6fc273f14"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:12.675Z",
+					"cold": {
+						"file": "filler_09.sql",
+						"coreMs": 62.847042000000044,
+						"adapterMs": 63.31887499999999,
+						"phases": {
+							"conditionalMs": 0.19541599999996606,
+							"setupMs": 0.22345799999999372,
+							"lexerMs": 7.538292000000013,
+							"sllParseMs": 55.30875000000003,
+							"llParseMs": 0,
+							"totalMs": 63.31887499999999
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 103,
+						"hiddenTokens": 81,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462307328
+					},
+					"warmSamples": [
+						{
+							"file": "filler_09.sql",
+							"coreMs": 0.5876660000000129,
+							"adapterMs": 0.6327080000000365,
+							"phases": {
+								"conditionalMs": 0.0020420000000171967,
+								"setupMs": 0.014542000000005828,
+								"lexerMs": 0.03999999999996362,
+								"sllParseMs": 0.5178750000000036,
+								"llParseMs": 0,
+								"totalMs": 0.5779170000000136
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 103,
+							"hiddenTokens": 81,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 461930496
+						}
+					],
+					"pass": {
+						"file": "filler_09.sql",
+						"coreMs": 0.48275000000001,
+						"adapterMs": 0.49479199999996126,
+						"phases": {
+							"conditionalMs": 0.0014580000000705695,
+							"setupMs": 0.007958000000030552,
+							"lexerMs": 0.044125000000008185,
+							"sllParseMs": 0.4386250000000018,
+							"llParseMs": 0,
+							"totalMs": 0.49479199999996126
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 103,
+						"hiddenTokens": 81,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472383488
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:16.033Z",
+					"cold": {
+						"coreMs": 69.482625,
+						"adapterMs": 1517.05446,
+						"phases": {
+							"setupMs": 1447.494084,
+							"lexerMs": 7.863541,
+							"parseMs": 61.619084
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 103,
+						"hiddenTokens": 81,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154124288,
+						"file": "filler_09.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.292583,
+							"adapterMs": 0.3225,
+							"phases": {
+								"setupMs": 0.022125,
+								"lexerMs": 0.041833,
+								"parseMs": 0.25075
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 103,
+							"hiddenTokens": 81,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 152297472,
+							"file": "filler_09.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_09.sql",
+						"coreMs": 0.197042,
+						"adapterMs": 0.224708,
+						"phases": {
+							"setupMs": 0.020084,
+							"lexerMs": 0.033917,
+							"parseMs": 0.163125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 103,
+						"hiddenTokens": 81,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273022976
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 20,
+				"path": "filler_10.sql",
+				"file": "filler_10.sql",
+				"bytes": 528,
+				"lines": 26,
+				"sha256": "12f17b515a0b704871575e6b4c6dbffd2a2e4795479601e91e67b91672b72b4a"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:17.286Z",
+					"cold": {
+						"file": "filler_10.sql",
+						"coreMs": 63.23916600000001,
+						"adapterMs": 63.702584,
+						"phases": {
+							"conditionalMs": 0.18975000000000364,
+							"setupMs": 0.2184580000000551,
+							"lexerMs": 7.871082999999999,
+							"sllParseMs": 55.36808300000001,
+							"llParseMs": 0,
+							"totalMs": 63.702584
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 108,
+						"hiddenTokens": 85,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463552512
+					},
+					"warmSamples": [
+						{
+							"file": "filler_10.sql",
+							"coreMs": 1.1359999999999104,
+							"adapterMs": 1.1907909999999902,
+							"phases": {
+								"conditionalMs": 0.007625000000018645,
+								"setupMs": 0.039917000000002645,
+								"lexerMs": 0.06045800000003965,
+								"sllParseMs": 1.0009169999999585,
+								"llParseMs": 0,
+								"totalMs": 1.1149169999999913
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 108,
+							"hiddenTokens": 85,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 464519168
+						}
+					],
+					"pass": {
+						"file": "filler_10.sql",
+						"coreMs": 0.5587080000000242,
+						"adapterMs": 0.5699580000000424,
+						"phases": {
+							"conditionalMs": 0.001207999999905951,
+							"setupMs": 0.007541000000060194,
+							"lexerMs": 0.035833000000025095,
+							"sllParseMs": 0.5228749999999991,
+							"llParseMs": 0,
+							"totalMs": 0.5699580000000424
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 108,
+						"hiddenTokens": 85,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472416256
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:20.639Z",
+					"cold": {
+						"coreMs": 70.956708,
+						"adapterMs": 1507.287917,
+						"phases": {
+							"setupMs": 1436.248584,
+							"lexerMs": 7.778166,
+							"parseMs": 63.178542
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 108,
+						"hiddenTokens": 85,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154927104,
+						"file": "filler_10.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.429375,
+							"adapterMs": 0.464042,
+							"phases": {
+								"setupMs": 0.022833,
+								"lexerMs": 0.039875,
+								"parseMs": 0.330084
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 108,
+							"hiddenTokens": 85,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 152379392,
+							"file": "filler_10.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_10.sql",
+						"coreMs": 0.215333,
+						"adapterMs": 0.245208,
+						"phases": {
+							"setupMs": 0.021541,
+							"lexerMs": 0.038833,
+							"parseMs": 0.1765
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 108,
+						"hiddenTokens": 85,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273432576
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 21,
+				"path": "filler_11.sql",
+				"file": "filler_11.sql",
+				"bytes": 554,
+				"lines": 27,
+				"sha256": "fa6d031e3edf164c165e9145e9c509d399bbae292bd0fe9610932888b7c9e69d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:21.880Z",
+					"cold": {
+						"file": "filler_11.sql",
+						"coreMs": 62.86966600000005,
+						"adapterMs": 63.337125000000015,
+						"phases": {
+							"conditionalMs": 0.19041699999996808,
+							"setupMs": 0.22520800000000918,
+							"lexerMs": 7.665708000000052,
+							"sllParseMs": 55.203958,
+							"llParseMs": 0,
+							"totalMs": 63.337125000000015
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 113,
+						"hiddenTokens": 89,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463175680
+					},
+					"warmSamples": [
+						{
+							"file": "filler_11.sql",
+							"coreMs": 0.6553749999999923,
+							"adapterMs": 0.68587500000001,
+							"phases": {
+								"conditionalMs": 0.002250000000003638,
+								"setupMs": 0.013958999999999833,
+								"lexerMs": 0.041249999999990905,
+								"sllParseMs": 0.5257090000000062,
+								"llParseMs": 0,
+								"totalMs": 0.5867090000000417
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 113,
+							"hiddenTokens": 89,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463683584
+						}
+					],
+					"pass": {
+						"file": "filler_11.sql",
+						"coreMs": 0.4968750000000455,
+						"adapterMs": 0.50750000000005,
+						"phases": {
+							"conditionalMs": 0.001209000000017113,
+							"setupMs": 0.006959000000051674,
+							"lexerMs": 0.026375000000030013,
+							"sllParseMs": 0.47050000000001546,
+							"llParseMs": 0,
+							"totalMs": 0.50750000000005
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 113,
+						"hiddenTokens": 89,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472432640
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:25.241Z",
+					"cold": {
+						"coreMs": 71.812375,
+						"adapterMs": 1524.978375,
+						"phases": {
+							"setupMs": 1453.081126,
+							"lexerMs": 7.586125,
+							"parseMs": 64.22625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 113,
+						"hiddenTokens": 89,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156614656,
+						"file": "filler_11.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.311,
+							"adapterMs": 0.348209,
+							"phases": {
+								"setupMs": 0.025501,
+								"lexerMs": 0.047125,
+								"parseMs": 0.263875
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 113,
+							"hiddenTokens": 89,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 153886720,
+							"file": "filler_11.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_11.sql",
+						"coreMs": 0.281251,
+						"adapterMs": 0.320583,
+						"phases": {
+							"setupMs": 0.029792,
+							"lexerMs": 0.038917,
+							"parseMs": 0.242334
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 113,
+						"hiddenTokens": 89,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273453056
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 22,
+				"path": "filler_12.sql",
+				"file": "filler_12.sql",
+				"bytes": 580,
+				"lines": 28,
+				"sha256": "120effa6df602ea2209a00d778ef251391182f633ab6632eed10e7bf866515a3"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:26.480Z",
+					"cold": {
+						"file": "filler_12.sql",
+						"coreMs": 62.952042000000006,
+						"adapterMs": 63.47525000000002,
+						"phases": {
+							"conditionalMs": 0.19675000000000864,
+							"setupMs": 0.25833299999999326,
+							"lexerMs": 7.764999999999986,
+							"sllParseMs": 55.18704200000002,
+							"llParseMs": 0,
+							"totalMs": 63.47525000000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 118,
+						"hiddenTokens": 93,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463388672
+					},
+					"warmSamples": [
+						{
+							"file": "filler_12.sql",
+							"coreMs": 0.6915830000000369,
+							"adapterMs": 0.7271670000000086,
+							"phases": {
+								"conditionalMs": 0.002292000000011285,
+								"setupMs": 0.014250000000004093,
+								"lexerMs": 0.05033399999996391,
+								"sllParseMs": 0.5704580000000306,
+								"llParseMs": 0,
+								"totalMs": 0.6410829999999805
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 118,
+							"hiddenTokens": 93,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463208448
+						}
+					],
+					"pass": {
+						"file": "filler_12.sql",
+						"coreMs": 0.5029999999999291,
+						"adapterMs": 0.5136249999999336,
+						"phases": {
+							"conditionalMs": 0.001209000000017113,
+							"setupMs": 0.00687500000003638,
+							"lexerMs": 0.0272499999999809,
+							"sllParseMs": 0.47574999999994816,
+							"llParseMs": 0,
+							"totalMs": 0.5136249999999336
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 118,
+						"hiddenTokens": 93,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472432640
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:29.855Z",
+					"cold": {
+						"coreMs": 72.947916,
+						"adapterMs": 1511.489293,
+						"phases": {
+							"setupMs": 1438.455959,
+							"lexerMs": 7.88325,
+							"parseMs": 65.064666
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 118,
+						"hiddenTokens": 93,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 157413376,
+						"file": "filler_12.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.328042,
+							"adapterMs": 0.376583,
+							"phases": {
+								"setupMs": 0.031834,
+								"lexerMs": 0.041125,
+								"parseMs": 0.286917
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 118,
+							"hiddenTokens": 93,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 153911296,
+							"file": "filler_12.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_12.sql",
+						"coreMs": 0.375751,
+						"adapterMs": 0.458625,
+						"phases": {
+							"setupMs": 0.071291,
+							"lexerMs": 0.084709,
+							"parseMs": 0.291042
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 118,
+						"hiddenTokens": 93,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273637376
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 23,
+				"path": "filler_13.sql",
+				"file": "filler_13.sql",
+				"bytes": 606,
+				"lines": 29,
+				"sha256": "eb9cc270935fd8f6a34a226d653c3e706a8ef0f4a27b627aa165c9955f4f90ad"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:31.095Z",
+					"cold": {
+						"file": "filler_13.sql",
+						"coreMs": 63.32129100000003,
+						"adapterMs": 63.77525000000003,
+						"phases": {
+							"conditionalMs": 0.1964580000000069,
+							"setupMs": 0.204291000000012,
+							"lexerMs": 7.7086250000000405,
+							"sllParseMs": 55.61266599999999,
+							"llParseMs": 0,
+							"totalMs": 63.77525000000003
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 123,
+						"hiddenTokens": 97,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462864384
+					},
+					"warmSamples": [
+						{
+							"file": "filler_13.sql",
+							"coreMs": 0.7126250000000027,
+							"adapterMs": 0.7450000000000045,
+							"phases": {
+								"conditionalMs": 0.0020830000000273685,
+								"setupMs": 0.014583000000016,
+								"lexerMs": 0.0448329999999828,
+								"sllParseMs": 0.6091250000000059,
+								"llParseMs": 0,
+								"totalMs": 0.6743329999999901
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 123,
+							"hiddenTokens": 97,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463126528
+						}
+					],
+					"pass": {
+						"file": "filler_13.sql",
+						"coreMs": 0.5333749999998645,
+						"adapterMs": 0.5448749999999336,
+						"phases": {
+							"conditionalMs": 0.001082999999994172,
+							"setupMs": 0.00791700000002038,
+							"lexerMs": 0.031582999999955064,
+							"sllParseMs": 0.5017919999999094,
+							"llParseMs": 0,
+							"totalMs": 0.5448749999999336
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 123,
+						"hiddenTokens": 97,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472432640
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:34.465Z",
+					"cold": {
+						"coreMs": 70.225124,
+						"adapterMs": 1511.983792,
+						"phases": {
+							"setupMs": 1441.675501,
+							"lexerMs": 8.094916,
+							"parseMs": 62.130208
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 123,
+						"hiddenTokens": 97,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 152834048,
+						"file": "filler_13.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.304,
+							"adapterMs": 0.34175,
+							"phases": {
+								"setupMs": 0.022167,
+								"lexerMs": 0.047167,
+								"parseMs": 0.256833
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 123,
+							"hiddenTokens": 97,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 154841088,
+							"file": "filler_13.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_13.sql",
+						"coreMs": 0.34275,
+						"adapterMs": 0.389958,
+						"phases": {
+							"setupMs": 0.037458,
+							"lexerMs": 0.0455,
+							"parseMs": 0.29725
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 123,
+						"hiddenTokens": 97,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273702912
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 24,
+				"path": "filler_14.sql",
+				"file": "filler_14.sql",
+				"bytes": 632,
+				"lines": 30,
+				"sha256": "254d1aba235abe1baa335d9951b097879274dc2531965f246c4df0fba98ac236"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:35.712Z",
+					"cold": {
+						"file": "filler_14.sql",
+						"coreMs": 64.32283300000006,
+						"adapterMs": 64.790208,
+						"phases": {
+							"conditionalMs": 0.1839589999999589,
+							"setupMs": 0.228999999999985,
+							"lexerMs": 7.865000000000009,
+							"sllParseMs": 56.45783300000005,
+							"llParseMs": 0,
+							"totalMs": 64.790208
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 128,
+						"hiddenTokens": 101,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462372864
+					},
+					"warmSamples": [
+						{
+							"file": "filler_14.sql",
+							"coreMs": 0.7245839999999362,
+							"adapterMs": 0.7620000000000005,
+							"phases": {
+								"conditionalMs": 0.0021670000000426626,
+								"setupMs": 0.01495900000003303,
+								"lexerMs": 0.045833000000016,
+								"sllParseMs": 0.6332499999999754,
+								"llParseMs": 0,
+								"totalMs": 0.6997920000000022
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 128,
+							"hiddenTokens": 101,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462766080
+						}
+					],
+					"pass": {
+						"file": "filler_14.sql",
+						"coreMs": 0.5974579999999605,
+						"adapterMs": 0.6081669999999804,
+						"phases": {
+							"conditionalMs": 0.001125000000001819,
+							"setupMs": 0.007082000000082189,
+							"lexerMs": 0.03033299999992778,
+							"sllParseMs": 0.5671250000000327,
+							"llParseMs": 0,
+							"totalMs": 0.6081669999999804
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 128,
+						"hiddenTokens": 101,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472432640
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:39.094Z",
+					"cold": {
+						"coreMs": 76.086792,
+						"adapterMs": 1528.051501,
+						"phases": {
+							"setupMs": 1451.884958,
+							"lexerMs": 7.858041,
+							"parseMs": 68.228751
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 128,
+						"hiddenTokens": 101,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 157036544,
+						"file": "filler_14.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.285833,
+							"adapterMs": 0.318542,
+							"phases": {
+								"setupMs": 0.023292,
+								"lexerMs": 0.0425,
+								"parseMs": 0.243333
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 128,
+							"hiddenTokens": 101,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 155213824,
+							"file": "filler_14.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_14.sql",
+						"coreMs": 0.374125,
+						"adapterMs": 0.417958,
+						"phases": {
+							"setupMs": 0.033584,
+							"lexerMs": 0.051,
+							"parseMs": 0.323125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 128,
+						"hiddenTokens": 101,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273752064
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 25,
+				"path": "filler_15.sql",
+				"file": "filler_15.sql",
+				"bytes": 658,
+				"lines": 31,
+				"sha256": "cd5eb0adeb1b32b0f624b776d675d2a456ba23ce7720399f955be73109bf9d92"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:40.338Z",
+					"cold": {
+						"file": "filler_15.sql",
+						"coreMs": 63.55858399999994,
+						"adapterMs": 64.083709,
+						"phases": {
+							"conditionalMs": 0.2504170000000272,
+							"setupMs": 0.2115000000000009,
+							"lexerMs": 7.916041999999948,
+							"sllParseMs": 55.64254199999999,
+							"llParseMs": 0,
+							"totalMs": 64.083709
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 133,
+						"hiddenTokens": 105,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462946304
+					},
+					"warmSamples": [
+						{
+							"file": "filler_15.sql",
+							"coreMs": 0.7815830000000119,
+							"adapterMs": 0.8207919999999831,
+							"phases": {
+								"conditionalMs": 0.0020830000000273685,
+								"setupMs": 0.015083000000004176,
+								"lexerMs": 0.046959000000015294,
+								"sllParseMs": 0.6572909999999865,
+								"llParseMs": 0,
+								"totalMs": 0.7253329999999778
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 133,
+							"hiddenTokens": 105,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463290368
+						}
+					],
+					"pass": {
+						"file": "filler_15.sql",
+						"coreMs": 0.5960420000000113,
+						"adapterMs": 0.6068750000000591,
+						"phases": {
+							"conditionalMs": 0.0012500000000272848,
+							"setupMs": 0.007166999999981272,
+							"lexerMs": 0.03087500000003729,
+							"sllParseMs": 0.565166999999974,
+							"llParseMs": 0,
+							"totalMs": 0.6068750000000591
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 133,
+						"hiddenTokens": 105,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 472432640
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:43.699Z",
+					"cold": {
+						"coreMs": 72.195083,
+						"adapterMs": 1515.316209,
+						"phases": {
+							"setupMs": 1443.026791,
+							"lexerMs": 7.666833,
+							"parseMs": 64.52825
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 133,
+						"hiddenTokens": 105,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 157298688,
+						"file": "filler_15.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.3055,
+							"adapterMs": 0.34125,
+							"phases": {
+								"setupMs": 0.025208,
+								"lexerMs": 0.051541,
+								"parseMs": 0.260333
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 133,
+							"hiddenTokens": 105,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 157478912,
+							"file": "filler_15.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_15.sql",
+						"coreMs": 0.351209,
+						"adapterMs": 0.398584,
+						"phases": {
+							"setupMs": 0.035958,
+							"lexerMs": 0.052125,
+							"parseMs": 0.299084
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 133,
+						"hiddenTokens": 105,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 273842176
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 26,
+				"path": "synthetic_0.pkb",
+				"file": "synthetic_0.pkb",
+				"bytes": 680,
+				"lines": 32,
+				"sha256": "f4a725fc4b086f7c067df7dd04c45d79d2722ba287e563176153495f4f6e2a75"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:45.594Z",
+					"cold": {
+						"file": "synthetic_0.pkb",
+						"coreMs": 277.398708,
+						"adapterMs": 277.91379199999994,
+						"phases": {
+							"conditionalMs": 0.18574999999998454,
+							"setupMs": 0.2579589999999712,
+							"lexerMs": 13.095082999999988,
+							"sllParseMs": 264.303625,
+							"llParseMs": 0,
+							"totalMs": 277.91379199999994
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 137,
+						"hiddenTokens": 103,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 479985664
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_0.pkb",
+							"coreMs": 1.833750000000009,
+							"adapterMs": 1.8767500000000155,
+							"phases": {
+								"conditionalMs": 0.002166999999985819,
+								"setupMs": 0.014582999999902313,
+								"lexerMs": 0.06491700000003675,
+								"sllParseMs": 1.618333000000007,
+								"llParseMs": 0,
+								"totalMs": 1.7040419999999585
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 137,
+							"hiddenTokens": 103,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 480690176
+						}
+					],
+					"pass": {
+						"file": "synthetic_0.pkb",
+						"coreMs": 116.41341699999998,
+						"adapterMs": 116.4295830000001,
+						"phases": {
+							"conditionalMs": 0.0014170000000603977,
+							"setupMs": 0.010291999999935797,
+							"lexerMs": 1.0031669999999622,
+							"sllParseMs": 115.41025000000002,
+							"llParseMs": 0,
+							"totalMs": 116.4295830000001
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 137,
+						"hiddenTokens": 103,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481181696
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:49.217Z",
+					"cold": {
+						"coreMs": 212.195834,
+						"adapterMs": 1657.056084,
+						"phases": {
+							"setupMs": 1444.754583,
+							"lexerMs": 9.887959,
+							"parseMs": 202.307875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 137,
+						"hiddenTokens": 103,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 262635520,
+						"file": "synthetic_0.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 1.17125,
+							"adapterMs": 1.2315,
+							"phases": {
+								"setupMs": 0.048083,
+								"lexerMs": 0.16925,
+								"parseMs": 0.95425
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 137,
+							"hiddenTokens": 103,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 267776000,
+							"file": "synthetic_0.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_0.pkb",
+						"coreMs": 57.744001,
+						"adapterMs": 57.828917,
+						"phases": {
+							"setupMs": 0.044291,
+							"lexerMs": 0.662334,
+							"parseMs": 57.081667
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 137,
+						"hiddenTokens": 103,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 276590592
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 27,
+				"path": "filler_16.sql",
+				"file": "filler_16.sql",
+				"bytes": 684,
+				"lines": 32,
+				"sha256": "aa76614f9a99cda68a58057c9161d500e39a1b5ab0fd949cacc20c730b5105c2"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:50.458Z",
+					"cold": {
+						"file": "filler_16.sql",
+						"coreMs": 63.83804199999997,
+						"adapterMs": 64.286291,
+						"phases": {
+							"conditionalMs": 0.18533300000001418,
+							"setupMs": 0.20774899999997842,
+							"lexerMs": 7.610708999999986,
+							"sllParseMs": 56.22733299999999,
+							"llParseMs": 0,
+							"totalMs": 64.286291
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 138,
+						"hiddenTokens": 109,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462553088
+					},
+					"warmSamples": [
+						{
+							"file": "filler_16.sql",
+							"coreMs": 0.7769590000000335,
+							"adapterMs": 0.8203750000000127,
+							"phases": {
+								"conditionalMs": 0.002124999999978172,
+								"setupMs": 0.01629200000002129,
+								"lexerMs": 0.060791999999992186,
+								"sllParseMs": 0.606207999999981,
+								"llParseMs": 0,
+								"totalMs": 0.6892920000000231
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 138,
+							"hiddenTokens": 109,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463568896
+						}
+					],
+					"pass": {
+						"file": "filler_16.sql",
+						"coreMs": 0.7904590000000553,
+						"adapterMs": 0.8190419999999676,
+						"phases": {
+							"conditionalMs": 0.007082999999965978,
+							"setupMs": 0.017082999999956883,
+							"lexerMs": 0.045166999999992186,
+							"sllParseMs": 0.7452920000000631,
+							"llParseMs": 0,
+							"totalMs": 0.8190419999999676
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 138,
+						"hiddenTokens": 109,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481198080
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:53.816Z",
+					"cold": {
+						"coreMs": 71.803667,
+						"adapterMs": 1514.561084,
+						"phases": {
+							"setupMs": 1442.68096,
+							"lexerMs": 7.981167,
+							"parseMs": 63.8225
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 138,
+						"hiddenTokens": 109,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 155373568,
+						"file": "filler_16.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.319208,
+							"adapterMs": 0.355583,
+							"phases": {
+								"setupMs": 0.026126,
+								"lexerMs": 0.059542,
+								"parseMs": 0.270792
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 138,
+							"hiddenTokens": 109,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 165568512,
+							"file": "filler_16.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_16.sql",
+						"coreMs": 0.273833,
+						"adapterMs": 0.319291,
+						"phases": {
+							"setupMs": 0.034417,
+							"lexerMs": 0.049625,
+							"parseMs": 0.224208
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 138,
+						"hiddenTokens": 109,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 276598784
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 28,
+				"path": "filler_17.sql",
+				"file": "filler_17.sql",
+				"bytes": 710,
+				"lines": 33,
+				"sha256": "5d3431c4d3d24cc9df25fb0210ac69019ef51b49a8bf3404e34fd21b752ec12c"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:55.069Z",
+					"cold": {
+						"file": "filler_17.sql",
+						"coreMs": 63.31833399999999,
+						"adapterMs": 63.803292,
+						"phases": {
+							"conditionalMs": 0.18833300000000008,
+							"setupMs": 0.24433299999998326,
+							"lexerMs": 7.574999999999989,
+							"sllParseMs": 55.743334000000004,
+							"llParseMs": 0,
+							"totalMs": 63.803292
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 143,
+						"hiddenTokens": 113,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462635008
+					},
+					"warmSamples": [
+						{
+							"file": "filler_17.sql",
+							"coreMs": 0.7690410000000156,
+							"adapterMs": 0.8058750000000146,
+							"phases": {
+								"conditionalMs": 0.0021250000000350155,
+								"setupMs": 0.014583000000016,
+								"lexerMs": 0.049374999999997726,
+								"sllParseMs": 0.6226250000000277,
+								"llParseMs": 0,
+								"totalMs": 0.6927079999999819
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 143,
+							"hiddenTokens": 113,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463306752
+						}
+					],
+					"pass": {
+						"file": "filler_17.sql",
+						"coreMs": 0.7189160000001493,
+						"adapterMs": 0.7396669999999403,
+						"phases": {
+							"conditionalMs": 0.0038339999999834617,
+							"setupMs": 0.012874000000124397,
+							"lexerMs": 0.03841600000009748,
+							"sllParseMs": 0.6805000000000518,
+							"llParseMs": 0,
+							"totalMs": 0.7396669999999403
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 143,
+						"hiddenTokens": 113,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481198080
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:45:58.447Z",
+					"cold": {
+						"coreMs": 70.864417,
+						"adapterMs": 1514.207959,
+						"phases": {
+							"setupMs": 1443.255792,
+							"lexerMs": 7.935208,
+							"parseMs": 62.929209
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 143,
+						"hiddenTokens": 113,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154124288,
+						"file": "filler_17.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.499292,
+							"adapterMs": 0.527292,
+							"phases": {
+								"setupMs": 0.023958,
+								"lexerMs": 0.049416,
+								"parseMs": 0.4465
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 143,
+							"hiddenTokens": 113,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 155172864,
+							"file": "filler_17.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_17.sql",
+						"coreMs": 0.201418,
+						"adapterMs": 0.271083,
+						"phases": {
+							"setupMs": 0.059293,
+							"lexerMs": 0.039584,
+							"parseMs": 0.161834
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 143,
+						"hiddenTokens": 113,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 276611072
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 29,
+				"path": "filler_18.sql",
+				"file": "filler_18.sql",
+				"bytes": 736,
+				"lines": 34,
+				"sha256": "5d0103a63a1f2f9f8b03b9cd5a97d8b61f4303c9a59bf3413aff363c423b3b76"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:45:59.694Z",
+					"cold": {
+						"file": "filler_18.sql",
+						"coreMs": 63.11537500000003,
+						"adapterMs": 63.60325,
+						"phases": {
+							"conditionalMs": 0.18329099999999698,
+							"setupMs": 0.2437919999999849,
+							"lexerMs": 7.965082999999993,
+							"sllParseMs": 55.150292000000036,
+							"llParseMs": 0,
+							"totalMs": 63.60325
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 148,
+						"hiddenTokens": 117,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 461963264
+					},
+					"warmSamples": [
+						{
+							"file": "filler_18.sql",
+							"coreMs": 0.8483329999999683,
+							"adapterMs": 0.8873329999999555,
+							"phases": {
+								"conditionalMs": 0.0023329999999646134,
+								"setupMs": 0.017291000000000167,
+								"lexerMs": 0.061458000000016,
+								"sllParseMs": 0.6567499999999882,
+								"llParseMs": 0,
+								"totalMs": 0.7420830000000365
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 148,
+							"hiddenTokens": 117,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463831040
+						}
+					],
+					"pass": {
+						"file": "filler_18.sql",
+						"coreMs": 0.7045829999999569,
+						"adapterMs": 0.7194580000000315,
+						"phases": {
+							"conditionalMs": 0.0020839999999680003,
+							"setupMs": 0.009542000000010376,
+							"lexerMs": 0.035750000000007276,
+							"sllParseMs": 0.6688329999999496,
+							"llParseMs": 0,
+							"totalMs": 0.7194580000000315
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 148,
+						"hiddenTokens": 117,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481214464
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:03.063Z",
+					"cold": {
+						"coreMs": 72.734124,
+						"adapterMs": 1531.665543,
+						"phases": {
+							"setupMs": 1458.854875,
+							"lexerMs": 7.753541,
+							"parseMs": 64.980583
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 148,
+						"hiddenTokens": 117,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156590080,
+						"file": "filler_18.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.431375,
+							"adapterMs": 0.472292,
+							"phases": {
+								"setupMs": 0.026041,
+								"lexerMs": 0.043709,
+								"parseMs": 0.382125
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 148,
+							"hiddenTokens": 117,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 156725248,
+							"file": "filler_18.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_18.sql",
+						"coreMs": 0.461958,
+						"adapterMs": 0.538458,
+						"phases": {
+							"setupMs": 0.064709,
+							"lexerMs": 0.042333,
+							"parseMs": 0.419625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 148,
+						"hiddenTokens": 117,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 276709376
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 30,
+				"path": "filler_19.sql",
+				"file": "filler_19.sql",
+				"bytes": 762,
+				"lines": 35,
+				"sha256": "b7126fa2ae01012109515bea76c2b030124b9a30e9ae757ae658a1eb75931cc2"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:04.315Z",
+					"cold": {
+						"file": "filler_19.sql",
+						"coreMs": 63.39095900000001,
+						"adapterMs": 63.843999999999994,
+						"phases": {
+							"conditionalMs": 0.190166999999974,
+							"setupMs": 0.20916699999997945,
+							"lexerMs": 7.867750000000001,
+							"sllParseMs": 55.52320900000001,
+							"llParseMs": 0,
+							"totalMs": 63.843999999999994
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 153,
+						"hiddenTokens": 121,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 464273408
+					},
+					"warmSamples": [
+						{
+							"file": "filler_19.sql",
+							"coreMs": 0.8714170000000081,
+							"adapterMs": 0.9120419999999854,
+							"phases": {
+								"conditionalMs": 0.0020840000000248438,
+								"setupMs": 0.01504099999999653,
+								"lexerMs": 0.06458299999997053,
+								"sllParseMs": 0.7278329999999755,
+								"llParseMs": 0,
+								"totalMs": 0.8137499999999704
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 153,
+							"hiddenTokens": 121,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462962688
+						}
+					],
+					"pass": {
+						"file": "filler_19.sql",
+						"coreMs": 0.7052919999999858,
+						"adapterMs": 0.7176249999999982,
+						"phases": {
+							"conditionalMs": 0.0015420000000858636,
+							"setupMs": 0.00795899999991434,
+							"lexerMs": 0.033625000000029104,
+							"sllParseMs": 0.6716669999999567,
+							"llParseMs": 0,
+							"totalMs": 0.7176249999999982
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 153,
+						"hiddenTokens": 121,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481214464
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:07.694Z",
+					"cold": {
+						"coreMs": 73.717667,
+						"adapterMs": 1518.674126,
+						"phases": {
+							"setupMs": 1444.849126,
+							"lexerMs": 8.097167,
+							"parseMs": 65.6205
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 153,
+						"hiddenTokens": 121,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 153833472,
+						"file": "filler_19.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.303708,
+							"adapterMs": 0.336042,
+							"phases": {
+								"setupMs": 0.022708,
+								"lexerMs": 0.045958,
+								"parseMs": 0.25775
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 153,
+							"hiddenTokens": 121,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 150028288,
+							"file": "filler_19.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_19.sql",
+						"coreMs": 4.136375,
+						"adapterMs": 4.185792,
+						"phases": {
+							"setupMs": 0.031126,
+							"lexerMs": 3.538625,
+							"parseMs": 0.59775
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 153,
+						"hiddenTokens": 121,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293707776
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 31,
+				"path": "filler_20.sql",
+				"file": "filler_20.sql",
+				"bytes": 788,
+				"lines": 36,
+				"sha256": "84179a5e96d60b93b7982d940e1fb76e3fa8f0f445abbf2084c8134f51cb124e"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:08.952Z",
+					"cold": {
+						"file": "filler_20.sql",
+						"coreMs": 62.65279099999998,
+						"adapterMs": 63.138041999999984,
+						"phases": {
+							"conditionalMs": 0.18908299999998235,
+							"setupMs": 0.23729199999996808,
+							"lexerMs": 7.615332999999964,
+							"sllParseMs": 55.037458000000015,
+							"llParseMs": 0,
+							"totalMs": 63.138041999999984
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 158,
+						"hiddenTokens": 125,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463290368
+					},
+					"warmSamples": [
+						{
+							"file": "filler_20.sql",
+							"coreMs": 1.3577499999999532,
+							"adapterMs": 1.4299159999999915,
+							"phases": {
+								"conditionalMs": 0.0037909999999783395,
+								"setupMs": 0.019208999999989373,
+								"lexerMs": 0.058124999999961346,
+								"sllParseMs": 0.7147090000000276,
+								"llParseMs": 0,
+								"totalMs": 0.8005829999999605
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 158,
+							"hiddenTokens": 125,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 464584704
+						}
+					],
+					"pass": {
+						"file": "filler_20.sql",
+						"coreMs": 0.7520830000000842,
+						"adapterMs": 0.7658330000000433,
+						"phases": {
+							"conditionalMs": 0.0012910000000374566,
+							"setupMs": 0.00937500000009095,
+							"lexerMs": 0.043083000000024185,
+							"sllParseMs": 0.70900000000006,
+							"llParseMs": 0,
+							"totalMs": 0.7658330000000433
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 158,
+						"hiddenTokens": 125,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481230848
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:12.348Z",
+					"cold": {
+						"coreMs": 73.466792,
+						"adapterMs": 1519.147667,
+						"phases": {
+							"setupMs": 1445.598876,
+							"lexerMs": 7.913333,
+							"parseMs": 65.553459
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 158,
+						"hiddenTokens": 125,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 152526848,
+						"file": "filler_20.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.35825,
+							"adapterMs": 0.39225,
+							"phases": {
+								"setupMs": 0.024458,
+								"lexerMs": 0.049584,
+								"parseMs": 0.30925
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 158,
+							"hiddenTokens": 125,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 150843392,
+							"file": "filler_20.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_20.sql",
+						"coreMs": 0.235792,
+						"adapterMs": 0.275833,
+						"phases": {
+							"setupMs": 0.028041,
+							"lexerMs": 0.049042,
+							"parseMs": 0.18675
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 158,
+						"hiddenTokens": 125,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293761024
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 32,
+				"path": "filler_21.sql",
+				"file": "filler_21.sql",
+				"bytes": 814,
+				"lines": 37,
+				"sha256": "72663ef42a30b64e046239175495b0bd01af2dfc267c4be59649fab3a99c2a6f"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:13.587Z",
+					"cold": {
+						"file": "filler_21.sql",
+						"coreMs": 63.357083999999986,
+						"adapterMs": 63.87670800000001,
+						"phases": {
+							"conditionalMs": 0.20462500000002137,
+							"setupMs": 0.2609170000000063,
+							"lexerMs": 7.704834000000005,
+							"sllParseMs": 55.65224999999998,
+							"llParseMs": 0,
+							"totalMs": 63.87670800000001
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 163,
+						"hiddenTokens": 129,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463683584
+					},
+					"warmSamples": [
+						{
+							"file": "filler_21.sql",
+							"coreMs": 0.9164159999999697,
+							"adapterMs": 0.9435829999999896,
+							"phases": {
+								"conditionalMs": 0.0020000000000095497,
+								"setupMs": 0.026375000000030013,
+								"lexerMs": 0.04979100000002745,
+								"sllParseMs": 0.7853749999999877,
+								"llParseMs": 0,
+								"totalMs": 0.8677500000000009
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 163,
+							"hiddenTokens": 129,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463339520
+						}
+					],
+					"pass": {
+						"file": "filler_21.sql",
+						"coreMs": 0.7183340000000271,
+						"adapterMs": 0.7314590000000862,
+						"phases": {
+							"conditionalMs": 0.0012500000000272848,
+							"setupMs": 0.009041000000024724,
+							"lexerMs": 0.037833999999975276,
+							"sllParseMs": 0.6805000000000518,
+							"llParseMs": 0,
+							"totalMs": 0.7314590000000862
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 163,
+						"hiddenTokens": 129,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481230848
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:16.953Z",
+					"cold": {
+						"coreMs": 72.180543,
+						"adapterMs": 1527.542668,
+						"phases": {
+							"setupMs": 1455.280041,
+							"lexerMs": 7.736709,
+							"parseMs": 64.443834
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 163,
+						"hiddenTokens": 129,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 152170496,
+						"file": "filler_21.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.400876,
+							"adapterMs": 0.445625,
+							"phases": {
+								"setupMs": 0.026667,
+								"lexerMs": 0.050834,
+								"parseMs": 0.340708
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 163,
+							"hiddenTokens": 129,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 155639808,
+							"file": "filler_21.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_21.sql",
+						"coreMs": 0.19375,
+						"adapterMs": 0.227292,
+						"phases": {
+							"setupMs": 0.021959,
+							"lexerMs": 0.044208,
+							"parseMs": 0.149542
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 163,
+						"hiddenTokens": 129,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293822464
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 33,
+				"path": "filler_22.sql",
+				"file": "filler_22.sql",
+				"bytes": 840,
+				"lines": 38,
+				"sha256": "ce4312a2278308f3e8f13f7f67f8b4cc2d30f6fc5989a298b69396b436171f94"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:18.196Z",
+					"cold": {
+						"file": "filler_22.sql",
+						"coreMs": 62.91720799999996,
+						"adapterMs": 63.3775,
+						"phases": {
+							"conditionalMs": 0.19137499999999363,
+							"setupMs": 0.216542000000004,
+							"lexerMs": 7.568165999999962,
+							"sllParseMs": 55.349042,
+							"llParseMs": 0,
+							"totalMs": 63.3775
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 168,
+						"hiddenTokens": 133,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463093760
+					},
+					"warmSamples": [
+						{
+							"file": "filler_22.sql",
+							"coreMs": 0.9315410000000384,
+							"adapterMs": 0.9592079999999896,
+							"phases": {
+								"conditionalMs": 0.0029170000000249274,
+								"setupMs": 0.020041999999932614,
+								"lexerMs": 0.05212499999998954,
+								"sllParseMs": 0.8111250000000041,
+								"llParseMs": 0,
+								"totalMs": 0.8904169999999567
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 168,
+							"hiddenTokens": 133,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462766080
+						}
+					],
+					"pass": {
+						"file": "filler_22.sql",
+						"coreMs": 0.7378340000000208,
+						"adapterMs": 0.7547499999999445,
+						"phases": {
+							"conditionalMs": 0.001333999999928892,
+							"setupMs": 0.012458000000037828,
+							"lexerMs": 0.0402920000000222,
+							"sllParseMs": 0.6975419999999986,
+							"llParseMs": 0,
+							"totalMs": 0.7547499999999445
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 168,
+						"hiddenTokens": 133,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481312768
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:21.577Z",
+					"cold": {
+						"coreMs": 65.737125,
+						"adapterMs": 1517.658542,
+						"phases": {
+							"setupMs": 1451.837918,
+							"lexerMs": 7.538084,
+							"parseMs": 58.199041
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 168,
+						"hiddenTokens": 133,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 151060480,
+						"file": "filler_22.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.329958,
+							"adapterMs": 0.369583,
+							"phases": {
+								"setupMs": 0.026625,
+								"lexerMs": 0.053333,
+								"parseMs": 0.279083
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 168,
+							"hiddenTokens": 133,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 153808896,
+							"file": "filler_22.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_22.sql",
+						"coreMs": 0.280709,
+						"adapterMs": 0.329834,
+						"phases": {
+							"setupMs": 0.030417,
+							"lexerMs": 0.068834,
+							"parseMs": 0.211875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 168,
+						"hiddenTokens": 133,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293961728
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 34,
+				"path": "filler_23.sql",
+				"file": "filler_23.sql",
+				"bytes": 866,
+				"lines": 39,
+				"sha256": "7190c1328774c4aa9e7f4e605d65354699346761221af972c3b5e372dda1d531"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:22.824Z",
+					"cold": {
+						"file": "filler_23.sql",
+						"coreMs": 63.599084000000005,
+						"adapterMs": 64.05954099999997,
+						"phases": {
+							"conditionalMs": 0.18904100000003154,
+							"setupMs": 0.21604100000001836,
+							"lexerMs": 7.7662090000000035,
+							"sllParseMs": 55.832875,
+							"llParseMs": 0,
+							"totalMs": 64.05954099999997
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 173,
+						"hiddenTokens": 137,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463142912
+					},
+					"warmSamples": [
+						{
+							"file": "filler_23.sql",
+							"coreMs": 0.9214999999999804,
+							"adapterMs": 0.9542500000000018,
+							"phases": {
+								"conditionalMs": 0.002082999999970525,
+								"setupMs": 0.019458999999983462,
+								"lexerMs": 0.05299999999999727,
+								"sllParseMs": 0.8207499999999754,
+								"llParseMs": 0,
+								"totalMs": 0.8998750000000086
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 173,
+							"hiddenTokens": 137,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462831616
+						}
+					],
+					"pass": {
+						"file": "filler_23.sql",
+						"coreMs": 0.7947919999999158,
+						"adapterMs": 0.8132080000000315,
+						"phases": {
+							"conditionalMs": 0.005667000000016742,
+							"setupMs": 0.008832999999981439,
+							"lexerMs": 0.04104199999994762,
+							"sllParseMs": 0.7537499999999682,
+							"llParseMs": 0,
+							"totalMs": 0.8132080000000315
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 173,
+						"hiddenTokens": 137,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481476608
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:26.212Z",
+					"cold": {
+						"coreMs": 73.903292,
+						"adapterMs": 1525.015251,
+						"phases": {
+							"setupMs": 1451.018958,
+							"lexerMs": 9.591417,
+							"parseMs": 64.311875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 173,
+						"hiddenTokens": 137,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 152522752,
+						"file": "filler_23.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.404959,
+							"adapterMs": 0.447583,
+							"phases": {
+								"setupMs": 0.028916,
+								"lexerMs": 0.062292,
+								"parseMs": 0.353542
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 173,
+							"hiddenTokens": 137,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 159297536,
+							"file": "filler_23.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_23.sql",
+						"coreMs": 0.266041,
+						"adapterMs": 0.30325,
+						"phases": {
+							"setupMs": 0.025249,
+							"lexerMs": 0.1275,
+							"parseMs": 0.138541
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 173,
+						"hiddenTokens": 137,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293969920
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 35,
+				"path": "filler_24.sql",
+				"file": "filler_24.sql",
+				"bytes": 892,
+				"lines": 40,
+				"sha256": "969864c2607a45a3da56b224e6a253f64d2cddbf80ff56cec8ddfca01dd7e59d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:27.457Z",
+					"cold": {
+						"file": "filler_24.sql",
+						"coreMs": 63.89191699999998,
+						"adapterMs": 64.38875000000002,
+						"phases": {
+							"conditionalMs": 0.19775000000004184,
+							"setupMs": 0.2466250000000514,
+							"lexerMs": 7.624167,
+							"sllParseMs": 56.26774999999998,
+							"llParseMs": 0,
+							"totalMs": 64.38875000000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 178,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462864384
+					},
+					"warmSamples": [
+						{
+							"file": "filler_24.sql",
+							"coreMs": 0.903541999999959,
+							"adapterMs": 0.9291249999999991,
+							"phases": {
+								"conditionalMs": 0.0020839999999680003,
+								"setupMs": 0.01654099999996106,
+								"lexerMs": 0.05424999999996771,
+								"sllParseMs": 0.7951249999999845,
+								"llParseMs": 0,
+								"totalMs": 0.8762500000000273
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 178,
+							"hiddenTokens": 141,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463503360
+						}
+					],
+					"pass": {
+						"file": "filler_24.sql",
+						"coreMs": 0.7765419999999494,
+						"adapterMs": 0.7900840000000926,
+						"phases": {
+							"conditionalMs": 0.0012920000000349319,
+							"setupMs": 0.008915999999999258,
+							"lexerMs": 0.04104199999994762,
+							"sllParseMs": 0.7355000000000018,
+							"llParseMs": 0,
+							"totalMs": 0.7900840000000926
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 178,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481624064
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:30.829Z",
+					"cold": {
+						"coreMs": 69.302416,
+						"adapterMs": 1515.914667,
+						"phases": {
+							"setupMs": 1446.521001,
+							"lexerMs": 7.927416,
+							"parseMs": 61.375
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 178,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 155787264,
+						"file": "filler_24.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.356875,
+							"adapterMs": 0.395125,
+							"phases": {
+								"setupMs": 0.026125,
+								"lexerMs": 0.054875,
+								"parseMs": 0.294917
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 178,
+							"hiddenTokens": 141,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 156868608,
+							"file": "filler_24.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_24.sql",
+						"coreMs": 0.151708,
+						"adapterMs": 0.188584,
+						"phases": {
+							"setupMs": 0.024501,
+							"lexerMs": 0.037958,
+							"parseMs": 0.11375
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 178,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293969920
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 36,
+				"path": "synthetic_1.pkb",
+				"file": "synthetic_1.pkb",
+				"bytes": 910,
+				"lines": 41,
+				"sha256": "4aab9b10f19b99fef6ccc76914112afff435d79d54a57986cc70bb5473727381"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:32.739Z",
+					"cold": {
+						"file": "synthetic_1.pkb",
+						"coreMs": 282.15250100000003,
+						"adapterMs": 282.67783299999996,
+						"phases": {
+							"conditionalMs": 0.21458300000000463,
+							"setupMs": 0.23904099999998607,
+							"lexerMs": 15.398459000000003,
+							"sllParseMs": 266.754042,
+							"llParseMs": 0,
+							"totalMs": 282.67783299999996
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 479051776
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_1.pkb",
+							"coreMs": 2.51141599999994,
+							"adapterMs": 2.5417920000001004,
+							"phases": {
+								"conditionalMs": 0.0027079999999841675,
+								"setupMs": 0.017833999999993466,
+								"lexerMs": 0.07104199999992034,
+								"sllParseMs": 2.2515829999999823,
+								"llParseMs": 0,
+								"totalMs": 2.3477080000000115
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 183,
+							"hiddenTokens": 141,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 481542144
+						}
+					],
+					"pass": {
+						"file": "synthetic_1.pkb",
+						"coreMs": 2.4763750000000755,
+						"adapterMs": 2.4918329999999287,
+						"phases": {
+							"conditionalMs": 0.0017080000000078144,
+							"setupMs": 0.00983399999984158,
+							"lexerMs": 0.10854200000005676,
+							"sllParseMs": 2.3678330000000187,
+							"llParseMs": 0,
+							"totalMs": 2.4918329999999287
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 481869824
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:36.390Z",
+					"cold": {
+						"coreMs": 205.254959,
+						"adapterMs": 1650.962334,
+						"phases": {
+							"setupMs": 1445.625085,
+							"lexerMs": 10.3965,
+							"parseMs": 194.858459
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 270737408,
+						"file": "synthetic_1.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.423709,
+							"adapterMs": 0.465209,
+							"phases": {
+								"setupMs": 0.029958,
+								"lexerMs": 0.089959,
+								"parseMs": 0.33375
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 183,
+							"hiddenTokens": 141,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 265838592,
+							"file": "synthetic_1.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_1.pkb",
+						"coreMs": 0.465916,
+						"adapterMs": 0.503625,
+						"phases": {
+							"setupMs": 0.024667,
+							"lexerMs": 0.100291,
+							"parseMs": 0.365625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 141,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 293969920
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 37,
+				"path": "filler_25.sql",
+				"file": "filler_25.sql",
+				"bytes": 918,
+				"lines": 41,
+				"sha256": "bf4ac3697ccfabdaaa23fb33492c0ff2c9e3114fc95fe3ef90015b867dc6cb2d"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:37.636Z",
+					"cold": {
+						"file": "filler_25.sql",
+						"coreMs": 63.87195800000006,
+						"adapterMs": 64.37662500000005,
+						"phases": {
+							"conditionalMs": 0.18933300000003328,
+							"setupMs": 0.2469159999999988,
+							"lexerMs": 8.052000000000021,
+							"sllParseMs": 55.81995800000004,
+							"llParseMs": 0,
+							"totalMs": 64.37662500000005
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 145,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463388672
+					},
+					"warmSamples": [
+						{
+							"file": "filler_25.sql",
+							"coreMs": 0.965375999999992,
+							"adapterMs": 0.9925840000000221,
+							"phases": {
+								"conditionalMs": 0.0020830000000273685,
+								"setupMs": 0.01650100000006205,
+								"lexerMs": 0.055625000000020464,
+								"sllParseMs": 0.8329160000000115,
+								"llParseMs": 0,
+								"totalMs": 0.9117080000000328
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 183,
+							"hiddenTokens": 145,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462602240
+						}
+					],
+					"pass": {
+						"file": "filler_25.sql",
+						"coreMs": 0.7680429999999205,
+						"adapterMs": 0.7831670000000486,
+						"phases": {
+							"conditionalMs": 0.0014160000000629225,
+							"setupMs": 0.010250000000041837,
+							"lexerMs": 0.04320899999993344,
+							"sllParseMs": 0.7248339999999871,
+							"llParseMs": 0,
+							"totalMs": 0.7831670000000486
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 145,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 482066432
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:41.035Z",
+					"cold": {
+						"coreMs": 71.358834,
+						"adapterMs": 1527.260543,
+						"phases": {
+							"setupMs": 1455.81625,
+							"lexerMs": 8.508625,
+							"parseMs": 62.850209
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 145,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 158949376,
+						"file": "filler_25.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.348668,
+							"adapterMs": 0.388042,
+							"phases": {
+								"setupMs": 0.027292,
+								"lexerMs": 0.055084,
+								"parseMs": 0.295709
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 183,
+							"hiddenTokens": 145,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158232576,
+							"file": "filler_25.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_25.sql",
+						"coreMs": 0.2555,
+						"adapterMs": 0.312875,
+						"phases": {
+							"setupMs": 0.04275,
+							"lexerMs": 0.070375,
+							"parseMs": 0.185125
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 183,
+						"hiddenTokens": 145,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294027264
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 38,
+				"path": "filler_26.sql",
+				"file": "filler_26.sql",
+				"bytes": 944,
+				"lines": 42,
+				"sha256": "73d194e0fbda16685555cbce1812376e3a7736a091f62c28a2d501dd88ab11ed"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:42.277Z",
+					"cold": {
+						"file": "filler_26.sql",
+						"coreMs": 63.36975100000001,
+						"adapterMs": 63.85362500000002,
+						"phases": {
+							"conditionalMs": 0.1862920000000372,
+							"setupMs": 0.24041599999998198,
+							"lexerMs": 7.548459000000037,
+							"sllParseMs": 55.82129199999997,
+							"llParseMs": 0,
+							"totalMs": 63.85362500000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 188,
+						"hiddenTokens": 149,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462159872
+					},
+					"warmSamples": [
+						{
+							"file": "filler_26.sql",
+							"coreMs": 0.9625419999999849,
+							"adapterMs": 0.9912500000000364,
+							"phases": {
+								"conditionalMs": 0.002166999999985819,
+								"setupMs": 0.016499999999950887,
+								"lexerMs": 0.06837500000000318,
+								"sllParseMs": 0.8310000000000173,
+								"llParseMs": 0,
+								"totalMs": 0.9225410000000238
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 188,
+							"hiddenTokens": 149,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462733312
+						}
+					],
+					"pass": {
+						"file": "filler_26.sql",
+						"coreMs": 0.771750000000111,
+						"adapterMs": 0.7854160000000547,
+						"phases": {
+							"conditionalMs": 0.0012500000000272848,
+							"setupMs": 0.009290999999961969,
+							"lexerMs": 0.04333300000007512,
+							"sllParseMs": 0.7284170000000358,
+							"llParseMs": 0,
+							"totalMs": 0.7854160000000547
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 188,
+						"hiddenTokens": 149,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 482066432
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:45.635Z",
+					"cold": {
+						"coreMs": 74.202417,
+						"adapterMs": 1518.043334,
+						"phases": {
+							"setupMs": 1443.749709,
+							"lexerMs": 8.652459,
+							"parseMs": 65.549958
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 188,
+						"hiddenTokens": 149,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154910720,
+						"file": "filler_26.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.397125,
+							"adapterMs": 0.43725,
+							"phases": {
+								"setupMs": 0.028666,
+								"lexerMs": 0.055917,
+								"parseMs": 0.33125
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 188,
+							"hiddenTokens": 149,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158076928,
+							"file": "filler_26.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_26.sql",
+						"coreMs": 0.172291,
+						"adapterMs": 0.216708,
+						"phases": {
+							"setupMs": 0.032,
+							"lexerMs": 0.046666,
+							"parseMs": 0.125625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 188,
+						"hiddenTokens": 149,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294027264
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 39,
+				"path": "filler_27.sql",
+				"file": "filler_27.sql",
+				"bytes": 970,
+				"lines": 43,
+				"sha256": "9b613e08ed32c972bdf8c6842c73e2fe15c6c5f99912aa83662efd23ab95f236"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:46.881Z",
+					"cold": {
+						"file": "filler_27.sql",
+						"coreMs": 63.41270900000001,
+						"adapterMs": 63.92545799999999,
+						"phases": {
+							"conditionalMs": 0.1887909999999806,
+							"setupMs": 0.2557089999999107,
+							"lexerMs": 7.7059169999999995,
+							"sllParseMs": 55.70679200000001,
+							"llParseMs": 0,
+							"totalMs": 63.92545799999999
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 193,
+						"hiddenTokens": 153,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462733312
+					},
+					"warmSamples": [
+						{
+							"file": "filler_27.sql",
+							"coreMs": 0.9636669999999867,
+							"adapterMs": 0.9970000000000141,
+							"phases": {
+								"conditionalMs": 0.004582999999968251,
+								"setupMs": 0.018040999999982432,
+								"lexerMs": 0.06545899999997573,
+								"sllParseMs": 0.7905420000000163,
+								"llParseMs": 0,
+								"totalMs": 0.8834580000000187
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 193,
+							"hiddenTokens": 153,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463536128
+						}
+					],
+					"pass": {
+						"file": "filler_27.sql",
+						"coreMs": 0.78512499999988,
+						"adapterMs": 0.7996669999999995,
+						"phases": {
+							"conditionalMs": 0.001458999999954358,
+							"setupMs": 0.00975000000005366,
+							"lexerMs": 0.051416999999901236,
+							"sllParseMs": 0.7337079999999787,
+							"llParseMs": 0,
+							"totalMs": 0.7996669999999995
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 193,
+						"hiddenTokens": 153,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 482082816
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:50.239Z",
+					"cold": {
+						"coreMs": 68.841167,
+						"adapterMs": 1513.39846,
+						"phases": {
+							"setupMs": 1444.473876,
+							"lexerMs": 7.76075,
+							"parseMs": 61.080417
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 193,
+						"hiddenTokens": 153,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 164478976,
+						"file": "filler_27.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.365583,
+							"adapterMs": 0.402708,
+							"phases": {
+								"setupMs": 0.025334,
+								"lexerMs": 0.057584,
+								"parseMs": 0.311
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 193,
+							"hiddenTokens": 153,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 155443200,
+							"file": "filler_27.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_27.sql",
+						"coreMs": 0.1485,
+						"adapterMs": 0.187667,
+						"phases": {
+							"setupMs": 0.026208,
+							"lexerMs": 0.039167,
+							"parseMs": 0.109333
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 193,
+						"hiddenTokens": 153,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294031360
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 40,
+				"path": "filler_28.sql",
+				"file": "filler_28.sql",
+				"bytes": 996,
+				"lines": 44,
+				"sha256": "0144d383a7d8b0903566edc9e17562e90b450bdd8979a9990b65a19283c115bb"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:51.485Z",
+					"cold": {
+						"file": "filler_28.sql",
+						"coreMs": 64.03325000000007,
+						"adapterMs": 64.51041700000002,
+						"phases": {
+							"conditionalMs": 0.18491599999998698,
+							"setupMs": 0.22054199999996627,
+							"lexerMs": 7.798667000000023,
+							"sllParseMs": 56.23458300000004,
+							"llParseMs": 0,
+							"totalMs": 64.51041700000002
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 198,
+						"hiddenTokens": 157,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462815232
+					},
+					"warmSamples": [
+						{
+							"file": "filler_28.sql",
+							"coreMs": 1.0233749999999873,
+							"adapterMs": 1.0544170000000008,
+							"phases": {
+								"conditionalMs": 0.002124999999978172,
+								"setupMs": 0.01641800000004423,
+								"lexerMs": 0.05866600000001654,
+								"sllParseMs": 0.8529589999999985,
+								"llParseMs": 0,
+								"totalMs": 0.9350840000000176
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 198,
+							"hiddenTokens": 157,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462569472
+						}
+					],
+					"pass": {
+						"file": "filler_28.sql",
+						"coreMs": 1.4024580000000242,
+						"adapterMs": 1.416832999999997,
+						"phases": {
+							"conditionalMs": 0.001125000000001819,
+							"setupMs": 0.009374999999977263,
+							"lexerMs": 0.045833000000016,
+							"sllParseMs": 1.3566250000000082,
+							"llParseMs": 0,
+							"totalMs": 1.416832999999997
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 198,
+						"hiddenTokens": 157,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 482869248
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:54.857Z",
+					"cold": {
+						"coreMs": 71.093667,
+						"adapterMs": 1513.076542,
+						"phases": {
+							"setupMs": 1441.894959,
+							"lexerMs": 8.057834,
+							"parseMs": 63.035833
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 198,
+						"hiddenTokens": 157,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 154214400,
+						"file": "filler_28.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.388334,
+							"adapterMs": 0.427666,
+							"phases": {
+								"setupMs": 0.030625,
+								"lexerMs": 0.0585,
+								"parseMs": 0.331667
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 198,
+							"hiddenTokens": 157,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158261248,
+							"file": "filler_28.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_28.sql",
+						"coreMs": 0.173082,
+						"adapterMs": 0.21375,
+						"phases": {
+							"setupMs": 0.027418,
+							"lexerMs": 0.073166,
+							"parseMs": 0.099916
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 198,
+						"hiddenTokens": 157,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294031360
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 41,
+				"path": "filler_29.sql",
+				"file": "filler_29.sql",
+				"bytes": 1022,
+				"lines": 45,
+				"sha256": "b55f663dbfb78b550f4f124811817fe2f3d614f2880047b872b811d930a8d9f9"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:46:56.113Z",
+					"cold": {
+						"file": "filler_29.sql",
+						"coreMs": 63.471333000000016,
+						"adapterMs": 64.0145,
+						"phases": {
+							"conditionalMs": 0.21775000000002365,
+							"setupMs": 0.25424999999995634,
+							"lexerMs": 7.727958000000001,
+							"sllParseMs": 55.743375000000015,
+							"llParseMs": 0,
+							"totalMs": 64.0145
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 203,
+						"hiddenTokens": 161,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 462929920
+					},
+					"warmSamples": [
+						{
+							"file": "filler_29.sql",
+							"coreMs": 1.01400000000001,
+							"adapterMs": 1.0456250000000296,
+							"phases": {
+								"conditionalMs": 0.002625000000023192,
+								"setupMs": 0.025959000000000287,
+								"lexerMs": 0.06158299999998462,
+								"sllParseMs": 0.8469169999999622,
+								"llParseMs": 0,
+								"totalMs": 0.9417500000000132
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 203,
+							"hiddenTokens": 161,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 462749696
+						}
+					],
+					"pass": {
+						"file": "filler_29.sql",
+						"coreMs": 0.9432920000000422,
+						"adapterMs": 0.9677919999999176,
+						"phases": {
+							"conditionalMs": 0.003624999999942702,
+							"setupMs": 0.015874000000053456,
+							"lexerMs": 0.05245800000000145,
+							"sllParseMs": 0.8908340000000408,
+							"llParseMs": 0,
+							"totalMs": 0.9677919999999176
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 203,
+						"hiddenTokens": 161,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 482934784
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:46:59.477Z",
+					"cold": {
+						"coreMs": 70.556417,
+						"adapterMs": 1502.873125,
+						"phases": {
+							"setupMs": 1432.232543,
+							"lexerMs": 7.728667,
+							"parseMs": 62.82775
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 203,
+						"hiddenTokens": 161,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 155545600,
+						"file": "filler_29.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.407124,
+							"adapterMs": 0.449,
+							"phases": {
+								"setupMs": 0.029042,
+								"lexerMs": 0.059291,
+								"parseMs": 0.348458
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 203,
+							"hiddenTokens": 161,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 158679040,
+							"file": "filler_29.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_29.sql",
+						"coreMs": 0.141084,
+						"adapterMs": 0.17725,
+						"phases": {
+							"setupMs": 0.022584,
+							"lexerMs": 0.038125,
+							"parseMs": 0.102959
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 203,
+						"hiddenTokens": 161,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294031360
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 42,
+				"path": "filler_30.sql",
+				"file": "filler_30.sql",
+				"bytes": 1048,
+				"lines": 46,
+				"sha256": "c1927cb7d32b2dafa1cda7b3684bc3bb3e8ee5e37b7659a7d4e0f0b89940c0ba"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:00.730Z",
+					"cold": {
+						"file": "filler_30.sql",
+						"coreMs": 66.94341700000001,
+						"adapterMs": 67.450625,
+						"phases": {
+							"conditionalMs": 0.21779100000003382,
+							"setupMs": 0.23162499999995134,
+							"lexerMs": 7.785167000000001,
+							"sllParseMs": 59.15825000000001,
+							"llParseMs": 0,
+							"totalMs": 67.450625
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 208,
+						"hiddenTokens": 165,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 463437824
+					},
+					"warmSamples": [
+						{
+							"file": "filler_30.sql",
+							"coreMs": 1.0753750000000082,
+							"adapterMs": 1.111750000000029,
+							"phases": {
+								"conditionalMs": 0.0025829999999587017,
+								"setupMs": 0.01675000000000182,
+								"lexerMs": 0.06345800000002555,
+								"sllParseMs": 0.9140830000000051,
+								"llParseMs": 0,
+								"totalMs": 1.0014170000000036
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 208,
+							"hiddenTokens": 165,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 463421440
+						}
+					],
+					"pass": {
+						"file": "filler_30.sql",
+						"coreMs": 0.9918749999999363,
+						"adapterMs": 1.0106250000000045,
+						"phases": {
+							"conditionalMs": 0.0024580000000469227,
+							"setupMs": 0.011959000000047126,
+							"lexerMs": 0.05124999999998181,
+							"sllParseMs": 0.9406249999999545,
+							"llParseMs": 0,
+							"totalMs": 1.0106250000000045
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 208,
+						"hiddenTokens": 165,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 483147776
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:04.106Z",
+					"cold": {
+						"coreMs": 70.597792,
+						"adapterMs": 1517.651667,
+						"phases": {
+							"setupMs": 1446.975584,
+							"lexerMs": 7.936875,
+							"parseMs": 62.660917
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 208,
+						"hiddenTokens": 165,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 156790784,
+						"file": "filler_30.sql"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.446959,
+							"adapterMs": 0.4895,
+							"phases": {
+								"setupMs": 0.032375,
+								"lexerMs": 0.071917,
+								"parseMs": 0.366334
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 208,
+							"hiddenTokens": 165,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 159002624,
+							"file": "filler_30.sql"
+						}
+					],
+					"pass": {
+						"file": "filler_30.sql",
+						"coreMs": 0.221626,
+						"adapterMs": 0.261083,
+						"phases": {
+							"setupMs": 0.026334,
+							"lexerMs": 0.041042,
+							"parseMs": 0.180584
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 208,
+						"hiddenTokens": 165,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294031360
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 43,
+				"path": "synthetic_2.pkb",
+				"file": "synthetic_2.pkb",
+				"bytes": 1370,
+				"lines": 59,
+				"sha256": "d244edd398541056301a883cbab41a75cf07ce7d43e1315afaaa15daa3c0a8b1"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:06.031Z",
+					"cold": {
+						"file": "synthetic_2.pkb",
+						"coreMs": 298.46283300000005,
+						"adapterMs": 299.036041,
+						"phases": {
+							"conditionalMs": 0.22374999999999545,
+							"setupMs": 0.2722919999999931,
+							"lexerMs": 22.392916000000014,
+							"sllParseMs": 276.06991700000003,
+							"llParseMs": 0,
+							"totalMs": 299.036041
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 275,
+						"hiddenTokens": 217,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 480264192
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_2.pkb",
+							"coreMs": 3.6358750000000555,
+							"adapterMs": 3.6663750000000164,
+							"phases": {
+								"conditionalMs": 0.003291999999987638,
+								"setupMs": 0.02208399999994981,
+								"lexerMs": 0.10404100000005201,
+								"sllParseMs": 3.299874999999929,
+								"llParseMs": 0,
+								"totalMs": 3.4357089999999744
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 275,
+							"hiddenTokens": 217,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 479444992
+						}
+					],
+					"pass": {
+						"file": "synthetic_2.pkb",
+						"coreMs": 3.52412599999991,
+						"adapterMs": 3.5449579999999514,
+						"phases": {
+							"conditionalMs": 0.002250000000003638,
+							"setupMs": 0.013249999999970896,
+							"lexerMs": 0.0907919999999649,
+							"sllParseMs": 3.4333339999999453,
+							"llParseMs": 0,
+							"totalMs": 3.5449579999999514
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 275,
+						"hiddenTokens": 217,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 483213312
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:09.681Z",
+					"cold": {
+						"coreMs": 209.387958,
+						"adapterMs": 1652.579001,
+						"phases": {
+							"setupMs": 1443.089293,
+							"lexerMs": 11.571625,
+							"parseMs": 197.816333
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 275,
+						"hiddenTokens": 217,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 277196800,
+						"file": "synthetic_2.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.710541,
+							"adapterMs": 0.765583,
+							"phases": {
+								"setupMs": 0.037333,
+								"lexerMs": 0.092792,
+								"parseMs": 0.556666
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 275,
+							"hiddenTokens": 217,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 271003648,
+							"file": "synthetic_2.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_2.pkb",
+						"coreMs": 0.492751,
+						"adapterMs": 0.542792,
+						"phases": {
+							"setupMs": 0.033166,
+							"lexerMs": 0.091959,
+							"parseMs": 0.400792
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 275,
+						"hiddenTokens": 217,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294039552
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 44,
+				"path": "synthetic_3.pkb",
+				"file": "synthetic_3.pkb",
+				"bytes": 2290,
+				"lines": 95,
+				"sha256": "1237c4d0cc632520aa55e89f017950805861131632171d49e5c83ca8b640bb26"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:11.641Z",
+					"cold": {
+						"file": "synthetic_3.pkb",
+						"coreMs": 283.99249999999995,
+						"adapterMs": 284.6092909999999,
+						"phases": {
+							"conditionalMs": 0.21454199999999446,
+							"setupMs": 0.3254999999999768,
+							"lexerMs": 14.402041999999994,
+							"sllParseMs": 269.59045799999996,
+							"llParseMs": 0,
+							"totalMs": 284.6092909999999
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 459,
+						"hiddenTokens": 369,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 480821248
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_3.pkb",
+							"coreMs": 5.695541000000048,
+							"adapterMs": 5.75754100000006,
+							"phases": {
+								"conditionalMs": 0.006958000000054199,
+								"setupMs": 0.03587500000014643,
+								"lexerMs": 0.18074999999998909,
+								"sllParseMs": 5.439875000000029,
+								"llParseMs": 0,
+								"totalMs": 5.6740839999999935
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 459,
+							"hiddenTokens": 369,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 479985664
+						}
+					],
+					"pass": {
+						"file": "synthetic_3.pkb",
+						"coreMs": 5.419749999999908,
+						"adapterMs": 5.451749999999947,
+						"phases": {
+							"conditionalMs": 0.003375000000005457,
+							"setupMs": 0.020833999999922526,
+							"lexerMs": 0.10912499999994907,
+							"sllParseMs": 5.310624999999959,
+							"llParseMs": 0,
+							"totalMs": 5.451749999999947
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 459,
+						"hiddenTokens": 369,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 483409920
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:15.267Z",
+					"cold": {
+						"coreMs": 202.214751,
+						"adapterMs": 1639.890793,
+						"phases": {
+							"setupMs": 1437.563751,
+							"lexerMs": 10.202042,
+							"parseMs": 192.012709
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 459,
+						"hiddenTokens": 369,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 268234752,
+						"file": "synthetic_3.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 0.831791,
+							"adapterMs": 1.017458,
+							"phases": {
+								"setupMs": 0.065375,
+								"lexerMs": 0.163833,
+								"parseMs": 0.668625
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 459,
+							"hiddenTokens": 369,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 267886592,
+							"file": "synthetic_3.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_3.pkb",
+						"coreMs": 0.513249,
+						"adapterMs": 0.586042,
+						"phases": {
+							"setupMs": 0.045166,
+							"lexerMs": 0.101791,
+							"parseMs": 0.411458
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 459,
+						"hiddenTokens": 369,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294039552
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 45,
+				"path": "synthetic_4.pkb",
+				"file": "synthetic_4.pkb",
+				"bytes": 4142,
+				"lines": 167,
+				"sha256": "581aebcab6df310718c6cca2c5ebd6aa92ce727866228c283ba2ed96c77e4354"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:17.268Z",
+					"cold": {
+						"file": "synthetic_4.pkb",
+						"coreMs": 287.21008400000005,
+						"adapterMs": 287.8705,
+						"phases": {
+							"conditionalMs": 0.21220900000002985,
+							"setupMs": 0.3517490000000407,
+							"lexerMs": 14.155334000000039,
+							"sllParseMs": 273.05475,
+							"llParseMs": 0,
+							"totalMs": 287.8705
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 827,
+						"hiddenTokens": 673,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 480870400
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_4.pkb",
+							"coreMs": 10.562874999999963,
+							"adapterMs": 10.642749999999978,
+							"phases": {
+								"conditionalMs": 0.006582999999977801,
+								"setupMs": 0.03670899999997346,
+								"lexerMs": 0.23562500000002728,
+								"sllParseMs": 9.533832999999959,
+								"llParseMs": 0,
+								"totalMs": 9.827792000000045
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 827,
+							"hiddenTokens": 673,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 488095744
+						}
+					],
+					"pass": {
+						"file": "synthetic_4.pkb",
+						"coreMs": 9.181499999999915,
+						"adapterMs": 9.231667000000016,
+						"phases": {
+							"conditionalMs": 0.004332999999974163,
+							"setupMs": 0.03254200000003493,
+							"lexerMs": 0.162166999999954,
+							"sllParseMs": 9.01933299999996,
+							"llParseMs": 0,
+							"totalMs": 9.231667000000016
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 827,
+						"hiddenTokens": 673,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 483704832
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:20.912Z",
+					"cold": {
+						"coreMs": 205.034001,
+						"adapterMs": 1647.528084,
+						"phases": {
+							"setupMs": 1442.360458,
+							"lexerMs": 10.245417,
+							"parseMs": 194.788584
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 827,
+						"hiddenTokens": 673,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 270049280,
+						"file": "synthetic_4.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 1.182083,
+							"adapterMs": 1.333125,
+							"phases": {
+								"setupMs": 0.093124,
+								"lexerMs": 0.254542,
+								"parseMs": 0.839875
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 827,
+							"hiddenTokens": 673,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 294858752,
+							"file": "synthetic_4.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_4.pkb",
+						"coreMs": 0.896708,
+						"adapterMs": 1.001625,
+						"phases": {
+							"setupMs": 0.0595,
+							"lexerMs": 0.149875,
+							"parseMs": 0.746833
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 827,
+						"hiddenTokens": 673,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294051840
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 46,
+				"path": "synthetic_5.pkb",
+				"file": "synthetic_5.pkb",
+				"bytes": 7854,
+				"lines": 311,
+				"sha256": "2c273acaec8c4fdf80d5ea3d5d119437a5caee3586a47bbcbf490f3ef57bc55b"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:22.954Z",
+					"cold": {
+						"file": "synthetic_5.pkb",
+						"coreMs": 297.422458,
+						"adapterMs": 298.191667,
+						"phases": {
+							"conditionalMs": 0.22695900000002212,
+							"setupMs": 0.42016700000004903,
+							"lexerMs": 14.460916999999995,
+							"sllParseMs": 282.961541,
+							"llParseMs": 0,
+							"totalMs": 298.191667
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 1563,
+						"hiddenTokens": 1281,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 480935936
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_5.pkb",
+							"coreMs": 17.03491699999995,
+							"adapterMs": 17.146417000000042,
+							"phases": {
+								"conditionalMs": 0.007958000000030552,
+								"setupMs": 0.07562600000005659,
+								"lexerMs": 0.341542000000004,
+								"sllParseMs": 11.876499999999965,
+								"llParseMs": 0,
+								"totalMs": 12.32725000000005
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 1563,
+							"hiddenTokens": 1281,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 487292928
+						}
+					],
+					"pass": {
+						"file": "synthetic_5.pkb",
+						"coreMs": 17.376290999999924,
+						"adapterMs": 17.468166999999994,
+						"phases": {
+							"conditionalMs": 0.004457999999999629,
+							"setupMs": 0.05966599999999289,
+							"lexerMs": 0.2747909999999365,
+							"sllParseMs": 17.101499999999987,
+							"llParseMs": 0,
+							"totalMs": 17.468166999999994
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 1563,
+						"hiddenTokens": 1281,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 485720064
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:26.612Z",
+					"cold": {
+						"coreMs": 206.847917,
+						"adapterMs": 1661.650667,
+						"phases": {
+							"setupMs": 1454.633126,
+							"lexerMs": 12.999167,
+							"parseMs": 193.84875
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 1563,
+						"hiddenTokens": 1281,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 269803520,
+						"file": "synthetic_5.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 1.608375,
+							"adapterMs": 1.861042,
+							"phases": {
+								"setupMs": 0.155625,
+								"lexerMs": 0.4295,
+								"parseMs": 1.283708
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 1563,
+							"hiddenTokens": 1281,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 273846272,
+							"file": "synthetic_5.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_5.pkb",
+						"coreMs": 1.556501,
+						"adapterMs": 1.79175,
+						"phases": {
+							"setupMs": 0.151083,
+							"lexerMs": 0.250209,
+							"parseMs": 1.306292
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 1563,
+						"hiddenTokens": 1281,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294121472
+					}
+				}
+			}
+		},
+		{
+			"file": {
+				"id": 47,
+				"path": "synthetic_6.pkb",
+				"file": "synthetic_6.pkb",
+				"bytes": 15278,
+				"lines": 599,
+				"sha256": "537ac5742b97ad0560f54dec8e22edd475f72bdb4d8b393b0b847cd64ecdb780"
+			},
+			"adapters": {
+				"typescript": {
+					"observedAt": "2026-10-26T09:47:28.737Z",
+					"cold": {
+						"file": "synthetic_6.pkb",
+						"coreMs": 316.97633299999995,
+						"adapterMs": 317.845959,
+						"phases": {
+							"conditionalMs": 0.22324999999995043,
+							"setupMs": 0.48758299999997234,
+							"lexerMs": 14.879458,
+							"sllParseMs": 302.09687499999995,
+							"llParseMs": 0,
+							"totalMs": 317.845959
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 3035,
+						"hiddenTokens": 2497,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 486457344
+					},
+					"warmSamples": [
+						{
+							"file": "synthetic_6.pkb",
+							"coreMs": 25.67245700000001,
+							"adapterMs": 25.880457999999976,
+							"phases": {
+								"conditionalMs": 0.012124999999969077,
+								"setupMs": 0.1285010000000284,
+								"lexerMs": 0.48233300000003965,
+								"sllParseMs": 19.993875000000003,
+								"llParseMs": 0,
+								"totalMs": 20.66116700000009
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 3035,
+							"hiddenTokens": 2497,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 499712000
+						}
+					],
+					"pass": {
+						"file": "synthetic_6.pkb",
+						"coreMs": 24.02095900000006,
+						"adapterMs": 24.21950000000004,
+						"phases": {
+							"conditionalMs": 0.008665999999948326,
+							"setupMs": 0.12283300000001418,
+							"lexerMs": 0.5485419999999976,
+							"sllParseMs": 23.472417000000064,
+							"llParseMs": 0,
+							"totalMs": 24.21950000000004
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 3035,
+						"hiddenTokens": 2497,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 486604800
+					}
+				},
+				"java": {
+					"observedAt": "2026-10-26T09:47:32.411Z",
+					"cold": {
+						"coreMs": 213.528291,
+						"adapterMs": 1672.837293,
+						"phases": {
+							"setupMs": 1459.074084,
+							"lexerMs": 10.897708,
+							"parseMs": 202.630583
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 3035,
+						"hiddenTokens": 2497,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 263880704,
+						"file": "synthetic_6.pkb"
+					},
+					"warmSamples": [
+						{
+							"coreMs": 5.348958,
+							"adapterMs": 5.627875,
+							"phases": {
+								"setupMs": 0.155792,
+								"lexerMs": 0.490042,
+								"parseMs": 4.893958
+							},
+							"lexerDiagnostics": 0,
+							"parseDiagnostics": 0,
+							"tokens": 3035,
+							"hiddenTokens": 2497,
+							"prediction": "sll",
+							"sllAttempts": 1,
+							"llAttempts": 0,
+							"peakRssBytes": 289857536,
+							"file": "synthetic_6.pkb"
+						}
+					],
+					"pass": {
+						"file": "synthetic_6.pkb",
+						"coreMs": 2.784583,
+						"adapterMs": 3.181125,
+						"phases": {
+							"setupMs": 0.221708,
+							"lexerMs": 0.416041,
+							"parseMs": 2.368542
+						},
+						"lexerDiagnostics": 0,
+						"parseDiagnostics": 0,
+						"tokens": 3035,
+						"hiddenTokens": 2497,
+						"prediction": "sll",
+						"sllAttempts": 1,
+						"llAttempts": 0,
+						"peakRssBytes": 294260736
+					}
+				}
+			}
+		}
+	],
+	"failures": []
+}
