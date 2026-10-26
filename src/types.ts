@@ -54,6 +54,7 @@ export type ParseObservation = Readonly<{
 /** One measurement of one file. */
 export type ParsedFileRun = Readonly<{
 	observedAt: string;
+	coldSamples: readonly ParseObservation[];
 	cold: ParseObservation;
 	warmSamples: readonly ParseObservation[];
 	pass: ParseObservation;
@@ -62,6 +63,8 @@ export type ParsedFileRun = Readonly<{
 /** Adapter contract implemented by every language harness. */
 export type ParserAdapter = Readonly<{
 	identity: ParserIdentity;
+	/** Prepares generated artifacts or container images outside measured intervals. */
+	prepare?: () => Promise<void>;
 	/**
 	 * Runs a cold parse, a warm repeated parse, and one corpus pass.
 	 *
@@ -85,7 +88,11 @@ export type ParserAdapter = Readonly<{
 /** Statistics for one metric. */
 export type MetricStatistics = Readonly<{
 	count: number;
+	min: number;
 	mean: number;
+	standardDeviation: number;
+	coefficientOfVariation: number;
+	meanCi95: Readonly<{ lower: number; upper: number }>;
 	p50: number;
 	p95: number;
 	p99: number;
@@ -115,7 +122,17 @@ export type BenchmarkReport = Readonly<{
 		coldRepeats: number;
 		defaultSchema: string;
 	}>;
-	aggregate: Readonly<Record<string, Readonly<Record<'cold' | 'coldAdapter' | 'coldSetup' | 'warm' | 'pass', MetricStatistics>>>>;
+	aggregate: Readonly<
+		Record<
+			string,
+			Readonly<
+				Record<
+					'cold' | 'coldAdapter' | 'coldSetup' | 'coldCampaignCore' | 'coldCampaignAdapter' | 'coldCampaignSetup' | 'warm' | 'pass',
+					MetricStatistics
+				>
+			>
+		>
+	>;
 	perFile: readonly Readonly<{
 		file: CorpusFile;
 		adapters: Readonly<Record<string, ParsedFileRun>>;

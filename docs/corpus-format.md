@@ -35,7 +35,9 @@ corpus/
 ```
 
 `path` is the stable source identity used in reports. `file` is the relative
-path under `files/`. They are normally identical.
+path under `files/`. They are identical. Private corpus generation replaces the
+original relative path with an opaque sequential identity while retaining the
+extension required by corpus selection.
 
 `root` is informational. Consumers locate content relative to the manifest.
 
@@ -56,7 +58,7 @@ Private corpora must not be committed. A private report may contain:
 - corpus id and selection method;
 - file count, byte count, and digests;
 - per-file byte sizes and timings;
-- opaque file identifiers.
+- opaque file identifiers (mandatory for generated private manifests).
 
 A private report must not contain:
 

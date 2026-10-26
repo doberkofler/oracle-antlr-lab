@@ -144,7 +144,7 @@ const parse = (source: string, entry: FileEntry): Observation => {
 		prediction: llAttempts > 0 ? 'sll-fallback-ll' : 'sll',
 		sllAttempts: 1,
 		llAttempts,
-		peakRssBytes: process.memoryUsage().rss,
+		peakRssBytes: process.resourceUsage().maxRSS * 1024,
 	};
 };
 
@@ -164,11 +164,21 @@ const merge = (observations: readonly Observation[]): Observation => {
 };
 
 const sourceOf = (entry: FileEntry): string => readFileSync(path.join(filesDir, entry.file), 'utf8');
-const results = selected.map((entry) => {
+const campaignStartedAt = performance.now();
+const results = selected.map((entry, selectedIndex) => {
 	const source = sourceOf(entry);
+	const finish = (result: Readonly<{ observation: Observation; samples?: readonly Observation[] }>) => {
+		if (stage === 'pass' && (selectedIndex === 0 || (selectedIndex + 1) % 10 === 0 || selectedIndex + 1 === selected.length)) {
+			const completed = selectedIndex + 1;
+			const elapsedMs = performance.now() - campaignStartedAt;
+			process.stderr.write(`[${String(completed)}/${String(selected.length)}] elapsed ${formatDuration(elapsedMs)}\n`);
+		}
+
+		return result;
+	};
 
 	if (stage !== 'warm') {
-		return { observation: parse(source, entry) };
+		return finish({ observation: parse(source, entry) });
 	}
 
 	for (let warmup = 0; warmup < warmups; warmup += 1) {
@@ -176,7 +186,13 @@ const results = selected.map((entry) => {
 	}
 
 	const samples = Array.from({ length: iterations }, () => parse(source, entry));
-	return { observation: merge(samples), samples };
+	return finish({ observation: merge(samples), samples });
 });
 
 process.stdout.write(`${JSON.stringify({ stage, files: results })}\n`);
+
+function formatDuration(milliseconds: number): string {
+	const seconds = Math.max(0, Math.round(milliseconds / 1_000));
+	const minutes = Math.floor(seconds / 60);
+	return `${String(minutes)}m ${String(seconds % 60).padStart(2, '0')}s`;
+}

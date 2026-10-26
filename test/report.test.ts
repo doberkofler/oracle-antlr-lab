@@ -29,6 +29,7 @@ const observation = (coreMs: number): ParseObservation => ({
 });
 const run: ParsedFileRun = {
 	observedAt: '2026-01-01T00:00:00.000Z',
+	coldSamples: [observation(10)],
 	cold: observation(10),
 	warmSamples: [observation(8), observation(9)],
 	pass: observation(12),

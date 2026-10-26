@@ -139,9 +139,11 @@ if (selected.length === 0) {
 }
 
 const perFile: { file: (typeof files)[number]; adapters: Record<string, import('../src/types.ts').ParsedFileRun> }[] = [];
+const campaignStartedAt = performance.now();
+
+process.stdout.write(`Starting ${String(files.length)} files; ETA available after the first file.\n`);
 
 for (const [position, file] of files.entries()) {
-	process.stdout.write(`[${String(position + 1)}/${String(files.length)}] ${file.path}\n`);
 	const result = await runFile({
 		file,
 		adapters: Object.fromEntries(selected.map((adapter) => [adapter.identity.name, adapter])),
@@ -151,6 +153,13 @@ for (const [position, file] of files.entries()) {
 	});
 	perFile.push({ file, adapters: result.runs });
 	failures.push(...result.failures);
+	const completed = position + 1;
+	const elapsedMs = performance.now() - campaignStartedAt;
+	const remainingMs = (elapsedMs / completed) * (files.length - completed);
+	const completesAt = new Date(Date.now() + remainingMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+	process.stdout.write(
+		`[${String(completed)}/${String(files.length)}] ${file.path} — elapsed ${formatDuration(elapsedMs)}, ETA ${formatDuration(remainingMs)} (~${completesAt})\n`,
+	);
 }
 
 // A shared pass must run once per adapter, not once per file.
@@ -193,4 +202,13 @@ for (const [name, aggregate] of Object.entries(report.aggregate)) {
 	process.stdout.write(
 		`${name}: cold core p50 ${aggregate.cold.p50.toFixed(3)} ms, cold adapter p50 ${aggregate.coldAdapter.p50.toFixed(3)} ms, setup p50 ${aggregate.coldSetup.p50.toFixed(3)} ms, warm p50 ${aggregate.warm.p50.toFixed(3)} ms, pass sum ${(aggregate.pass.mean * aggregate.pass.count).toFixed(3)} ms\n`,
 	);
+}
+
+function formatDuration(milliseconds: number): string {
+	const seconds = Math.max(0, Math.round(milliseconds / 1_000));
+	const hours = Math.floor(seconds / 3_600);
+	const minutes = Math.floor((seconds % 3_600) / 60);
+	const remainingSeconds = seconds % 60;
+
+	return hours > 0 ? `${String(hours)}h ${String(minutes).padStart(2, '0')}m` : `${String(minutes)}m ${String(remainingSeconds).padStart(2, '0')}s`;
 }

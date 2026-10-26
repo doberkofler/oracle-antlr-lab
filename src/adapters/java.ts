@@ -1,12 +1,29 @@
+import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
 import { type CorpusManifest, type ParseObservation, type ParserAdapter } from '../types.ts';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
-const image = 'oracle-antlr-lab-java:0.1.0';
+const imageInputs = [
+	'grammar/upstream/PlSqlLexer.g4',
+	'grammar/upstream/PlSqlParser.g4',
+	'java/Dockerfile',
+	'java/pom.xml',
+	'java/src/Main.java',
+	'java/src/PlSqlLexerBase.java',
+	'java/src/PlSqlParserBase.java',
+];
+const imageDigest = createHash('sha256');
 
-const docker = (args: readonly string[], inherit = false): Promise<string> =>
+for (const file of imageInputs) {
+	imageDigest.update(file);
+	imageDigest.update(readFileSync(path.join(root, file)));
+}
+
+const image = `oracle-antlr-lab-java:${imageDigest.digest('hex').slice(0, 12)}`;
+
+const docker = (args: readonly string[], inherit = false, forwardStderr = false): Promise<string> =>
 	new Promise((resolve, reject) => {
 		const child = spawn('docker', args, { cwd: root, stdio: inherit ? 'inherit' : ['ignore', 'pipe', 'pipe'] });
 		let stdout = '';
@@ -20,6 +37,10 @@ const docker = (args: readonly string[], inherit = false): Promise<string> =>
 			});
 			child.stderr.on('data', (chunk: string) => {
 				stderr += chunk;
+
+				if (forwardStderr) {
+					process.stderr.write(`[java] ${chunk}`);
+				}
 			});
 		}
 
@@ -74,6 +95,39 @@ const runJava = async (
 	return { ...parsed, file: entry.path };
 };
 
+export type JavaRuleProfile = Readonly<{
+	rule: string;
+	timeInPredictionNs: number;
+	invocations: number;
+	sllAtnTransitions: number;
+	sllDfaTransitions: number;
+	llAtnTransitions: number;
+	llDfaTransitions: number;
+	llFallbacks: number;
+	ambiguities: number;
+}>;
+
+/** Profiles selected opaque corpus files with ANTLR's Java profiling simulator. */
+export const runJavaProfile = async (
+	input: Readonly<{ manifestPath: string; indexes: readonly number[] }>,
+): Promise<Readonly<{ files: number; elapsedMs: number; profiles: readonly JavaRuleProfile[] }>> => {
+	await ensureImage();
+	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
+	const corpusRoot = path.dirname(input.manifestPath);
+	const byId = new Map(manifest.files.map((file) => [file.id, file]));
+	const paths = input.indexes.map((index) => {
+		const entry = byId.get(index);
+
+		if (entry === undefined) {
+			throw new Error(`No corpus entry with index ${String(index)}`);
+		}
+
+		return `/corpus/files/${entry.file}`;
+	});
+	const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'profile', ...paths], false, true);
+	return JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{ files: number; elapsedMs: number; profiles: readonly JavaRuleProfile[] }>;
+};
+
 /**
  * Java-target adapter.
  *
@@ -87,8 +141,13 @@ export const javaAdapter: ParserAdapter = {
 		grammar: 'pinned upstream grammars-v4, unmodified target',
 		runtime: 'antlr4-runtime 4.13.2',
 		generator: 'antlr4-maven-plugin 4.13.2',
-		extra: { metric: 'lexer + SLL parse', process: 'fresh Docker JVM per file', onePass: 'one JVM over selected files; parser instance per file' },
+		extra: {
+			metric: 'lexer + SLL parse',
+			process: 'fresh Docker JVM per cold/warm invocation; JVM and container startup are not timed',
+			onePass: 'one JVM; parser instances are per file; generated lexer/parser DFA caches persist across files',
+		},
 	},
+	prepare: ensureImage,
 	run: async (input) => {
 		await ensureImage();
 		const cold = await runJava({ ...input, mode: 'cold' });
@@ -109,7 +168,7 @@ export const javaAdapter: ParserAdapter = {
 
 			return `/corpus/files/${entry.file}`;
 		});
-		const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'pass', ...paths]);
+		const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'pass', ...paths], false, true);
 		const parsed = JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{
 			files: readonly (Omit<ParseObservation, 'file'> & { file: string })[];
 		}>;

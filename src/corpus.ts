@@ -66,7 +66,7 @@ const parseManifest = (manifestPath: string): CorpusManifest => {
  * @param limit - Sample size.
  * @returns Selected files, unique and sorted by manifest id.
  */
-export const quantileSample = (files: readonly CorpusFile[], limit: number): readonly CorpusFile[] => {
+export const quantileSample = <File extends CorpusFile>(files: readonly File[], limit: number): readonly File[] => {
 	if (limit >= files.length) {
 		return files;
 	}
@@ -76,7 +76,7 @@ export const quantileSample = (files: readonly CorpusFile[], limit: number): rea
 	}
 
 	const sorted = [...files].sort((left, right) => left.bytes - right.bytes || left.path.localeCompare(right.path));
-	const selected = new Map<string, CorpusFile>();
+	const selected = new Map<string, File>();
 
 	for (let index = 0; index < limit; index += 1) {
 		const position = Math.round((limit === 1 ? 1 : index / (limit - 1)) * (sorted.length - 1));
@@ -123,17 +123,20 @@ export const buildManifest = (
 		throw new Error(`No Oracle source files under ${input.sourceRoot}`);
 	}
 
-	const candidates: CorpusFile[] = files.map((file, index) => {
+	const candidates: (CorpusFile & Readonly<{ sourceFile: string }>)[] = files.map((file, index) => {
 		const relative = relativePosix(input.sourceRoot, file.absolute);
 		const content = readFileSync(file.absolute);
+		const opaque = `source-${String(index).padStart(6, '0')}${path.extname(relative).toLowerCase()}`;
+		const publishedPath = input.visibility === 'private' ? opaque : relative;
 
 		return {
 			id: index,
-			path: relative,
-			file: relative,
+			path: publishedPath,
+			file: publishedPath,
 			bytes: file.bytes,
 			lines: content.toString('utf8').split(/\r?\n/u).length,
 			sha256: createHash('sha256').update(content).digest('hex'),
+			sourceFile: file.absolute,
 		};
 	});
 	const selected = quantileSample(candidates, input.limit ?? candidates.length);
@@ -142,7 +145,7 @@ export const buildManifest = (
 	for (const file of selected) {
 		const target = path.join(filesRoot, file.file);
 		mkdirSync(path.dirname(target), { recursive: true });
-		writeFileSync(target, readFileSync(path.join(input.sourceRoot, file.file)));
+		writeFileSync(target, readFileSync(file.sourceFile));
 	}
 
 	const manifest: CorpusManifest = {
@@ -153,7 +156,7 @@ export const buildManifest = (
 		sourceFiles: files.length,
 		sourceBytes: files.reduce((total, file) => total + file.bytes, 0),
 		selection: `Size quantiles over ${String(files.length)} files; ${String(selected.length)} selected`,
-		files: selected.map((file, index) => ({ ...file, id: index })),
+		files: selected.map(({ sourceFile: _sourceFile, ...file }, index) => ({ ...file, id: index })),
 	};
 
 	mkdirSync(input.outputRoot, { recursive: true });

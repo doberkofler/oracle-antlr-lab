@@ -1,0 +1,27 @@
+{
+	"experiment": "002-stable-public-baseline",
+	"question": "Are cold parser measurements stable across three fresh-process repetitions on the complete public corpus?",
+	"hypothesis": "Three cold repetitions produce bounded campaign variance while preserving zero-diagnostic results for both adapters.",
+	"command": "node scripts/benchmark.ts --files 48 --iterations 5 --warmups 1 --cold-repeats 3 --adapters typescript,java --experiment 002-stable-public-baseline --hypothesis 'Three cold repetitions quantify baseline variance for both adapters on all 48 public files.'",
+	"corpus": "public-synthetic",
+	"selection": "all 48 files",
+	"config": {
+		"iterations": 5,
+		"warmups": 1,
+		"coldRepeats": 3,
+		"defaultSchema": "BENCH"
+	},
+	"adapters": ["typescript", "java"],
+	"acceptance": [
+		"Both adapters complete without harness failures.",
+		"Every public corpus file parses without lexer or parser diagnostics.",
+		"All 144 cold observations per adapter are retained.",
+		"Campaign mean, sample standard deviation, coefficient of variation, and deterministic percentile-bootstrap 95% confidence interval are reported."
+	],
+	"limitations": [
+		"Public synthetic corpus, not a production workload.",
+		"Three campaign totals provide only low-confidence uncertainty estimates.",
+		"In-process timers exclude Node/JVM/container startup and eager generated-module initialization.",
+		"No semantic qualification is performed."
+	]
+}

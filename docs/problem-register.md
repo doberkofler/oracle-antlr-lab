@@ -88,7 +88,30 @@ construction, and reduce steady parser work. They are not the same bottleneck.
 5. Do grammar fixes reduce recovery cost without increasing ambiguity?
 6. Does an official Java target or another runtime change the constant factor?
 
-## 7. Out of scope
+## 7. Production-scale finding
+
+Experiments
+[`003-production-scale`](../experiments/003-production-scale/conclusion.md) and
+[`004-bottleneck-profile`](../experiments/004-bottleneck-profile/conclusion.md)
+answer the first three performance questions on the frozen 1,244-file corpus.
+
+- TypeScript parser core averaged 156.093 s and peaked at 4.710 GB RSS. This is
+  within 6.1% of the historical 147.134 s / 5.018 GB result, so that result is
+  reproduced rather than rejected.
+- Parser core alone is 17.36× the retained structural full-rebuild build stage
+  and 10.57× the retained structural cold-build stage. These conservative
+  comparisons are broader than a phase-identical parser comparison.
+- The largest byte-size quartile consumes 84.1% of TypeScript parser core.
+- Setup is 0.07% and lexing is 0.44% of parser core. SLL consumes 54.47%; LL
+  fallback consumes 45.09% despite occurring in only 10.4% of files.
+- On the 12 highest-cost files, `general_element_part`, `routine_name`, and
+  `general_element` consume 63.0% of Java profiling elapsed time. The latter two
+  rules account for 12,727 recorded ambiguities.
+
+Java parser core averaged 40.106 s, but its unmodified grammar retained 486
+diagnostics. This is a constant-factor result, not semantic acceptance evidence.
+
+## 8. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.
 - PL/Scope normalization and release gates.

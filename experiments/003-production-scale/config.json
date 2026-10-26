@@ -1,0 +1,34 @@
+{
+	"experiment": "003-production-scale",
+	"question": "Does the pinned parser reproduce the historical production-scale latency and memory result on the current frozen corpus?",
+	"hypothesis": "A complete cache-reuse pass remains an order of magnitude slower than the retained structural full-rebuild build stage, with large files and LL fallback dominating parser cost.",
+	"command": "node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 003-production-scale",
+	"corpus": "private-production-20261027",
+	"selection": "all 1,244 files; opaque identities; 20,944,414 bytes",
+	"config": {
+		"repeats": 3,
+		"processes": "one fresh process per adapter repetition",
+		"pass": "one parser instance per file; generated DFA caches persist within each repetition",
+		"strata": "four equal-count strata ordered by source bytes"
+	},
+	"adapters": ["typescript", "java"],
+	"acceptance": [
+		"The committed report contains no source text, original path, object name, credential, or absolute private path.",
+		"All 1,244 files are observed in every measured repetition.",
+		"Wall, parser core, phase totals, LL fallback count, diagnostics, and process peak RSS are reported.",
+		"Mean, sample standard deviation, coefficient of variation, and deterministic percentile-bootstrap 95% confidence intervals are retained.",
+		"Results are stratified into four equal-count byte-size strata."
+	],
+	"comparators": {
+		"historicalAntlrParserMs": 147133.566,
+		"historicalAntlrPeakRssBytes": 5018288128,
+		"currentStructuralFullRebuildBuildMedianMs": 8994,
+		"currentStructuralFullRebuildPeakRssMedianBytes": 2516353024
+	},
+	"limitations": [
+		"Parser-only passes do not execute semantic extraction, persistence, or qualification.",
+		"The historical corpus had 1,237 files and 20,817,931 bytes; the current frozen corpus has 1,244 files and 20,944,414 bytes.",
+		"Three repetitions provide low-confidence bootstrap intervals.",
+		"The retained structural comparator is a broader full-rebuild build stage; comparing parser core against it is conservative, not phase-identical."
+	]
+}

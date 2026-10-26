@@ -43,6 +43,10 @@ const invoke = (
 		});
 		child.stderr.on('data', (chunk: string) => {
 			stderr += chunk;
+
+			if (input.stage === 'pass') {
+				process.stderr.write(`[typescript] ${chunk}`);
+			}
 		});
 		child.on('error', reject);
 		child.on('close', (code) => {
@@ -73,8 +77,8 @@ export const typeScriptAdapter: ParserAdapter = {
 		generator: 'antlr-ng@1.0.10',
 		extra: {
 			metric: 'lexer + SLL-first parse with LL fallback',
-			process: 'fresh Node.js process per benchmark stage',
-			onePass: 'one process, shared DFA across selected files',
+			process: 'fresh Node.js process per stage; process startup and generated-module initialization are not timed',
+			onePass: 'one process; parser instances are per file; generated lexer/parser DFA caches persist across files',
 		},
 	},
 	run: async (input) => {

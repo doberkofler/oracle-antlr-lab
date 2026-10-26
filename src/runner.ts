@@ -43,6 +43,7 @@ export const runFile = async (
 
 			runs[adapterName] = {
 				observedAt: new Date().toISOString(),
+				coldSamples: observations.map((observation) => observation.cold),
 				cold: medianObservation(observations.map((observation) => observation.cold)),
 				warmSamples: observations.map((observation) => observation.warm),
 				pass: first.pass,

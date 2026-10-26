@@ -1,0 +1,18 @@
+{
+	"experiment": "004-bottleneck-profile",
+	"question": "Do general_element_part, routine_name, and general_element account for a material share of prediction cost on the production tail?",
+	"hypothesis": "The three retained hot rules dominate adaptive prediction on the highest-cost files, with routine_name and general_element causing substantial LL fallback and ambiguity.",
+	"command": "node scripts/profileJava.ts .work/private-production/manifest.json results/003-production-scale/raw-report.json results/004-bottleneck-profile.json",
+	"selection": "12 opaque files with the highest median TypeScript parser-core time in experiment 003",
+	"profiler": "ANTLR 4.13.2 Java ProfilingATNSimulator",
+	"acceptance": [
+		"Only opaque file identities and hashes leave the private corpus.",
+		"Prediction time, invocations, SLL/LL transitions, LL fallback, and ambiguity are reported for all three target rules.",
+		"Profile build/setup time is excluded from the in-container parser profile elapsed time."
+	],
+	"limitations": [
+		"Profiling instrumentation changes absolute runtime; use shares and event counts, not unprofiled wall-time comparison.",
+		"The selection is intentionally tail-biased and does not estimate whole-corpus rule shares.",
+		"Java uses the unmodified upstream target while the production candidate is TypeScript with local adaptations."
+	]
+}

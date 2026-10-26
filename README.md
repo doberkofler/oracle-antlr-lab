@@ -48,18 +48,22 @@ warm samples per file.
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
-conditional compilation preparation, semantic visitors, and process startup.
-`phases.setupMs` records construction and ATN initialization separately.
+conditional compilation preparation, semantic visitors, generated-module
+loading, and process startup. `phases.setupMs` records construction. Lazy ATN
+initialization may be inseparable from first construction; eager initialization
+and Node/JVM startup occur before the timer and are not claimed as measured.
 
-`adapterMs` is the complete harness call around the same source, including
-construction. Cold `adapterMs` is therefore the first-use cost; cold `coreMs` is
-the steady parser work after construction.
+`adapterMs` is the timed in-process call around the same source, including
+construction but excluding process/container startup, source loading, and eager
+generated-module initialization. Cold `adapterMs` is first-use adapter cost, not
+whole-process cold-start cost.
 
 The runner records:
 
 - cold distribution across fresh processes;
 - warm distribution after a declared warmup count;
-- a shared-DFA pass on the selected sample where the adapter supports it;
+- a cache-reuse pass in one process; parser instances are per file while the
+  generated lexer/parser DFA arrays persist across files;
 - lexer and parser diagnostics;
 - visible and hidden token counts;
 - SLL/LL fallback behavior;
@@ -89,10 +93,10 @@ synthetic packages, nested blocks, CASE expressions, loops, conditional
 compilation, and alternative-quoted strings. It is redistributable but is not a
 representative production workload.
 
-Private corpora use the same manifest format:
+Private corpora use opaque file identities in the same manifest format:
 
 ```bash
-pnpm corpus:select -- \
+pnpm corpus:select \
   --root /path/to/oracle/source \
   --output /path/to/private-corpus \
   --id private-production \
@@ -100,8 +104,9 @@ pnpm corpus:select -- \
   --files 40
 ```
 
-The manifest records source paths, byte sizes, and SHA-256 digests. Do not commit
-a private corpus or a report that contains private paths. See
+The manifest records opaque identities, byte sizes, and SHA-256 digests. Original
+relative paths are neither copied into the manifest nor used as copied filenames.
+Do not commit a private corpus or a report that contains private paths. See
 [`docs/corpus-format.md`](docs/corpus-format.md).
 
 ## Adapters
@@ -110,9 +115,9 @@ The TypeScript adapter is the primary target. It runs the actual `antlr4ng`
 runtime against generated recognizers from the pinned grammar.
 
 The Java adapter uses an official ANTLR target in a Docker image. Its pass runs
-all selected files in one JVM with a parser instance per file. That is a
-process-level pass, not a shared-DFA measurement, and is recorded in the adapter
-identity.
+all selected files in one JVM with a parser instance per file. Generated static
+lexer/parser DFA caches persist across those instances. Reports call this a
+cache-reuse pass rather than implying parser-instance reuse.
 
 ## Experiment protocol
 

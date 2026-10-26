@@ -11,7 +11,9 @@ experiments/001-prediction-baseline/
 ```
 
 `config.json` records the exact invocation and acceptance criteria.
-`report.json` and `report.md` are copied from `results/<name>/` without edits.
+`report.json` and `report.md` are generated from `results/<name>/`. Private raw
+per-file repetitions stay ignored; only the audited opaque publication report is
+promoted.
 `conclusion.md` records the decision and any threat to validity.
 
 ## Rules
@@ -22,13 +24,21 @@ experiments/001-prediction-baseline/
 - Do not promote a report from a private corpus with private paths.
 - A grammar patch requires a control and a candidate run.
 
-## Initial queue
+## Completed
 
-1. Reproduce the retained TypeScript sample and compare phase attribution.
-2. Measure SLL-only versus SLL-first-with-LL-fallback.
-3. Measure parser construction and ATN initialization separately from parse time.
-4. Compare repeated pass variance across 3, 5, and 10 executions.
-5. Measure the cost of error recovery and segment-first parsing on grammar-gap
+- `001-public-baseline`: superseded one-repeat harness baseline; measurement
+  boundary corrected.
+- `002-stable-public-baseline`: three-repeat public baseline with both adapters.
+- `003-production-scale`: complete opaque production corpus, phase attribution,
+  memory, confidence, and size strata.
+- `004-bottleneck-profile`: Java decision profiling for `general_element_part`,
+  `routine_name`, and `general_element` on the production tail.
+
+## Remaining queue
+
+1. Measure process startup and generated recognizer/ATN initialization as
+   separate boundaries.
+2. Measure the cost of error recovery and segment-first parsing on grammar-gap
    inputs.
-6. Profile `general_element`, `general_element_part`, and `routine_name`.
-7. Add Java conformance and a full-corpus shared pass.
+3. Run semantic conformance before treating the faster Java target as a viable
+   adapter.
