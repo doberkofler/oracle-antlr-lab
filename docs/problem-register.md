@@ -118,6 +118,16 @@ guards the hot `general_element_part` argument-loop prediction with its
 corpus and 14.40% on the 12-file tail, with no per-file token, diagnostic,
 prediction-mode, or fallback-attempt differences across three repetitions.
 
+Experiment
+[`006-routine-name-and-general-element`](../experiments/006-routine-name-and-general-element/conclusion.md)
+resolves the clean-input `routine_name` dotted-name loop with two-token lookahead
+and gates both `general_element` dotted-part predictions with the `PERIOD` FIRST
+token. The candidate retains adaptive prediction after a syntax error and when a
+period can belong to the caller. TypeScript parser core fell a further 10.97% on
+the complete corpus and 19.73% on the 12-file tail. All 1,244 parse-tree digests,
+diagnostics, token counts, prediction modes, and fallback attempts matched the
+post-#1 control.
+
 ## 8. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.

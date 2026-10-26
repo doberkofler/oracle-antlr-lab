@@ -35,6 +35,9 @@ promoted.
   `routine_name`, and `general_element` on the production tail.
 - `005-general-element-part-optimization`: guarded generated prediction for
   `general_element_part`; 10.48% full-corpus TypeScript parser-core reduction.
+- `006-routine-name-and-general-element`: two-token lookahead for `routine_name`
+  and PERIOD gates for both `general_element` loops; 10.97% further full-corpus
+  and 19.73% tail reduction with identical parse-tree digests.
 
 ## Remaining queue
 
