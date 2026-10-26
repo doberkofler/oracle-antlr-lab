@@ -1,0 +1,37 @@
+{
+	"experiment": "007-full-file-ll-fallback",
+	"question": "Can the SLL pass resolve the valid constructs that currently force a full-file LL fallback, without changing diagnostics or parse trees?",
+	"hypothesis": "Two SLL prediction conflicts account for most production fallbacks. Resolving collection-method dotted access with full-context prediction and skipping the select-list alias before BULK COLLECT will remove those fallbacks while keeping every parse tree, token count, and diagnostic unchanged.",
+	"control": "experiments/006-routine-name-and-general-element/report.json; paired fresh control was generated with LAB_GENERATED_OPTIMIZATIONS=generalElement,generalElementPart,routineName",
+	"candidate": "Default generated parser with generalElement, collectionMethodCall, generalElementPart, bulkCollectAlias, and routineName optimizations",
+	"command": {
+		"controlFull": "LAB_GENERATED_OPTIMIZATIONS=generalElement,generalElementPart,routineName pnpm grammar:generate && node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 007-control",
+		"candidateFull": "pnpm grammar:generate && node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 007-candidate",
+		"controlTail": "node scripts/benchmarkProduction.ts .work/private-production/tail-manifest.json 3 007-tail-control-rerun",
+		"candidateTail": "node scripts/benchmarkProduction.ts .work/private-production/tail-manifest.json 3 007-tail-candidate",
+		"conformance": "LAB_TREE_HASH=1 node grammar/typescript/harness.ts for the control and candidate generated states"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus; tail statistics reuse the 12 opaque ids selected by experiment 004.",
+	"classification": {
+		"rootCause": "Diagnostics were attributed to the parser rule that reported them; cascaded diagnostics were grouped under the first error in each file.",
+		"collectionMethodCall": "66 files first failed at a collection method such as aTableData.EXTEND, because DELETE, EXTEND, and TRIM are valid regular_id tokens and SLL continued general_element through the period.",
+		"bulkCollectInto": "49 files first failed at COLLECT because SLL consumed BULK as a select-list alias; LL resolves the conflict from the following COLLECT.",
+		"remaining": "14 of the remaining 20 files are genuine grammar gaps that also fail under LL; 6 are additional SLL-only conflicts not addressed by this change."
+	},
+	"acceptance": [
+		"Full-file LL fallback count or LL elapsed time decreases repeatably on production evidence.",
+		"Total parser-core time improves without material SLL regression on files that already parsed under SLL.",
+		"Diagnostics remain explicit and parse-tree digests, token counts, lexer diagnostics, and parser diagnostics are unchanged.",
+		"Focused tests cover malformed collection methods, malformed BULK COLLECT, and unsupported XMLTABLE and DATE NULL syntax.",
+		"Results include repeated full-corpus and tail-set measurements.",
+		"Only opaque file identities, hashes, and aggregate evidence leave the private corpus."
+	],
+	"limitations": [
+		"The 12-file tail is inherited from experiment 004 and is deliberately biased to the highest-cost files.",
+		"Three repetitions give a descriptive deterministic bootstrap interval, not a production guarantee; one tail control campaign was excluded for host slowdown and retained in measurements.json.",
+		"Six SLL-only conflicts remain; they are not classified as grammar gaps because LL accepts the same source.",
+		"The local full-context predictions are coupled to generated decision numbers and pinned antlr-ng output.",
+		"The laboratory has no production semantic indexer; identical parse-tree digests and diagnostics are the semantic-consumer boundary.",
+		"Java is an unmodified control and does not include the TypeScript generated-code optimization."
+	]
+}

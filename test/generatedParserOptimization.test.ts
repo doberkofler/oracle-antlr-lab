@@ -3,7 +3,14 @@ import { describe, expect, it } from 'vitest';
 
 import { PlSqlLexer } from '../grammar/typescript/generated/PlSqlLexer.ts';
 import { PlSqlParser } from '../grammar/typescript/generated/PlSqlParser.ts';
-import { optimizeGeneralElement, optimizeGeneralElementPart, optimizeGeneratedParser, optimizeRoutineName } from '../src/generatedParserOptimization.ts';
+import {
+	optimizeBulkCollectAlias,
+	optimizeCollectionMethodCall,
+	optimizeGeneralElement,
+	optimizeGeneralElementPart,
+	optimizeGeneratedParser,
+	optimizeRoutineName,
+} from '../src/generatedParserOptimization.ts';
 
 describe('optimizeGeneralElementPart', () => {
 	it('replaces adaptive prediction while preserving the argument rule state', () => {
@@ -134,6 +141,36 @@ describe('optimizeGeneralElement', () => {
 	});
 });
 
+describe('optimizeCollectionMethodCall', () => {
+	it('requires the general_element PERIOD gate first', () => {
+		expect(() => optimizeCollectionMethodCall(generalElementSource())).toThrow(/run optimizeGeneralElement first/u);
+	});
+
+	it('resolves collection methods with full-context prediction', () => {
+		const optimized = optimizeCollectionMethodCall(optimizeGeneralElement(generalElementSource()));
+
+		expect(optimized.match(/this\.predictWithLl\(29(?:81|82)\)/gu)).toHaveLength(3);
+		expect(optimized).toContain('this.tokenStream.LA(2) === PlSqlParser.DELETE');
+		expect(optimized).toContain('this.tokenStream.LA(2) === PlSqlParser.EXTEND');
+		expect(optimized).toContain('this.tokenStream.LA(2) === PlSqlParser.TRIM');
+	});
+});
+
+describe('optimizeBulkCollectAlias', () => {
+	it('skips only the alias decision before BULK COLLECT', () => {
+		const optimized = optimizeBulkCollectAlias(selectListElementsSource());
+
+		expect(optimized).toContain('this.tokenStream.LA(1) === PlSqlParser.BULK && this.tokenStream.LA(2) === PlSqlParser.COLLECT ? 2');
+		expect(optimized).toContain('this.column_alias();');
+		expect(optimized.match(/adaptivePredict\(this\.tokenStream, 2381/gu)).toHaveLength(1);
+		expect(optimized).not.toContain('adaptivePredict(this.tokenStream, 2380, this.context) ) {');
+	});
+
+	it('rejects an unexpected generated parser shape', () => {
+		expect(() => optimizeBulkCollectAlias('')).toThrow(/did not match/u);
+	});
+});
+
 describe('optimizeGeneratedParser', () => {
 	it('applies only the selected optimizations', () => {
 		const source = `${routineNameSource()}${generalElementSource()}${generalElementPartSource()}`;
@@ -142,6 +179,13 @@ describe('optimizeGeneratedParser', () => {
 		expect(optimized).toContain('this.numberOfSyntaxErrors === 0');
 		expect(optimized).toContain('adaptivePredict(this.tokenStream, 2982');
 		expect(optimized).toContain('adaptivePredict(this.tokenStream, 2985');
+	});
+
+	it('applies dependent optimizations in their required order', () => {
+		const source = `${generalElementSource()}`;
+		const optimized = optimizeGeneratedParser(source, ['collectionMethodCall', 'generalElement']);
+
+		expect(optimized.match(/this\.predictWithLl\(29(?:81|82)\)/gu)).toHaveLength(3);
 	});
 });
 
@@ -170,11 +214,13 @@ const routineNameSource = (): string => `    public routine_name(): Routine_name
         }
     }`;
 
-const generalElementSource = (): string => `    public general_element(_p?: number): General_elementContext {
+const generalElementSource = (): string => `export class PlSqlParser extends PlSqlParserBase {
+    public general_element(_p?: number): General_elementContext {
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 2982, this.context);
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 2981, this.context);
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 2982, this.context);
-    }`;
+    }
+}`;
 
 const generalElementPartSource = (): string => `    public general_element_part(): General_element_partContext {
             alternative = this.interpreter.adaptivePredict(this.tokenStream, 2985, this.context);
@@ -188,6 +234,31 @@ const generalElementPartSource = (): string => `    public general_element_part(
                     }
                 }
                 alternative = this.interpreter.adaptivePredict(this.tokenStream, 2985, this.context);
+            }
+    }`;
+
+const selectListElementsSource = (): string => `    public select_list_elements(): Select_list_elementsContext {
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 2381, this.context) ) {
+            case 1:
+                {
+                this.tableview_name();
+                this.match(PlSqlParser.PERIOD);
+                this.match(PlSqlParser.ASTERISK);
+                }
+                break;
+            case 2:
+                {
+                this.expression();
+                switch (this.interpreter.adaptivePredict(this.tokenStream, 2380, this.context) ) {
+                case 1:
+                    {
+                    this.state = 17337;
+                    this.column_alias();
+                    }
+                    break;
+                }
+                }
+                break;
             }
     }`;
 

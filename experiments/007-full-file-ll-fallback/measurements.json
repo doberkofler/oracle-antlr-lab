@@ -1,0 +1,135 @@
+{
+	"schemaVersion": 1,
+	"experiment": "007-full-file-ll-fallback",
+	"generatedAt": "2026-10-26T19:47:46.726Z",
+	"scope": "Complete frozen 1,244-file opaque production corpus and the 12-file tail selected by experiment 004; three fresh-process TypeScript passes per state.",
+	"control": {
+		"optimizations": ["generalElement", "generalElementPart", "routineName"],
+		"reference": "experiments/006-routine-name-and-general-element/report.json",
+		"fullCorpus": {
+			"generatedAt": "2026-10-26T18:37:29.919Z",
+			"coreMs": {
+				"count": 3,
+				"min": 121461.06071199995,
+				"mean": 123163.89990433339,
+				"standardDeviation": 2070.838573853629,
+				"coefficientOfVariation": 0.016813681407150446,
+				"meanCi95": {
+					"lower": 121461.06071199995,
+					"upper": 125469.15113200013
+				},
+				"p50": 122561.48786900006,
+				"p95": 125178.38480570012,
+				"p99": 125410.99786674013,
+				"max": 125469.15113200013
+			},
+			"coreSamples": [121461.06071199995, 122561.48786900006, 125469.15113200013],
+			"sllParseMsSamples": [77809.20333000006, 78774.93278399998, 80726.51221400007],
+			"llParseMsSamples": [43078.21766800001, 43190.120914000014, 44125.20337600003],
+			"llFallbackFiles": [129, 129, 129]
+		},
+		"tail": {
+			"generatedAt": "2026-10-26T18:55:36.774Z",
+			"coreMs": {
+				"count": 3,
+				"min": 40743.403582,
+				"mean": 40840.43788799999,
+				"standardDeviation": 112.03905550320987,
+				"coefficientOfVariation": 0.0027433362935643233,
+				"meanCi95": {
+					"lower": 40743.403582,
+					"upper": 40963.056373999985
+				},
+				"p50": 40814.853708,
+				"p95": 40948.236107399985,
+				"p99": 40960.092320679985,
+				"max": 40963.056373999985
+			},
+			"coreSamples": [40814.853708, 40963.056373999985, 40743.403582],
+			"sllParseMsSamples": [27335.387666, 27368.155292999993, 27329.043751000005],
+			"llParseMsSamples": [13384.24466699999, 13502.104583, 13321.058667000001],
+			"llFallbackFiles": [12, 12, 12],
+			"files": 12
+		}
+	},
+	"candidate": {
+		"optimizations": ["generalElement", "collectionMethodCall", "generalElementPart", "bulkCollectAlias", "routineName"],
+		"fullCorpus": {
+			"generatedAt": "2026-10-26T19:10:20.525Z",
+			"coreMs": {
+				"count": 3,
+				"min": 91839.53612900006,
+				"mean": 92241.3818306668,
+				"standardDeviation": 466.36953461634903,
+				"coefficientOfVariation": 0.0050559686483501775,
+				"meanCi95": {
+					"lower": 91839.53612900006,
+					"upper": 92752.7729840002
+				},
+				"p50": 92131.83637900013,
+				"p95": 92690.67932350018,
+				"p99": 92740.35425190018,
+				"max": 92752.77298400018
+			},
+			"coreSamples": [92752.77298400018, 92131.83637900013, 91839.53612900006],
+			"sllParseMsSamples": [87370.86942100013, 87110.345556, 86814.33820599999],
+			"llParseMsSamples": [4766.965080000002, 4392.3166690000135, 4404.97216699999],
+			"llFallbackFiles": [20, 20, 20]
+		},
+		"tail": {
+			"generatedAt": "2026-10-26T19:43:43.602Z",
+			"coreMs": {
+				"count": 3,
+				"min": 29630.990038000007,
+				"mean": 30252.422762666672,
+				"standardDeviation": 775.5897251622376,
+				"coefficientOfVariation": 0.025637276433917965,
+				"meanCi95": {
+					"lower": 29630.990038000007,
+					"upper": 31121.624083000002
+				},
+				"p50": 30004.654167000008,
+				"p95": 31009.927091400004,
+				"p99": 31099.284684680002,
+				"max": 31121.624083000002
+			},
+			"coreSamples": [29630.990038000007, 30004.654167000008, 31121.624083000002],
+			"sllParseMsSamples": [28810.126208, 29163.410667000004, 30268.665583000005],
+			"llParseMsSamples": [726.3762499999993, 742.3664159999989, 751.1188749999983],
+			"llFallbackFiles": [1, 1, 1],
+			"files": 12
+		}
+	},
+	"changePercent": {
+		"fullCorpusCoreMean": -25.106803290319178,
+		"tailCoreMean": -25.92532223667553,
+		"fullCorpusLlMean": -89.5974496034711,
+		"tailLlMean": -94.4789737612968,
+		"fullCorpusFallbackFiles": -0.8449612403100775
+	},
+	"fallbackCohorts": {
+		"filesWithoutFallbackInEitherState": 1115,
+		"filesThatStoppedFallingBack": 109,
+		"sllDeltaWithoutFallbackMs": {
+			"mean": -0.32175128759337435,
+			"p50": 0.0055410000002211746,
+			"min": -505.9941240000044,
+			"max": 202.89645799999562
+		},
+		"fixedFilesSllMs": {
+			"controlMean": 262.8627173577986,
+			"candidateMean": 339.49297894189607
+		},
+		"fixedFilesLlMs": {
+			"controlMean": 358.45212142813466,
+			"candidateMean": 0
+		}
+	},
+	"excludedDiagnosticRun": {
+		"state": "tail control",
+		"reason": "First tail control campaign was rejected because progressive host slowdown produced 24.32% core CV; retained here to avoid selective omission.",
+		"coreSamples": [42695.20508399999, 41953.875747999984, 63057.03975100001],
+		"coefficientOfVariation": 0.2432326781864446
+	},
+	"conformance": "conformance.json"
+}

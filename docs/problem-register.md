@@ -128,6 +128,17 @@ the complete corpus and 19.73% on the 12-file tail. All 1,244 parse-tree digests
 diagnostics, token counts, prediction modes, and fallback attempts matched the
 post-#1 control.
 
+Experiment
+[`007-full-file-ll-fallback`](../experiments/007-full-file-ll-fallback/conclusion.md)
+classifies the remaining full-file LL fallback. Collection-method access
+(`DELETE`, `EXTEND`, `TRIM`) and `BULK COLLECT INTO` account for 109 of the 129
+fallback files; both are SLL-vs-LL conflicts, not grammar gaps. Full-context
+prediction at the collection-method decisions plus a `BULK COLLECT` alias guard
+reduced fallback files to 20 and TypeScript parser core by 24.64% on the
+complete corpus and 24.45% on the tail. Parse-tree digests, diagnostics, and
+token counts remained identical for all files. The remaining 20 files split into
+14 genuine grammar gaps that also fail under LL and 6 other SLL-only conflicts.
+
 ## 8. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.

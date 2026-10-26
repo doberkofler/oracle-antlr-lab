@@ -38,12 +38,16 @@ promoted.
 - `006-routine-name-and-general-element`: two-token lookahead for `routine_name`
   and PERIOD gates for both `general_element` loops; 10.97% further full-corpus
   and 19.73% tail reduction with identical parse-tree digests.
+- `007-full-file-ll-fallback`: LL prediction for dotted collection methods and a
+  `BULK COLLECT` alias guard; LL fallback files fell from 129 to 20 and
+  full-corpus parser core fell 24.64% with identical parse-tree digests,
+  diagnostics, and token counts.
 
 ## Remaining queue
 
 1. Measure process startup and generated recognizer/ATN initialization as
    separate boundaries.
-2. Measure the cost of error recovery and segment-first parsing on grammar-gap
-   inputs.
+2. Reduce the 20 remaining fallback files: six SLL-only conflicts and fourteen
+   LL-side grammar gaps.
 3. Run semantic conformance before treating the faster Java target as a viable
    adapter.
