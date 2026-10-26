@@ -76,6 +76,20 @@ same `full`, `q4`, and `tail` selections. Instrumented wall time is reported
 separately from uninstrumented timing and is never a production benchmark
 result. See [`docs/memory-profiling.md`](docs/memory-profiling.md).
 
+Semantic conformance is a separate acceptance gate:
+
+```bash
+pnpm conformance -- --manifest .work/private-production/manifest.json \
+  --experiment 009-semantic-conformance \
+  --publish experiments/009-semantic-conformance
+```
+
+It generates each optimization state independently and compares accepted units,
+structural parse trees, tokens, diagnostics, and recovery behavior. A
+performance result without a passing per-change conformance result is
+incomplete. See
+[`docs/semantic-conformance.md`](docs/semantic-conformance.md).
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
@@ -100,22 +114,28 @@ The runner records:
 - SLL/LL fallback behavior;
 - peak process RSS.
 
+Separate conformance runs record accepted-unit counts, structural parse-tree
+digests, diagnostics digests, and recovery behavior. They do not extract
+declarations, references, or dependencies; identical parse trees are the
+available semantic boundary. Java is not semantic acceptance evidence while its
+486 production diagnostics remain unresolved.
+
 The one-pass value is a sample approximation, not a full production build. Do
 not extrapolate without a full-corpus manifest and an external decision report.
 
 ## Repository layout
 
-| Path                  | Purpose                                                                |
-| --------------------- | ---------------------------------------------------------------------- |
-| `grammar/`            | Pinned upstream sources, reviewed patches, generated TypeScript output |
-| `corpora/public/`     | Deterministic, redistributable source corpus                           |
-| `src/`                | Corpus manifest handling, statistics, runner, report assembly          |
-| `scripts/`            | Download, generation, corpus selection, benchmark entrypoints          |
-| `grammar/typescript/` | TypeScript parser harness                                              |
-| `java/`               | Java target harness, built in Docker                                   |
-| `experiments/`        | Promoted experiment records and conclusions                            |
-| `docs/`               | Benchmark and corpus contracts                                         |
-| `test/`               | Unit tests for lab infrastructure                                      |
+| Path                  | Purpose                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| `grammar/`            | Pinned upstream sources, reviewed patches, generated TypeScript output     |
+| `corpora/public/`     | Deterministic, redistributable source corpus                               |
+| `src/`                | Corpus manifest handling, statistics, runner, report assembly              |
+| `scripts/`            | Download, generation, corpus selection, benchmark, conformance entrypoints |
+| `grammar/typescript/` | TypeScript parser harness                                                  |
+| `java/`               | Java target harness, built in Docker                                       |
+| `experiments/`        | Promoted experiment records and conclusions                                |
+| `docs/`               | Benchmark, memory, conformance, and corpus contracts                       |
+| `test/`               | Unit tests for lab infrastructure                                          |
 
 ## Corpora
 

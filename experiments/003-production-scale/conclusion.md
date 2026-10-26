@@ -27,7 +27,10 @@ not rejected.
 Java is 3.89× faster than TypeScript parser core but is not an equivalent
 acceptance result: it uses the unmodified upstream target and retains 486
 diagnostics after LL fallback. Runtime replacement changes the constant factor;
-it does not establish semantic viability.
+it does not establish semantic viability. Experiment
+[`009-semantic-conformance`](../009-semantic-conformance/conclusion.md) keeps
+Java outside the conformance gate; those 486 diagnostics must be resolved before
+Java can be described as a viable semantic replacement.
 
 ## Size stratification
 

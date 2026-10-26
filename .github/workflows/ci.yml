@@ -29,6 +29,7 @@ jobs:
       - run: pnpm grammar:download
       - run: pnpm grammar:generate
       - run: pnpm verify
+      - run: pnpm conformance -- --manifest corpora/public/manifest.json --experiment ci-conformance
       - run: pnpm benchmark:quick
       - run: docker build -f java/Dockerfile -t oracle-antlr-lab-java:0.1.0 .
       - run: docker run --rm --network none -v "$PWD/corpora/public:/corpus:ro" oracle-antlr-lab-java:0.1.0 pass /corpus/files/edge_q_quote.sql

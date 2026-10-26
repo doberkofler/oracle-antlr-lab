@@ -14,6 +14,7 @@
 		"benchmark:quick": "node scripts/benchmark.ts --files 15 --iterations 3 --warmups 1 --cold-repeats 1",
 		"benchmark:production": "node scripts/benchmarkProduction.ts",
 		"benchmark:compare": "node scripts/compareReports.ts",
+		"conformance": "node scripts/semanticConformance.ts",
 		"profile:memory": "node scripts/profileMemory.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint",

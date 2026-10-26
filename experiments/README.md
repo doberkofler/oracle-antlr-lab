@@ -22,7 +22,8 @@ promoted.
 - A failed or inconclusive result is recorded, not deleted.
 - A rerun gets a new directory. Never overwrite a promoted report.
 - Do not promote a report from a private corpus with private paths.
-- A grammar patch requires a control and a candidate run.
+- A grammar or parser-recovery change requires a control, a candidate run, and
+  a per-change semantic-conformance gate.
 
 ## Completed
 
@@ -45,6 +46,10 @@ promoted.
 - `008-memory-profile`: retained-memory and allocation attribution on full, Q4,
   and tail selections; generated DFA caches hold 90–96% of retained heap and
   `getEpsilonTarget` dominates Node allocation volume. No optimization claimed.
+- `009-semantic-conformance`: per-change and combined conformance gates for
+  issues #1–#3; accepted units, parse trees, tokens, diagnostics, and recovery
+  behavior matched, with only the documented LL-fallback removal classified as
+  intended. Java remains blocked by its 486 diagnostics.
 
 ## Remaining queue
 
@@ -52,5 +57,5 @@ promoted.
    separate boundaries.
 2. Reduce the 20 remaining fallback files: six SLL-only conflicts and fourteen
    LL-side grammar gaps.
-3. Run semantic conformance before treating the faster Java target as a viable
+3. Resolve the Java target's 486 diagnostics before treating it as a viable
    adapter.
