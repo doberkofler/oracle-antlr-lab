@@ -1,0 +1,24 @@
+{
+	"experiment": "006-routine-name-and-general-element",
+	"question": "Can generated TypeScript avoid context-sensitive name-loop prediction in routine_name and general_element without changing Oracle parse behavior?",
+	"hypothesis": "The routine_name dotted-name loop can resolve clean input with two-token lookahead, and both general_element dotted-part loops can skip prediction when PERIOD cannot follow, while every accepted construct, diagnostic, and parse tree remains unchanged.",
+	"control": "experiments/005-general-element-part-optimization/report.json",
+	"profileControl": "experiments/005-general-element-part-optimization/profile-baseline.json",
+	"command": "node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 006-routine-name-and-general-element",
+	"conformanceCommand": "LAB_TREE_HASH=1 node grammar/typescript/harness.ts with LAB_GENERATED_OPTIMIZATIONS=generalElementPart for the control and generalElement,generalElementPart,routineName for the candidate",
+	"selection": "Complete frozen 1,244-file opaque production corpus; tail statistics reuse the 12 opaque ids selected by experiment 004.",
+	"candidate": "Post-process the generated TypeScript routine_name loop with PERIOD plus id_expression lookahead on clean input, and gate both general_element dotted-part loop predictions with the PERIOD FIRST token.",
+	"acceptance": [
+		"The 12-file tail has a repeatable parser-core reduction against the post-#1 control.",
+		"The complete corpus has zero per-file differences in parse-tree digest, lexer and parser diagnostics, visible and hidden tokens, prediction mode, and SLL/LL attempts.",
+		"The candidate retains adaptive prediction where caller context can make a period belong outside the loop.",
+		"Only opaque file identities, hashes, and aggregate evidence leave the private corpus."
+	],
+	"limitations": [
+		"The tail selection is inherited from experiment 004 and is intentionally biased to the highest-cost files.",
+		"Three repetitions give a descriptive deterministic bootstrap interval, not a production guarantee.",
+		"Java remains an unmodified control and does not include the TypeScript generated-code optimization.",
+		"The laboratory has no production semantic indexer; identical parse trees are the semantic-consumer boundary.",
+		"Generated-shape checks fail loudly, but the transforms remain coupled to pinned antlr-ng output rather than to generator-level FIRST-set APIs."
+	]
+}
