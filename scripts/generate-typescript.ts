@@ -1,9 +1,9 @@
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { type GeneratedParserOptimization, optimizeGeneratedParser } from '../src/generatedParserOptimization.ts';
+import { type GeneratedParserOptimization, GENERATED_PARSER_OPTIMIZATIONS, optimizeGeneratedParser } from '../src/generatedParserOptimization.ts';
 
-const KNOWN_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = ['generalElement', 'generalElementPart', 'routineName'];
+const KNOWN_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = GENERATED_PARSER_OPTIMIZATIONS;
 
 const parseOptimizations = (value: string): readonly GeneratedParserOptimization[] => {
 	const selected = value
@@ -29,6 +29,10 @@ const parseOptimizations = (value: string): readonly GeneratedParserOptimization
 		throw new Error('LAB_GENERATED_OPTIMIZATIONS contains a duplicate optimization');
 	}
 
+	if (known.includes('collectionMethodCall') && !known.includes('generalElement')) {
+		throw new Error('collectionMethodCall requires generalElement');
+	}
+
 	return known;
 };
 
@@ -38,7 +42,7 @@ const runner = path.join(root, 'node_modules', 'antlr-ng', 'dist', 'cli', 'runne
 const lexer = path.join(output, 'PlSqlLexer.ts');
 const parser = path.join(output, 'PlSqlParser.ts');
 const visitor = path.join(output, 'PlSqlParserVisitor.ts');
-const optimizations = parseOptimizations(process.env['LAB_GENERATED_OPTIMIZATIONS'] ?? 'generalElement,generalElementPart,routineName');
+const optimizations = parseOptimizations(process.env['LAB_GENERATED_OPTIMIZATIONS'] ?? GENERATED_PARSER_OPTIMIZATIONS.join(','));
 
 rmSync(output, { recursive: true, force: true });
 

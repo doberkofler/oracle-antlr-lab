@@ -126,21 +126,155 @@ export const optimizeGeneralElement = (source: string): string => {
 	return source.replace(GENERAL_ELEMENT_METHOD, `${matchedPrefix}${replacementBody}${suffix}`);
 };
 
+const GATED_GENERAL_ELEMENT_PREDICTION =
+	/\(this\.tokenStream\.LA\(1\) === PlSqlParser\.PERIOD \? this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) : 2\)/gu;
+
+const PARSER_CLASS_HEADER = 'export class PlSqlParser extends PlSqlParserBase {';
+
+const LL_PREDICTION_HELPER = `${PARSER_CLASS_HEADER}
+    /**
+     * Runs one adaptive prediction with full-context (LL) semantics and
+     * restores the configured prediction mode.
+     */
+    private predictWithLl(decision: number): number {
+        const interpreter = this.interpreter;
+        const mode = interpreter.predictionMode;
+        interpreter.predictionMode = 1;
+
+        try {
+            return interpreter.adaptivePredict(this.tokenStream, decision, this.context);
+        } finally {
+            interpreter.predictionMode = mode;
+        }
+    }
+`;
+
+/**
+ * Resolves dotted collection-method access with full-context prediction.
+ *
+ * `DELETE`, `EXTEND`, and `TRIM` are valid `regular_id` tokens, so
+ * `general_element` can continue through `'.' DELETE`, `'.' EXTEND`, or
+ * `'.' TRIM`. Whether it should continue depends on the caller:
+ * `collection_method_call` also accepts that period, so the expression must
+ * stop there. SLL cannot see the caller and wrongly continues; LL exits. Use LL
+ * prediction only at these rare decisions instead of falling back for the
+ * entire file.
+ *
+ * Requires {@link optimizeGeneralElement} to be applied first.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose collection methods keep LL behavior under SLL parsing.
+ */
+export const optimizeCollectionMethodCall = (source: string): string => {
+	const match = GENERAL_ELEMENT_METHOD.exec(source);
+
+	if (match?.groups === undefined) {
+		throw new Error('Generated general_element method did not match the expected ANTLR shape');
+	}
+	const body = match.groups['body'];
+	const matchedPrefix = match.groups['prefix'];
+	const suffix = match.groups['suffix'];
+
+	if (body === undefined || matchedPrefix === undefined || suffix === undefined) {
+		throw new Error('Generated general_element method has incomplete captures');
+	}
+	const decisions = [...body.matchAll(GATED_GENERAL_ELEMENT_PREDICTION)].map((candidate) => candidate.groups?.['decision']);
+
+	if (decisions.length !== 3 || decisions.some((decision) => decision === undefined)) {
+		throw new Error(
+			`Generated general_element method has ${String(decisions.length)} PERIOD-gated predictions; expected 3; run optimizeGeneralElement first`,
+		);
+	}
+
+	const replacementBody = body.replaceAll(
+		GATED_GENERAL_ELEMENT_PREDICTION,
+		'(this.tokenStream.LA(1) === PlSqlParser.PERIOD ? (this.tokenStream.LA(2) === PlSqlParser.DELETE || this.tokenStream.LA(2) === PlSqlParser.EXTEND || this.tokenStream.LA(2) === PlSqlParser.TRIM ? this.predictWithLl($<decision>) : this.interpreter.adaptivePredict(this.tokenStream, $<decision>, this.context)) : 2)',
+	);
+
+	if (!source.includes(PARSER_CLASS_HEADER)) {
+		throw new Error('Generated parser class did not match the expected ANTLR shape');
+	}
+
+	return source.replace(PARSER_CLASS_HEADER, LL_PREDICTION_HELPER).replace(GENERAL_ELEMENT_METHOD, `${matchedPrefix}${replacementBody}${suffix}`);
+};
+
+const SELECT_LIST_ELEMENTS_METHOD = /(?<prefix>    public select_list_elements\(\): Select_list_elementsContext \{)(?<body>[\s\S]*?)(?<suffix>^    \})/mu;
+const SELECT_LIST_ALIAS_PREDICTION =
+	/switch \(this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) \) \{(?:(?!switch)[\s\S])*?this\.column_alias\(\);/u;
+
+/**
+ * Skips the select-list alias decision when `BULK COLLECT` follows.
+ *
+ * In `SELECT expr BULK COLLECT INTO ...`, `BULK` is also a valid alias. SLL
+ * consumes it as an alias and then fails at `COLLECT`; LL sees that only
+ * `into_clause` can consume the following `COLLECT`, so it parses no alias.
+ * The two-token guard resolves the same decision without prediction.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose select-list alias prediction defers to `BULK COLLECT`.
+ */
+export const optimizeBulkCollectAlias = (source: string): string => {
+	const match = SELECT_LIST_ELEMENTS_METHOD.exec(source);
+
+	if (match?.groups === undefined) {
+		throw new Error('Generated select_list_elements method did not match the expected ANTLR shape');
+	}
+	const body = match.groups['body'];
+	const matchedPrefix = match.groups['prefix'];
+	const suffix = match.groups['suffix'];
+
+	if (body === undefined || matchedPrefix === undefined || suffix === undefined) {
+		throw new Error('Generated select_list_elements method has incomplete captures');
+	}
+	const alias = SELECT_LIST_ALIAS_PREDICTION.exec(body);
+	const decision = alias?.groups?.['decision'];
+
+	if (decision === undefined) {
+		throw new Error('Generated select_list_elements method has no column_alias prediction');
+	}
+	const prediction = `this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context)`;
+
+	if (body.split(prediction).length !== 2) {
+		throw new Error(`Generated select_list_elements method has an unexpected number of decision ${decision} predictions`);
+	}
+
+	const replacementBody = body.replace(
+		prediction,
+		`(this.tokenStream.LA(1) === PlSqlParser.BULK && this.tokenStream.LA(2) === PlSqlParser.COLLECT ? 2 : ${prediction})`,
+	);
+
+	return source.replace(SELECT_LIST_ELEMENTS_METHOD, `${matchedPrefix}${replacementBody}${suffix}`);
+};
+
 /** Generated-parser optimizations that experiments may enable independently. */
-export type GeneratedParserOptimization = 'generalElement' | 'generalElementPart' | 'routineName';
+export type GeneratedParserOptimization = 'bulkCollectAlias' | 'collectionMethodCall' | 'generalElement' | 'generalElementPart' | 'routineName';
+
+/** Every generated-parser optimization, in the order required by its transforms. */
+export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
+	'generalElement',
+	'collectionMethodCall',
+	'generalElementPart',
+	'bulkCollectAlias',
+	'routineName',
+];
 
 const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) => string>> = {
+	bulkCollectAlias: optimizeBulkCollectAlias,
+	collectionMethodCall: optimizeCollectionMethodCall,
 	generalElement: optimizeGeneralElement,
 	generalElementPart: optimizeGeneralElementPart,
 	routineName: optimizeRoutineName,
 };
 
 /**
- * Applies selected generated-parser optimizations.
+ * Applies selected generated-parser optimizations in their required order.
  *
  * @param source - Generated `PlSqlParser.ts` source.
- * @param optimizations - Optimizations to apply, in application order.
+ * @param optimizations - Optimizations to apply; declaration order is irrelevant.
  * @returns Optimized generated parser source.
  */
 export const optimizeGeneratedParser = (source: string, optimizations: readonly GeneratedParserOptimization[]): string =>
-	optimizations.reduce((optimized, optimization) => OPTIMIZERS[optimization](optimized), source);
+	GENERATED_PARSER_OPTIMIZATIONS.filter((optimization) => optimizations.includes(optimization)).reduce(
+		(optimized, optimization) => OPTIMIZERS[optimization](optimized),
+		source,
+	);
