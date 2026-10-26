@@ -111,6 +111,13 @@ answer the first three performance questions on the frozen 1,244-file corpus.
 Java parser core averaged 40.106 s, but its unmodified grammar retained 486
 diagnostics. This is a constant-factor result, not semantic acceptance evidence.
 
+Experiment
+[`005-general-element-part-optimization`](../experiments/005-general-element-part-optimization/conclusion.md)
+guards the hot `general_element_part` argument-loop prediction with its
+`LEFT_PAREN` FIRST token. TypeScript parser core fell 10.48% on the complete
+corpus and 14.40% on the 12-file tail, with no per-file token, diagnostic,
+prediction-mode, or fallback-attempt differences across three repetitions.
+
 ## 8. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.

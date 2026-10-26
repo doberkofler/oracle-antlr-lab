@@ -1,6 +1,7 @@
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { optimizeGeneralElementPart } from '../src/generatedParserOptimization.ts';
 
 const root = path.resolve(import.meta.dirname, '..');
 const output = path.join(root, 'grammar', 'typescript', 'generated');
@@ -83,13 +84,15 @@ const lexerText = useTypeScriptExtensions(
 		.replaceAll('_sempred(localContext: antlr.ParserRuleContext | null', '_sempred(_localContext: antlr.ParserRuleContext | null'),
 );
 const parserText = useTypeScriptExtensions(
-	stripUnusedPreviousContext(
-		readFileSync(parser, 'utf8')
-			.replace(
-				'// for running tests with parameters, TODO: discuss strategy for typed parameters in CI\n// eslint-disable-next-line no-unused-vars\ntype int = number;\n\n',
-				'',
-			)
-			.replaceAll(/_sempred\(localContext: (?<context>\w+)Context \| null/gu, '_sempred(_localContext: $<context>Context | null'),
+	optimizeGeneralElementPart(
+		stripUnusedPreviousContext(
+			readFileSync(parser, 'utf8')
+				.replace(
+					'// for running tests with parameters, TODO: discuss strategy for typed parameters in CI\n// eslint-disable-next-line no-unused-vars\ntype int = number;\n\n',
+					'',
+				)
+				.replaceAll(/_sempred\(localContext: (?<context>\w+)Context \| null/gu, '_sempred(_localContext: $<context>Context | null'),
+		),
 	),
 );
 const visitorText = useTypeScriptExtensions(readFileSync(visitor, 'utf8').replace('import {PlSqlParserBase} from "../plSqlParserBase.js";\n\n', ''));

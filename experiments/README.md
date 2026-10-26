@@ -33,6 +33,8 @@ promoted.
   memory, confidence, and size strata.
 - `004-bottleneck-profile`: Java decision profiling for `general_element_part`,
   `routine_name`, and `general_element` on the production tail.
+- `005-general-element-part-optimization`: guarded generated prediction for
+  `general_element_part`; 10.48% full-corpus TypeScript parser-core reduction.
 
 ## Remaining queue
 

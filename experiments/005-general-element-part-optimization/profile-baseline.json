@@ -1,0 +1,308 @@
+{
+	"schemaVersion": 1,
+	"experiment": "004-bottleneck-profile",
+	"generatedAt": "2026-10-26T12:37:29.608Z",
+	"selection": "12 files with highest median TypeScript parser-core time in experiment 003",
+	"files": [
+		{
+			"id": 1239,
+			"path": "source-001239.pkb",
+			"file": "source-001239.pkb",
+			"bytes": 267550,
+			"lines": 5253,
+			"sha256": "daf5ba154f65af7d1eaa47c532f3935254febb02e64f1dc68c70a25852b7fea6",
+			"medianCoreMs": 6017.928792000021
+		},
+		{
+			"id": 1224,
+			"path": "source-001224.pkb",
+			"file": "source-001224.pkb",
+			"bytes": 153637,
+			"lines": 5239,
+			"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+			"medianCoreMs": 4649.189582999999
+		},
+		{
+			"id": 1238,
+			"path": "source-001238.pkb",
+			"file": "source-001238.pkb",
+			"bytes": 261402,
+			"lines": 8258,
+			"sha256": "cb243a424c424ef46ed88b31ed9c959aea9ec6e21c1f70da102c56f0977a422e",
+			"medianCoreMs": 4235.360874000005
+		},
+		{
+			"id": 1241,
+			"path": "source-001241.pkb",
+			"file": "source-001241.pkb",
+			"bytes": 306915,
+			"lines": 7567,
+			"sha256": "ae4457b8877c952bca25b800dbd1611d66311400d2a3f6487e94f030040e32fe",
+			"medianCoreMs": 4175.464708000014
+		},
+		{
+			"id": 1240,
+			"path": "source-001240.pkb",
+			"file": "source-001240.pkb",
+			"bytes": 296248,
+			"lines": 9419,
+			"sha256": "72d6d6295f1c5717ee0cea1c3bea4dbdca780a041569b76016a9f4404c75f3df",
+			"medianCoreMs": 3542.267083999992
+		},
+		{
+			"id": 1237,
+			"path": "source-001237.pkb",
+			"file": "source-001237.pkb",
+			"bytes": 226232,
+			"lines": 7411,
+			"sha256": "0241806cc3348287a6399aa9a5931a3d18d2276e20a7cf3e7bd26cd4c212ae88",
+			"medianCoreMs": 3325.2032920000056
+		},
+		{
+			"id": 1242,
+			"path": "source-001242.pkb",
+			"file": "source-001242.pkb",
+			"bytes": 311308,
+			"lines": 7259,
+			"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af",
+			"medianCoreMs": 3324.3130419999943
+		},
+		{
+			"id": 1190,
+			"path": "source-001190.pkb",
+			"file": "source-001190.pkb",
+			"bytes": 73978,
+			"lines": 1892,
+			"sha256": "8c7f35b6952bfd8b7fa05e4a9500cd3fd0c929bd3a6c40e03bae1ff39d397ca7",
+			"medianCoreMs": 2752.306666000004
+		},
+		{
+			"id": 1235,
+			"path": "source-001235.pkb",
+			"file": "source-001235.pkb",
+			"bytes": 193821,
+			"lines": 4995,
+			"sha256": "9d074478371cc13f2e50e615943d89493f027dfa3b9c3749a4390656dc1ae7f4",
+			"medianCoreMs": 2362.5033749999857
+		},
+		{
+			"id": 1243,
+			"path": "source-001243.pkb",
+			"file": "source-001243.pkb",
+			"bytes": 370020,
+			"lines": 8398,
+			"sha256": "ad528235c25ebe607c0fce248265b11cf04c6b2f1018f4ab440d6c79bcd0ee94",
+			"medianCoreMs": 2163.2087069999834
+		},
+		{
+			"id": 1214,
+			"path": "source-001214.pkb",
+			"file": "source-001214.pkb",
+			"bytes": 116829,
+			"lines": 3123,
+			"sha256": "e58b977b57d13554b12f588c1d10ea2740bbf7e7bd75c4041a92eb1566f0e09d",
+			"medianCoreMs": 1851.6028340000048
+		},
+		{
+			"id": 1186,
+			"path": "source-001186.pkb",
+			"file": "source-001186.pkb",
+			"bytes": 72825,
+			"lines": 2121,
+			"sha256": "4c34320919394307ec32f04fedfaeeaac7b497236eb1f2f22e96d495a38859b4",
+			"medianCoreMs": 1708.9675430000061
+		}
+	],
+	"profile": {
+		"files": 12,
+		"elapsedMs": 14467.756382,
+		"profiles": [
+			{
+				"rule": "general_element_part",
+				"timeInPredictionNs": 4353714791,
+				"invocations": 295857,
+				"sllAtnTransitions": 40337,
+				"sllDfaTransitions": 1639913,
+				"llAtnTransitions": 10534,
+				"llDfaTransitions": 0,
+				"llFallbacks": 5268,
+				"ambiguities": 0
+			},
+			{
+				"rule": "routine_name",
+				"timeInPredictionNs": 2627463408,
+				"invocations": 20066,
+				"sllAtnTransitions": 42,
+				"sllDfaTransitions": 25536,
+				"llAtnTransitions": 62543,
+				"llDfaTransitions": 0,
+				"llFallbacks": 3154,
+				"ambiguities": 3154
+			},
+			{
+				"rule": "general_element",
+				"timeInPredictionNs": 2013248159,
+				"invocations": 175553,
+				"sllAtnTransitions": 2637,
+				"sllDfaTransitions": 385103,
+				"llAtnTransitions": 48798,
+				"llDfaTransitions": 0,
+				"llFallbacks": 24881,
+				"ambiguities": 9573
+			}
+		],
+		"decisions": [
+			{
+				"decision": 2901,
+				"timeInPredictionNs": 2627015319,
+				"invocations": 12789,
+				"sllAtnTransitions": 28,
+				"sllDfaTransitions": 18273,
+				"llAtnTransitions": 62543,
+				"llDfaTransitions": 0,
+				"llFallbacks": 3154,
+				"ambiguities": 3154
+			},
+			{
+				"decision": 2902,
+				"timeInPredictionNs": 448089,
+				"invocations": 7277,
+				"sllAtnTransitions": 14,
+				"sllDfaTransitions": 7263,
+				"llAtnTransitions": 0,
+				"llDfaTransitions": 0,
+				"llFallbacks": 0,
+				"ambiguities": 0
+			},
+			{
+				"decision": 2980,
+				"timeInPredictionNs": 0,
+				"invocations": 0,
+				"sllAtnTransitions": 0,
+				"sllDfaTransitions": 0,
+				"llAtnTransitions": 0,
+				"llDfaTransitions": 0,
+				"llFallbacks": 0,
+				"ambiguities": 0
+			},
+			{
+				"decision": 2981,
+				"timeInPredictionNs": 558328709,
+				"invocations": 51962,
+				"sllAtnTransitions": 162,
+				"sllDfaTransitions": 84069,
+				"llAtnTransitions": 15456,
+				"llDfaTransitions": 0,
+				"llFallbacks": 8046,
+				"ambiguities": 8813
+			},
+			{
+				"decision": 2982,
+				"timeInPredictionNs": 1454919450,
+				"invocations": 123591,
+				"sllAtnTransitions": 2475,
+				"sllDfaTransitions": 301034,
+				"llAtnTransitions": 33342,
+				"llDfaTransitions": 0,
+				"llFallbacks": 16835,
+				"ambiguities": 760
+			},
+			{
+				"decision": 2983,
+				"timeInPredictionNs": 0,
+				"invocations": 0,
+				"sllAtnTransitions": 0,
+				"sllDfaTransitions": 0,
+				"llAtnTransitions": 0,
+				"llDfaTransitions": 0,
+				"llFallbacks": 0,
+				"ambiguities": 0
+			},
+			{
+				"decision": 2984,
+				"timeInPredictionNs": 10722005,
+				"invocations": 139295,
+				"sllAtnTransitions": 45,
+				"sllDfaTransitions": 139250,
+				"llAtnTransitions": 0,
+				"llDfaTransitions": 0,
+				"llFallbacks": 0,
+				"ambiguities": 0
+			},
+			{
+				"decision": 2985,
+				"timeInPredictionNs": 4342992786,
+				"invocations": 156562,
+				"sllAtnTransitions": 40292,
+				"sllDfaTransitions": 1500663,
+				"llAtnTransitions": 10534,
+				"llDfaTransitions": 0,
+				"llFallbacks": 5268,
+				"ambiguities": 0
+			}
+		],
+		"conformance": [
+			{
+				"parseTreeSha256": "73304e44adaa7ba0819b70e9f8632339c5c02c76fc205eea61652cc16af80506",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "4aacb3f90ff80fc99089f55f60e75a11feeabb14bf385f8e38da8710fc57c4bc",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 23
+			},
+			{
+				"parseTreeSha256": "c4f358fd4029dbf45fb94926acc9b92021944ae087153cde87679b8eef287c9d",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 27
+			},
+			{
+				"parseTreeSha256": "9df7fb0a9835523cf12f7ebd1b8d985904aaf4387cce0f94c147a6bae8c2a6bd",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "affbb2e940212eff15fbafe26e3ff2d0e663c404e5ddca32bd38ffdb8daf1c3e",
+				"maxFunctionArgumentsPerPart": 2,
+				"parseDiagnostics": 10
+			},
+			{
+				"parseTreeSha256": "e7de3233d63b2581e4b39923270287842ebd23910437857e0f764b5a29335396",
+				"maxFunctionArgumentsPerPart": 2,
+				"parseDiagnostics": 7
+			},
+			{
+				"parseTreeSha256": "dd0ca74ef8a00ab0a824d3d7302e6ee4808986a3533bf5ff30c21ee69e339cac",
+				"maxFunctionArgumentsPerPart": 2,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "1f205fc3ce1af38d45d13a4cb0ccbc6e7e87161ea42b4175f867291905fa6e42",
+				"maxFunctionArgumentsPerPart": 2,
+				"parseDiagnostics": 25
+			},
+			{
+				"parseTreeSha256": "df4dd027c2d66365873b127d3e75b43f1e42a7a385211490947812575742c1ec",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "02ffa54f1e5b5608bb0785d42fee1243a8e09bb522c708778a241b5c2a25c67d",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "62c163ce1b1f9606cb762731d9e271790c80176825d427825bc888e47afc915d",
+				"maxFunctionArgumentsPerPart": 2,
+				"parseDiagnostics": 0
+			},
+			{
+				"parseTreeSha256": "fa3eb96c0739f2fa6d6b1d19c3a924b07d39e23a6b5985d97dc2dd268cf52978",
+				"maxFunctionArgumentsPerPart": 1,
+				"parseDiagnostics": 0
+			}
+		]
+	},
+	"elapsedMs": 32672.808332999997
+}

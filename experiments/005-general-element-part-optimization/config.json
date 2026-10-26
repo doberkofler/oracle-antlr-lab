@@ -1,0 +1,21 @@
+{
+	"experiment": "005-general-element-part-optimization",
+	"question": "Can TypeScript avoid unnecessary adaptive prediction at the general_element_part argument loop without changing parser behavior?",
+	"hypothesis": "Guarding decision 2985 with the FIRST token of function_argument will avoid prediction when the only valid loop action is exit, while retaining adaptive prediction when caller context matters.",
+	"control": "experiments/003-production-scale/report.json",
+	"profileControl": "experiments/005-general-element-part-optimization/profile-baseline.json",
+	"command": "node scripts/benchmarkProduction.ts .work/private-production/manifest.json 3 005-general-element-part-optimization",
+	"selection": "Complete frozen 1,244-file opaque production corpus; tail statistics reuse the 12 opaque ids selected by experiment 004.",
+	"candidate": "Post-process the generated TypeScript general_element_part loop so adaptivePredict runs only when lookahead is LEFT_PAREN.",
+	"acceptance": [
+		"The 12-file tail has a repeatable parser-core reduction.",
+		"The complete corpus has no token, diagnostic, prediction-mode, or fallback-attempt differences in any repetition.",
+		"Function-argument parse contexts remain unchanged, including adjacent argument groups.",
+		"Only opaque file identities and hashes leave the private corpus."
+	],
+	"limitations": [
+		"The deterministic bootstrap interval has only three samples and is descriptive.",
+		"The laboratory has no production semantic indexer; unchanged parse-tree construction is the semantic-consumer boundary.",
+		"Java remains an unmodified control and does not include the TypeScript generated-code optimization."
+	]
+}

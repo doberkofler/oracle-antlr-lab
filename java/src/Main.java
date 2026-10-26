@@ -1,15 +1,22 @@
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.atn.DecisionInfo;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  * Standalone Java-target harness.
@@ -23,6 +30,9 @@ public final class Main {
 
 	private record Observation(double coreMs, double adapterMs, double setupMs, double lexerMs, double sllParseMs, double llParseMs,
 			int lexerDiagnostics, int parseDiagnostics, int tokens, int hiddenTokens, String prediction, int sllAttempts, int llAttempts) {
+	}
+
+	private record ProfileObservation(String parseTreeSha256, int maxFunctionArgumentsPerPart, int parseDiagnostics) {
 	}
 
 	private static final class Errors extends BaseErrorListener {
@@ -194,13 +204,18 @@ public final class Main {
 
 	private static void profileFiles(String[] args) throws Exception {
 		RuleProfile[] totals = new RuleProfile[PROFILE_RULES.size()];
+		Map<Integer, RuleProfile> decisionTotals = new TreeMap<>();
+		List<String> conformance = new ArrayList<>();
 		for (int index = 0; index < totals.length; index += 1) {
 			totals[index] = new RuleProfile();
 		}
 		long started = System.nanoTime();
 
 		for (int index = 1; index < args.length; index += 1) {
-			profile(Files.readString(Path.of(args[index])), totals);
+			ProfileObservation observation = profile(Files.readString(Path.of(args[index])), totals, decisionTotals);
+			conformance.add(String.format(
+					"{\"parseTreeSha256\":\"%s\",\"maxFunctionArgumentsPerPart\":%d,\"parseDiagnostics\":%d}",
+					observation.parseTreeSha256(), observation.maxFunctionArgumentsPerPart(), observation.parseDiagnostics()));
 			int completed = index;
 			double elapsedSeconds = (System.nanoTime() - started) / 1_000_000_000.0;
 			double remainingSeconds = elapsedSeconds / completed * (args.length - 1 - completed);
@@ -216,27 +231,88 @@ public final class Main {
 					PROFILE_RULES.get(index), total.timeInPredictionNs, total.invocations, total.sllAtnTransitions,
 					total.sllDfaTransitions, total.llAtnTransitions, total.llDfaTransitions, total.llFallbacks, total.ambiguities));
 		}
+		List<String> decisions = new ArrayList<>();
+		for (Map.Entry<Integer, RuleProfile> entry : decisionTotals.entrySet()) {
+			int decisionIndex = entry.getKey();
+			RuleProfile total = entry.getValue();
+			decisions.add(String.format(
+					"{\"decision\":%d,\"timeInPredictionNs\":%d,\"invocations\":%d,\"sllAtnTransitions\":%d,\"sllDfaTransitions\":%d,\"llAtnTransitions\":%d,\"llDfaTransitions\":%d,\"llFallbacks\":%d,\"ambiguities\":%d}",
+					decisionIndex, total.timeInPredictionNs, total.invocations, total.sllAtnTransitions,
+					total.sllDfaTransitions, total.llAtnTransitions, total.llDfaTransitions, total.llFallbacks, total.ambiguities));
+		}
 		double elapsedMs = (System.nanoTime() - started) / 1_000_000.0;
-		System.out.printf("{\"files\":%d,\"elapsedMs\":%.6f,\"profiles\":[%s]}%n", args.length - 1, elapsedMs,
-				String.join(",", profiles));
+		System.out.printf(
+				"{\"files\":%d,\"elapsedMs\":%.6f,\"profiles\":[%s],\"decisions\":[%s],\"conformance\":[%s]}%n",
+				args.length - 1, elapsedMs, String.join(",", profiles), String.join(",", decisions), String.join(",", conformance));
 	}
 
-	private static void profile(String source, RuleProfile[] totals) {
+	private static ProfileObservation profile(String source, RuleProfile[] totals, Map<Integer, RuleProfile> decisionTotals)
+			throws Exception {
 		var lexer = new PlSqlLexer(CharStreams.fromString(source));
 		var stream = new CommonTokenStream(lexer);
 		stream.fill();
 		Errors errors = new Errors();
 		var parser = profiledParser(stream, errors, PredictionMode.SLL);
-		parser.sql_script();
-		addProfile(parser, totals);
+		ParseTree tree = parser.sql_script();
+		addProfile(parser, totals, decisionTotals);
 
 		if (errors.count > 0) {
 			errors.clear();
 			stream.seek(0);
 			parser = profiledParser(stream, errors, PredictionMode.LL);
-			parser.sql_script();
-			addProfile(parser, totals);
+			tree = parser.sql_script();
+			addProfile(parser, totals, decisionTotals);
 		}
+
+		return new ProfileObservation(parseTreeSha256(tree), maxFunctionArgumentsPerPart(tree), errors.count);
+	}
+
+	private static String parseTreeSha256(ParseTree tree) throws Exception {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		addTreeToDigest(tree, digest);
+		return HexFormat.of().formatHex(digest.digest());
+	}
+
+	private static void addTreeToDigest(ParseTree tree, MessageDigest digest) {
+		if (tree instanceof ParserRuleContext context) {
+			digest.update((byte) 1);
+			addIntegerToDigest(context.getRuleIndex(), digest);
+			addIntegerToDigest(context.getChildCount(), digest);
+		} else if (tree instanceof TerminalNode terminal) {
+			digest.update((byte) 2);
+			addIntegerToDigest(terminal.getSymbol().getType(), digest);
+		} else {
+			digest.update((byte) 3);
+		}
+
+		for (int index = 0; index < tree.getChildCount(); index += 1) {
+			addTreeToDigest(tree.getChild(index), digest);
+		}
+	}
+
+	private static void addIntegerToDigest(int value, MessageDigest digest) {
+		digest.update((byte) (value >>> 24));
+		digest.update((byte) (value >>> 16));
+		digest.update((byte) (value >>> 8));
+		digest.update((byte) value);
+	}
+
+	private static int maxFunctionArgumentsPerPart(ParseTree tree) {
+		int directArguments = 0;
+		int maximum = 0;
+
+		for (int index = 0; index < tree.getChildCount(); index += 1) {
+			ParseTree child = tree.getChild(index);
+			if (tree instanceof ParserRuleContext context
+					&& context.getRuleIndex() == PlSqlParser.RULE_general_element_part
+					&& child instanceof ParserRuleContext childContext
+					&& childContext.getRuleIndex() == PlSqlParser.RULE_function_argument) {
+				directArguments += 1;
+			}
+			maximum = Math.max(maximum, maxFunctionArgumentsPerPart(child));
+		}
+
+		return Math.max(maximum, directArguments);
 	}
 
 	private static PlSqlParser profiledParser(CommonTokenStream stream, Errors errors, PredictionMode mode) {
@@ -248,7 +324,7 @@ public final class Main {
 		return parser;
 	}
 
-	private static void addProfile(PlSqlParser parser, RuleProfile[] totals) {
+	private static void addProfile(PlSqlParser parser, RuleProfile[] totals, Map<Integer, RuleProfile> decisionTotals) {
 		DecisionInfo[] decisions = parser.getParseInfo().getDecisionInfo();
 		for (int decisionIndex = 0; decisionIndex < decisions.length; decisionIndex += 1) {
 			int ruleIndex = parser.getATN().decisionToState.get(decisionIndex).ruleIndex;
@@ -256,6 +332,7 @@ public final class Main {
 			int targetIndex = PROFILE_RULES.indexOf(rule);
 			if (targetIndex >= 0) {
 				totals[targetIndex].add(decisions[decisionIndex]);
+				decisionTotals.computeIfAbsent(decisionIndex, ignored -> new RuleProfile()).add(decisions[decisionIndex]);
 			}
 		}
 	}

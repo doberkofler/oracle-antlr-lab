@@ -107,10 +107,26 @@ export type JavaRuleProfile = Readonly<{
 	ambiguities: number;
 }>;
 
+export type JavaDecisionProfile = JavaRuleProfile & Readonly<{ decision: number }>;
+
+export type JavaConformanceProfile = Readonly<{
+	parseTreeSha256: string;
+	maxFunctionArgumentsPerPart: number;
+	parseDiagnostics: number;
+}>;
+
 /** Profiles selected opaque corpus files with ANTLR's Java profiling simulator. */
 export const runJavaProfile = async (
 	input: Readonly<{ manifestPath: string; indexes: readonly number[] }>,
-): Promise<Readonly<{ files: number; elapsedMs: number; profiles: readonly JavaRuleProfile[] }>> => {
+): Promise<
+	Readonly<{
+		files: number;
+		elapsedMs: number;
+		profiles: readonly JavaRuleProfile[];
+		decisions: readonly JavaDecisionProfile[];
+		conformance: readonly JavaConformanceProfile[];
+	}>
+> => {
 	await ensureImage();
 	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
 	const corpusRoot = path.dirname(input.manifestPath);
@@ -125,7 +141,13 @@ export const runJavaProfile = async (
 		return `/corpus/files/${entry.file}`;
 	});
 	const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'profile', ...paths], false, true);
-	return JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{ files: number; elapsedMs: number; profiles: readonly JavaRuleProfile[] }>;
+	return JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{
+		files: number;
+		elapsedMs: number;
+		profiles: readonly JavaRuleProfile[];
+		decisions: readonly JavaDecisionProfile[];
+		conformance: readonly JavaConformanceProfile[];
+	}>;
 };
 
 /**
