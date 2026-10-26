@@ -45,6 +45,24 @@ identity and patch list are written to `grammar/pin.json`.
 cold repetition. Full defaults use three cold repetitions, one warmup, and five
 warm samples per file.
 
+Production selections use one explicit mode:
+
+```bash
+pnpm benchmark:production -- --selection full --experiment 008-full
+pnpm benchmark:production -- --selection q4 --experiment 008-q4
+pnpm benchmark:production -- --selection tail --tail-size 12 --experiment 008-tail
+pnpm benchmark:compare -- --control results/008-control/raw-report.json \
+  --candidate results/008-candidate/raw-report.json --experiment 008-compare
+```
+
+Q4 reproduces the experiment 003 byte-size boundary from
+`experiments/003-production-scale/report.json`. The 12-file tail reproduces the
+ranking in `experiments/004-bottleneck-profile/report.json`. Both write
+`selection.json` with the source digest, selected hashes, and a selection
+fingerprint. Add `--dry-run` to resolve and print a selection without starting a
+campaign. Comparison rejects different fingerprints and reports paired per-file
+deltas. Full-corpus validation remains required before accepting an optimization.
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
