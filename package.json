@@ -17,6 +17,7 @@
 		"conformance": "node scripts/semanticConformance.ts",
 		"conformance:cross-runtime": "node scripts/crossRuntimeConformance.ts",
 		"profile:memory": "node scripts/profileMemory.ts",
+		"profile:typescript": "node scripts/profileTypeScript.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint",
 		"format": "oxfmt --write",
