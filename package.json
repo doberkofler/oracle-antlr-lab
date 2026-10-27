@@ -16,6 +16,7 @@
 		"benchmark:compare": "node scripts/compareReports.ts",
 		"conformance": "node scripts/semanticConformance.ts",
 		"conformance:cross-runtime": "node scripts/crossRuntimeConformance.ts",
+		"diagnose:cross-runtime": "node scripts/diagnoseCrossRuntime.ts",
 		"profile:memory": "node scripts/profileMemory.ts",
 		"profile:typescript": "node scripts/profileTypeScript.ts",
 		"fallbacks:classify": "node scripts/classifyFallbacks.ts",

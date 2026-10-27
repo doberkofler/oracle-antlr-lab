@@ -186,6 +186,11 @@ public final class Main {
 			return;
 		}
 
+		if (args[0].equals("tokens")) {
+			tokenFiles(args);
+			return;
+		}
+
 		if (args[0].equals("memory")) {
 			memoryFiles(args);
 			return;
@@ -229,6 +234,44 @@ public final class Main {
 		print(new Observation(median(core), median(adapter), median(setup), median(lexer), median(sllParse), median(llParse),
 				last.lexerDiagnostics(), last.parseDiagnostics(), last.tokens(), last.hiddenTokens(), last.prediction(), last.sllAttempts(),
 				last.llAttempts()));
+	}
+
+	/**
+	 * Emits one line of symbolic token types and channels per file. Token text and
+	 * offsets are deliberately excluded so the output is safe to retain privately.
+	 */
+	private static void tokenFiles(String[] args) throws Exception {
+		long started = System.nanoTime();
+
+		for (int index = 1; index < args.length; index += 1) {
+			String path = args[index];
+			var lexer = new PlSqlLexer(CharStreams.fromString(Files.readString(Path.of(path))));
+			lexer.removeErrorListeners();
+			List<? extends Token> tokens = lexer.getAllTokens();
+			StringBuilder types = new StringBuilder("[");
+			StringBuilder channels = new StringBuilder("[");
+
+			for (int tokenIndex = 0; tokenIndex < tokens.size(); tokenIndex += 1) {
+				Token token = tokens.get(tokenIndex);
+
+				if (tokenIndex > 0) {
+					types.append(',');
+					channels.append(',');
+				}
+
+				types.append(token.getType());
+				channels.append(token.getChannel());
+			}
+
+			types.append(']');
+			channels.append(']');
+			System.out.printf("{\"file\":\"%s\",\"types\":%s,\"channels\":%s}%n", escape(path), types, channels);
+
+			if (index == 1 || index % 50 == 0 || index == args.length - 1) {
+				double elapsedSeconds = (System.nanoTime() - started) / 1_000_000_000.0;
+				System.err.printf("[%d/%d] elapsed %s%n", index, args.length - 1, formatDuration(elapsedSeconds));
+			}
+		}
 	}
 
 	private static void conformanceFiles(String[] args) throws Exception {

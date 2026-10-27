@@ -44,6 +44,7 @@ const report = {
 	experiment,
 	generatedAt: new Date().toISOString(),
 	corpus: { id: manifest.id, visibility: manifest.visibility, files: files.length, bytes: manifest.sourceBytes },
+	javaInput: 'conditional-prepared',
 	status: differences.length === 0 ? 'pass' : 'fail',
 	identical: files.length - differences.length,
 	different: differences.length,
@@ -55,7 +56,7 @@ mkdirSync(resultsDirectory, { recursive: true });
 writeFileSync(path.join(resultsDirectory, 'conformance.json'), `${JSON.stringify(report, null, '\t')}\n`);
 writeFileSync(
 	path.join(resultsDirectory, 'conformance.md'),
-	`# ${experiment}\n\nStatus: **${report.status}**. ${String(report.identical)} identical; ${String(report.different)} different.\n\n| Runtime | Accepted files | Diagnostics | LL fallback files |\n| --- | ---: | ---: | ---: |\n| TypeScript | ${String(totals.typeScriptAccepted)} | ${String(totals.typeScriptDiagnostics)} | ${String(totals.typeScriptFallbacks)} |\n| Java | ${String(totals.javaAccepted)} | ${String(totals.javaDiagnostics)} | ${String(totals.javaFallbacks)} |\n`,
+	`# ${experiment}\n\nStatus: **${report.status}**. ${String(report.identical)} identical; ${String(report.different)} different. Java input: **${report.javaInput}**.\n\n| Runtime | Accepted files | Diagnostics | LL fallback files |\n| --- | ---: | ---: | ---: |\n| TypeScript | ${String(totals.typeScriptAccepted)} | ${String(totals.typeScriptDiagnostics)} | ${String(totals.typeScriptFallbacks)} |\n| Java | ${String(totals.javaAccepted)} | ${String(totals.javaDiagnostics)} | ${String(totals.javaFallbacks)} |\n`,
 );
 process.stdout.write(`Cross-runtime conformance: ${report.status}; ${String(report.identical)} identical, ${String(report.different)} different.\n`);
 
