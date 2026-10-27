@@ -1,0 +1,20 @@
+{
+	"experiment": "017-java-token-divergence",
+	"question": "Why do the Java and TypeScript targets differ on 51 production files, and are the targets structurally equivalent when both receive the production preprocessing boundary?",
+	"control": "Experiment 013 cross-runtime conformance: TypeScript applied conditional-compilation preprocessing; the Java observation path received raw source.",
+	"candidate": "Identical prepared source for both targets, plus a symbolic token-stream diagnosis that excludes token text and offsets.",
+	"commands": {
+		"rawDiagnosis": "pnpm diagnose:cross-runtime .work/private-production/manifest.json java-token-diagnosis-raw raw",
+		"preparedDiagnosis": "pnpm diagnose:cross-runtime .work/private-production/manifest.json java-token-diagnosis-prepared prepared",
+		"conformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance:cross-runtime .work/private-production/manifest.json java-official-grammar-requalification-prepared",
+		"publicConformance": "pnpm conformance:cross-runtime corpora/public/manifest.json public-cross-runtime-prepared"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus and the 48-file public synthetic corpus.",
+	"acceptance": [
+		"Record the first divergent symbolic token per differing file without publishing token text.",
+		"Group every difference by lexer rule and runtime behavior.",
+		"Provide a public reduced fixture for each reproducible class.",
+		"Correct the input-boundary defect when evidence supports it.",
+		"Rerun the complete cross-runtime structural gate."
+	]
+}

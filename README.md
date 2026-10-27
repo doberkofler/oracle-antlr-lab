@@ -97,6 +97,15 @@ NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance:cross-runtime \
   .work/private-production/manifest.json java-requalification
 ```
 
+The gate applies the production conditional-compilation boundary before Java
+receives the source, matching the TypeScript input contract. Token-level
+divergence is diagnosable without publishing token text:
+
+```bash
+pnpm diagnose:cross-runtime .work/private-production/manifest.json \
+  java-token-diagnosis raw
+```
+
 Memory-constrained experiments can set `LAB_DFA_CLEAR_EVERY` or
 `LAB_DFA_MAX_HEAP_MIB`. Both clear the complete parser DFA and are deliberately
 opt-in: measured policies reduced RSS but regressed latency substantially.
@@ -128,8 +137,9 @@ The runner records:
 Separate conformance runs record accepted-unit counts, structural parse-tree
 digests, diagnostics digests, and recovery behavior. They do not extract
 declarations, references, or dependencies; identical parse trees are the
-available semantic boundary. Java is not semantic acceptance evidence: the
-official-grammar cross-runtime gate differs on 51 of 1,244 production files.
+available semantic boundary. Java is not semantic acceptance evidence until it
+owns a standalone conditional-compilation boundary; with the shared boundary all
+1,244 production files pass structural conformance.
 
 The one-pass value is a sample approximation, not a full production build. Do
 not extrapolate without a full-corpus manifest and an external decision report.

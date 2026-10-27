@@ -62,10 +62,13 @@ promoted.
   and nine require LL recovery, so no global removal is correct.
 - `016-streaming-parse-seam`: transaction-safe parse-listener API avoids retained
   trees without changing the existing retained-tree API.
+- `017-java-token-divergence`: all 51 differences begin at `DOLLAR_IF`; matching
+  the conditional-compilation boundary makes all 1,244 token streams and parse
+  trees identical. Java remains evidence-only.
 
 ## Remaining queue
 
 1. Prototype selective per-decision cache eviction; whole-cache clearing fails
    the latency gate.
 2. Test local transforms for decisions 2993, 2990, 2989, and 2595 independently.
-3. Classify the 51 Java cross-runtime differences with external qualification.
+3. Require a standalone Java conditional-compilation boundary before adoption.
