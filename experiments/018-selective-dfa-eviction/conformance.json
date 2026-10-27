@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"experiment": "018-selective-dfa-eviction",
+	"control": "persistent generated-parser DFA caches under an 8 GB old-space limit",
+	"candidate": {
+		"everyFiles": 10,
+		"coldMaxStates": 2000,
+		"hotDecisions": [2993, 2251, 2990, 2595],
+		"hotMaxStates": 90000
+	},
+	"comparedFiles": 1244,
+	"fields": ["parseTreeSha256", "lexerDiagnostics", "parseDiagnostics", "tokens", "hiddenTokens", "prediction", "sllAttempts", "llAttempts"],
+	"differences": 0,
+	"acceptedFiles": 1235,
+	"diagnostics": 107,
+	"fallbackFiles": 15
+}

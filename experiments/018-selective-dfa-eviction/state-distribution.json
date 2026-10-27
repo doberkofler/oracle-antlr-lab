@@ -1,0 +1,356 @@
+{
+	"schemaVersion": 1,
+	"experiment": "018-selective-dfa-eviction",
+	"generatedAt": "2026-10-27T22:17:04.908Z",
+	"corpus": {
+		"id": "private-production-20261027",
+		"files": 1244,
+		"sourceBytes": 20944414,
+		"visibility": "private"
+	},
+	"method": "Persistent generated-parser DFA caches sampled after the final file of one 1,244-file pass under an 8 GB old-space limit; states are DFA.length per decision.",
+	"final": {
+		"totalStates": 163215,
+		"populatedDecisions": 271,
+		"decisions": [
+			{
+				"decision": 2993,
+				"rule": "general_element_part",
+				"states": 105346,
+				"cumulativeShare": 0.6454
+			},
+			{
+				"decision": 2251,
+				"rule": "statement",
+				"states": 12655,
+				"cumulativeShare": 0.723
+			},
+			{
+				"decision": 2990,
+				"rule": "general_element",
+				"states": 8973,
+				"cumulativeShare": 0.778
+			},
+			{
+				"decision": 2595,
+				"rule": "unary_expression_core",
+				"states": 8060,
+				"cumulativeShare": 0.8273
+			},
+			{
+				"decision": 2288,
+				"rule": "body",
+				"states": 7178,
+				"cumulativeShare": 0.8713
+			},
+			{
+				"decision": 2266,
+				"rule": "cursor_loop_param",
+				"states": 3584,
+				"cumulativeShare": 0.8933
+			},
+			{
+				"decision": 2622,
+				"rule": "atom",
+				"states": 2434,
+				"cumulativeShare": 0.9082
+			},
+			{
+				"decision": 2217,
+				"rule": "seq_of_declare_specs",
+				"states": 1984,
+				"cumulativeShare": 0.9203
+			},
+			{
+				"decision": 2637,
+				"rule": "standard_function",
+				"states": 1805,
+				"cumulativeShare": 0.9314
+			},
+			{
+				"decision": 2543,
+				"rule": "logical_expression",
+				"states": 1759,
+				"cumulativeShare": 0.9422
+			},
+			{
+				"decision": 2272,
+				"rule": "return_statement",
+				"states": 1038,
+				"cumulativeShare": 0.9485
+			},
+			{
+				"decision": 2374,
+				"rule": "query_block",
+				"states": 909,
+				"cumulativeShare": 0.9541
+			},
+			{
+				"decision": 227,
+				"rule": "procedure_body",
+				"states": 556,
+				"cumulativeShare": 0.9575
+			},
+			{
+				"decision": 2565,
+				"rule": "compound_expression",
+				"states": 537,
+				"cumulativeShare": 0.9608
+			},
+			{
+				"decision": 2382,
+				"rule": "selected_list",
+				"states": 522,
+				"cumulativeShare": 0.964
+			},
+			{
+				"decision": 2561,
+				"rule": "relational_expression",
+				"states": 347,
+				"cumulativeShare": 0.9661
+			},
+			{
+				"decision": 2375,
+				"rule": "query_block",
+				"states": 328,
+				"cumulativeShare": 0.9681
+			},
+			{
+				"decision": 2834,
+				"rule": "other_function",
+				"states": 317,
+				"cumulativeShare": 0.9701
+			},
+			{
+				"decision": 2631,
+				"rule": "string_function",
+				"states": 212,
+				"cumulativeShare": 0.9714
+			},
+			{
+				"decision": 2626,
+				"rule": "string_function",
+				"states": 171,
+				"cumulativeShare": 0.9724
+			},
+			{
+				"decision": 2931,
+				"rule": "column_name",
+				"states": 164,
+				"cumulativeShare": 0.9734
+			},
+			{
+				"decision": 219,
+				"rule": "function_body",
+				"states": 161,
+				"cumulativeShare": 0.9744
+			},
+			{
+				"decision": 203,
+				"rule": "package_obj_body",
+				"states": 158,
+				"cumulativeShare": 0.9754
+			},
+			{
+				"decision": 2293,
+				"rule": "block",
+				"states": 129,
+				"cumulativeShare": 0.9762
+			},
+			{
+				"decision": 2540,
+				"rule": "expressions_",
+				"states": 108,
+				"cumulativeShare": 0.9768
+			},
+			{
+				"decision": 2989,
+				"rule": "general_element",
+				"states": 103,
+				"cumulativeShare": 0.9775
+			},
+			{
+				"decision": 2379,
+				"rule": "query_block",
+				"states": 96,
+				"cumulativeShare": 0.9781
+			},
+			{
+				"decision": 2575,
+				"rule": "concatenation",
+				"states": 92,
+				"cumulativeShare": 0.9786
+			},
+			{
+				"decision": 2593,
+				"rule": "unary_expression",
+				"states": 80,
+				"cumulativeShare": 0.9791
+			},
+			{
+				"decision": 2965,
+				"rule": "argument",
+				"states": 79,
+				"cumulativeShare": 0.9796
+			}
+		]
+	},
+	"checkpoints": [
+		{
+			"completedFiles": 100,
+			"coreSeconds": 1,
+			"heapUsedMiB": 161,
+			"states": 1403,
+			"hotDecisions": [
+				[2993, 75],
+				[2251, 127],
+				[2990, 41],
+				[2595, 186]
+			]
+		},
+		{
+			"completedFiles": 200,
+			"coreSeconds": 2,
+			"heapUsedMiB": 185,
+			"states": 2000,
+			"hotDecisions": [
+				[2993, 165],
+				[2251, 179],
+				[2990, 54],
+				[2595, 251]
+			]
+		},
+		{
+			"completedFiles": 300,
+			"coreSeconds": 2,
+			"heapUsedMiB": 204,
+			"states": 2357,
+			"hotDecisions": [
+				[2993, 218],
+				[2251, 259],
+				[2990, 101],
+				[2595, 310]
+			]
+		},
+		{
+			"completedFiles": 400,
+			"coreSeconds": 3,
+			"heapUsedMiB": 261,
+			"states": 3676,
+			"hotDecisions": [
+				[2993, 756],
+				[2251, 383],
+				[2990, 284],
+				[2595, 405]
+			]
+		},
+		{
+			"completedFiles": 500,
+			"coreSeconds": 4,
+			"heapUsedMiB": 226,
+			"states": 4522,
+			"hotDecisions": [
+				[2993, 1041],
+				[2251, 569],
+				[2990, 360],
+				[2595, 475]
+			]
+		},
+		{
+			"completedFiles": 600,
+			"coreSeconds": 6,
+			"heapUsedMiB": 364,
+			"states": 7478,
+			"hotDecisions": [
+				[2993, 2341],
+				[2251, 1086],
+				[2990, 626],
+				[2595, 688]
+			]
+		},
+		{
+			"completedFiles": 700,
+			"coreSeconds": 10,
+			"heapUsedMiB": 655,
+			"states": 12812,
+			"hotDecisions": [
+				[2993, 5365],
+				[2251, 1619],
+				[2990, 991],
+				[2595, 1015]
+			]
+		},
+		{
+			"completedFiles": 800,
+			"coreSeconds": 15,
+			"heapUsedMiB": 856,
+			"states": 21411,
+			"hotDecisions": [
+				[2993, 10310],
+				[2251, 2481],
+				[2990, 1712],
+				[2595, 1633]
+			]
+		},
+		{
+			"completedFiles": 900,
+			"coreSeconds": 21,
+			"heapUsedMiB": 1379,
+			"states": 31210,
+			"hotDecisions": [
+				[2993, 15661],
+				[2251, 3138],
+				[2990, 2561],
+				[2595, 1981]
+			]
+		},
+		{
+			"completedFiles": 1000,
+			"coreSeconds": 32,
+			"heapUsedMiB": 1591,
+			"states": 50750,
+			"hotDecisions": [
+				[2993, 26967],
+				[2251, 4686],
+				[2990, 3370],
+				[2595, 3089]
+			]
+		},
+		{
+			"completedFiles": 1100,
+			"coreSeconds": 47,
+			"heapUsedMiB": 3057,
+			"states": 73981,
+			"hotDecisions": [
+				[2993, 40555],
+				[2251, 7164],
+				[2990, 4477],
+				[2595, 4528]
+			]
+		},
+		{
+			"completedFiles": 1200,
+			"coreSeconds": 76,
+			"heapUsedMiB": 3684,
+			"states": 118007,
+			"hotDecisions": [
+				[2993, 69055],
+				[2251, 10814],
+				[2990, 6861],
+				[2595, 6922]
+			]
+		},
+		{
+			"completedFiles": 1244,
+			"coreSeconds": 104,
+			"heapUsedMiB": 4990,
+			"states": 163215,
+			"hotDecisions": [
+				[2993, 105346],
+				[2251, 12655],
+				[2990, 8973],
+				[2595, 8060]
+			]
+		}
+	]
+}

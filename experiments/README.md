@@ -65,10 +65,12 @@ promoted.
 - `017-java-token-divergence`: all 51 differences begin at `DOLLAR_IF`; matching
   the conditional-compilation boundary makes all 1,244 token streams and parse
   trees identical. Java remains evidence-only.
+- `018-selective-dfa-eviction`: per-decision bounds complete under Node's default
+  heap; 26.4% lower peak RSS and 59.9% fewer final DFA states at a 12.0% core
+  cost, with zero structural differences. Opt-in; production default unchanged.
 
 ## Remaining queue
 
-1. Prototype selective per-decision cache eviction; whole-cache clearing fails
-   the latency gate.
-2. Test local transforms for decisions 2993, 2990, 2989, and 2595 independently.
-3. Require a standalone Java conditional-compilation boundary before adoption.
+1. Test local transforms for decisions 2993, 2990, 2989, and 2595 independently.
+2. Require a standalone Java conditional-compilation boundary before adoption.
+3. Localize the remaining valid LL fallbacks.

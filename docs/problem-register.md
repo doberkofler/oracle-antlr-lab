@@ -160,7 +160,7 @@ Final status of the optimization sequence:
 
 ## 9. Official-grammar findings
 
-Experiments 011–017 rebaseline and test the follow-up opportunities on official
+Experiments 011–018 rebaseline and test the follow-up opportunities on official
 `grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`.
 
 - Optimized TypeScript core is 103.888 s with 6.546 GB peak RSS, 107 diagnostics,
@@ -173,6 +173,11 @@ Experiments 011–017 rebaseline and test the follow-up opportunities on officia
   until it owns that preprocessing boundary.
 - The optimized tail remains dominated by `general_element_part` and
   `general_element` at 69.3% of measured prediction time.
+- Decision 2993 alone retains 64.5% of final DFA states. Selective per-decision
+  eviction (hot 90,000 states, cold 2,000 states, every 10 files) completes under
+  Node's default heap with 26.4% lower peak RSS and 59.9% fewer final states at a
+  12.0% core cost. All 1,244 structural observations match the persistent-cache
+  control. It remains opt-in because a 12% regression is still a regression.
 - Six fallback files require LL for acceptance; nine require its recovery tree.
 - Transactional streaming extraction can avoid a representative 43.4 MB retained
   tree without breaking retained-tree callers; it does not reduce shared DFA

@@ -1,0 +1,135 @@
+{
+	"schemaVersion": 1,
+	"experiment": "018-selective-dfa-eviction",
+	"corpus": {
+		"id": "private-production-20261027",
+		"files": 1244,
+		"sourceBytes": 20944414,
+		"visibility": "private"
+	},
+	"method": "Single fresh-process cache-reuse passes over the complete opaque corpus. Absolute timing shifted with host load, so the selected candidate was also measured in a paired session against a freshly measured control. Peak RSS is a process high-water mark.",
+	"control": {
+		"policy": "persistent generated-parser DFA caches",
+		"coreSeconds": 103.888,
+		"coreCvPercent": 1.16,
+		"peakRssGb": 6.546,
+		"finalStates": 163215,
+		"completesDefaultHeap": false,
+		"source": "experiments/011-official-grammar-rebaseline"
+	},
+	"pairedControl": {
+		"coreSeconds": [127.455, 129.217, 140.107],
+		"coreMeanSeconds": 132.26,
+		"peakRssGb": 6.442,
+		"finalStates": 163215
+	},
+	"candidates": [
+		{
+			"id": "whole-cache-500",
+			"family": "whole-cache lifecycle",
+			"config": { "clearEveryFiles": 500 },
+			"coreSeconds": 126.45,
+			"peakRssGb": 4.64,
+			"finalStates": 0,
+			"completesDefaultHeap": true,
+			"outcome": "rejected: +21.7% core and discards all learned states",
+			"source": "experiments/012-dfa-cache-bounds"
+		},
+		{
+			"id": "cold-only",
+			"family": "state-count",
+			"config": { "everyFiles": 50, "coldMaxStates": 2000, "hotDecisions": [2993], "hotMaxStates": null },
+			"coreSeconds": 126.9,
+			"peakRssGb": 4.681,
+			"finalStates": 137201,
+			"decisionResets": 20,
+			"completesDefaultHeap": true,
+			"outcome": "rejected: +22.2% core, no bound on the dominant decision"
+		},
+		{
+			"id": "hot-cap-not-reached-100k",
+			"family": "state-count",
+			"config": { "everyFiles": 10, "coldMaxStates": 2000, "hotDecisions": [2993, 2251, 2990, 2595], "hotMaxStates": 100000 },
+			"coreSeconds": 110.5,
+			"peakRssGb": 4.795,
+			"finalStates": 153347,
+			"decisionResets": 7,
+			"completesDefaultHeap": true,
+			"outcome": "rejected: the hot bound was not reached, so the cache is not actually bounded"
+		},
+		{
+			"id": "hot-cap-50k",
+			"family": "state-count",
+			"config": { "everyFiles": 10, "coldMaxStates": 2000, "hotDecisions": [2993, 2251, 2990, 2595], "hotMaxStates": 50000 },
+			"coreSeconds": 124.4,
+			"peakRssGb": 4.071,
+			"finalStates": 78465,
+			"decisionResets": 9,
+			"completesDefaultHeap": true,
+			"outcome": "rejected: +19.7% core; repeated relearning of the dominant decision"
+		},
+		{
+			"id": "hot-cap-70k-every-20",
+			"family": "state-count",
+			"config": { "everyFiles": 20, "coldMaxStates": 2000, "hotDecisions": [2993, 2251, 2990, 2595], "hotMaxStates": 70000 },
+			"coreSeconds": 117.2,
+			"peakRssGb": 4.585,
+			"finalStates": 90486,
+			"decisionResets": 7,
+			"completesDefaultHeap": true,
+			"outcome": "viable, but slower and retains more states than the selected 90k policy"
+		},
+		{
+			"id": "hot-cap-90k-every-10",
+			"family": "state-count + lifecycle",
+			"config": {
+				"everyFiles": 10,
+				"coldMaxStates": 2000,
+				"hotDecisions": [2993, 2251, 2990, 2595],
+				"hotMaxStates": 90000
+			},
+			"coreSeconds": [114.431, 116.782, 117.787],
+			"coreMeanSeconds": 116.333,
+			"coreCvPercent": 1.21,
+			"peakRssGb": 4.816,
+			"finalStates": [65484, 65484, 65484],
+			"decisionResets": 8,
+			"completesDefaultHeap": true,
+			"outcome": "selected: +12.0% core, deterministic retained-state count"
+		},
+		{
+			"id": "hot-cap-90k-every-10-paired",
+			"family": "state-count + lifecycle",
+			"config": {
+				"everyFiles": 10,
+				"coldMaxStates": 2000,
+				"hotDecisions": [2993, 2251, 2990, 2595],
+				"hotMaxStates": 90000
+			},
+			"coreSeconds": [142.667, 149.676, 151.521],
+			"coreMeanSeconds": 147.954,
+			"coreCvPercent": 2.58,
+			"peakRssGb": 4.815,
+			"finalStates": [65484, 65484, 65484],
+			"decisionResets": 8,
+			"completesDefaultHeap": true,
+			"outcome": "selected: paired session reproduces +11.9% core against the paired control"
+		},
+		{
+			"id": "heap-triggered",
+			"family": "memory-pressure + state-count",
+			"config": {
+				"heapTriggerMiB": 2000,
+				"coldMaxStates": 2000,
+				"hotDecisions": [2993, 2251, 2990, 2595],
+				"hotMaxStates": 90000
+			},
+			"coreSeconds": [112.5, 110.3, 114.5, 174.0, 150.2],
+			"peakRssGb": 4.701,
+			"finalStates": [75195, 73847, 75446, 75446, 75446],
+			"decisionResets": 8,
+			"completesDefaultHeap": true,
+			"outcome": "rejected: no deterministic enforcement point; timing varied from 110 s to 174 s, one run recorded a 1,046 s wall-clock gap, and retained states varied"
+		}
+	]
+}

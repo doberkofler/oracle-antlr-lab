@@ -1,0 +1,19 @@
+{
+	"experiment": "018-selective-dfa-eviction",
+	"question": "Can per-decision DFA eviction bound TypeScript memory under Node's default heap without the latency cost of whole-cache clearing?",
+	"control": "Official-grammar TypeScript baseline with persistent generated DFA caches under an 8 GB old-space limit.",
+	"candidate": "Opt-in per-decision bounds: enforce every 10 files; cap hot decisions at 90,000 states; cap cold decisions at 2,000 states; treat decisions 2993, 2251, 2990, and 2595 as hot.",
+	"commands": {
+		"performance": "for i in 1 2 3; do env -u NODE_OPTIONS LAB_DFA_SELECTIVE_EVERY=10 LAB_DFA_HOT_DECISIONS=2993,2251,2990,2595 LAB_DFA_HOT_MAX_STATES=90000 LAB_DFA_COLD_MAX_STATES=2000 pnpm dfa:eviction -- --experiment 018-selective-dfa-eviction-r$i; done",
+		"control": "NODE_OPTIONS=--max-old-space-size=8192 pnpm dfa:eviction -- --experiment 018-selective-dfa-eviction-control --tree-hash --observations .work/018-control-observations.json",
+		"conformance": "env -u NODE_OPTIONS LAB_DFA_SELECTIVE_EVERY=10 LAB_DFA_HOT_DECISIONS=2993,2251,2990,2595 LAB_DFA_HOT_MAX_STATES=90000 LAB_DFA_COLD_MAX_STATES=2000 pnpm dfa:eviction -- --experiment 018-selective-dfa-eviction --tree-hash --observations .work/018-candidate-observations.json --compare .work/018-control-observations.json"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus; three fresh-process performance passes, a paired host-load control session, and a complete tree/diagnostic comparison.",
+	"acceptance": [
+		"Complete every pass under Node's default heap.",
+		"Preserve parse trees, tokens, diagnostics, acceptance, and fallback semantics.",
+		"Reduce peak RSS without the 22–38% whole-cache latency regression.",
+		"Use state bounds that do not depend on corpus identities or fixed production file order.",
+		"Reject and document candidates that fail the memory or latency gate."
+	]
+}
