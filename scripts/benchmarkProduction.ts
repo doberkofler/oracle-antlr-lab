@@ -230,6 +230,8 @@ const rawReport = {
 		repeats,
 		selection: selection.mode,
 		pass: 'one fresh process per repetition; generated DFA caches persist across files within a repetition',
+		typeScriptDfaClearEveryFiles: process.env['LAB_DFA_CLEAR_EVERY'] ?? 'never',
+		typeScriptDfaMaxHeapMiB: process.env['LAB_DFA_MAX_HEAP_MIB'] ?? 'never',
 	},
 	adapters: adapters.map((adapter) => adapter.identity),
 	aggregate,

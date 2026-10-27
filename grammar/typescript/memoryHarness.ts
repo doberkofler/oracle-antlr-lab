@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { Session } from 'node:inspector';
 import path from 'node:path';
 import { type MemoryCheckpoint, type MemoryEvidence, type MemoryPassBody, summarizeAllocationProfile } from '../../src/memory.ts';
+import { clearDfaAtBoundary, parseDfaCachePolicy } from './dfaCache.ts';
 import { type FileEntry, parseSource } from './parse.ts';
 
 type Manifest = Readonly<{ files: readonly FileEntry[] }>;
@@ -34,6 +35,7 @@ const gcEvery = positiveInteger(process.env['LAB_GC_EVERY'] ?? '25');
 const samplingInterval = positiveInteger(process.env['LAB_SAMPLING_INTERVAL'] ?? '32768');
 const treeIndex = process.env['LAB_TREE_INDEX'] === undefined ? undefined : Number(process.env['LAB_TREE_INDEX']);
 const allocationProfilePath = process.env['LAB_ALLOCATION_PROFILE'];
+const dfaCachePolicy = parseDfaCachePolicy(process.env['LAB_DFA_CLEAR_EVERY'], process.env['LAB_DFA_MAX_HEAP_MIB']);
 const evidence: MemoryEvidence[] = [];
 
 const measure = (): Readonly<{ heapUsedBytes: number; rssBytes: number; heapTotalBytes: number }> => {
@@ -62,6 +64,7 @@ for (const [position, entry] of selected.entries()) {
 	const processed = processEntry(entry);
 	coreMs += processed.observation.coreMs;
 	lastParser = processed.parser;
+	clearDfaAtBoundary(processed.parser, position + 1, dfaCachePolicy);
 	const heapUsedBytes = process.memoryUsage().heapUsed;
 	peakHeapUsedBytes = Math.max(peakHeapUsedBytes, heapUsedBytes);
 	const checkpoint = position + 1 === selected.length || (position + 1) % gcEvery === 0;
