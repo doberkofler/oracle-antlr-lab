@@ -4,6 +4,7 @@ import { Session } from 'node:inspector';
 import path from 'node:path';
 import { type MemoryCheckpoint, type MemoryEvidence, type MemoryPassBody, summarizeAllocationProfile } from '../../src/memory.ts';
 import { clearDfaAtBoundary, parseDfaCachePolicy } from './dfaCache.ts';
+import { evictDfaAtBoundary, parseSelectiveDfaSchedule } from './dfaEviction.ts';
 import { type FileEntry, parseSource } from './parse.ts';
 
 type Manifest = Readonly<{ files: readonly FileEntry[] }>;
@@ -36,6 +37,14 @@ const samplingInterval = positiveInteger(process.env['LAB_SAMPLING_INTERVAL'] ??
 const treeIndex = process.env['LAB_TREE_INDEX'] === undefined ? undefined : Number(process.env['LAB_TREE_INDEX']);
 const allocationProfilePath = process.env['LAB_ALLOCATION_PROFILE'];
 const dfaCachePolicy = parseDfaCachePolicy(process.env['LAB_DFA_CLEAR_EVERY'], process.env['LAB_DFA_MAX_HEAP_MIB']);
+const selectiveDfaSchedule = parseSelectiveDfaSchedule(
+	process.env['LAB_DFA_SELECTIVE_EVERY'],
+	process.env['LAB_DFA_SELECTIVE_HEAP_MIB'],
+	process.env['LAB_DFA_HOT_MAX_STATES'],
+	process.env['LAB_DFA_COLD_MAX_STATES'],
+	process.env['LAB_DFA_TOTAL_MAX_STATES'],
+	process.env['LAB_DFA_HOT_DECISIONS'],
+);
 const evidence: MemoryEvidence[] = [];
 
 const measure = (): Readonly<{ heapUsedBytes: number; rssBytes: number; heapTotalBytes: number }> => {
@@ -65,6 +74,7 @@ for (const [position, entry] of selected.entries()) {
 	coreMs += processed.observation.coreMs;
 	lastParser = processed.parser;
 	clearDfaAtBoundary(processed.parser, position + 1, dfaCachePolicy);
+	evictDfaAtBoundary(processed.parser, position + 1, selectiveDfaSchedule);
 	const heapUsedBytes = process.memoryUsage().heapUsed;
 	peakHeapUsedBytes = Math.max(peakHeapUsedBytes, heapUsedBytes);
 	const checkpoint = position + 1 === selected.length || (position + 1) % gcEvery === 0;
@@ -75,7 +85,7 @@ for (const [position, entry] of selected.entries()) {
 		heapUsedBytes,
 		retainedHeapBytes: checkpoint ? measure().heapUsedBytes : null,
 		rssBytes: process.resourceUsage().maxRSS * 1024,
-		dfaStates: processed.dfaStates,
+		dfaStates: dfaStates(processed.parser),
 		allocatedBytes: null,
 	});
 
@@ -135,10 +145,10 @@ process.stdout.write(`${JSON.stringify(result)}\n`);
 
 function processEntry(
 	entry: FileEntry,
-): Readonly<{ observation: ReturnType<typeof parseSource>['observation']; parser: ReturnType<typeof parseSource>['parser']; dfaStates: number }> {
+): Readonly<{ observation: ReturnType<typeof parseSource>['observation']; parser: ReturnType<typeof parseSource>['parser'] }> {
 	const source = readFileSync(path.join(sourcesDir, entry.file), 'utf8');
 	const parsed = parseSource(source, entry);
-	return { observation: parsed.observation, parser: parsed.parser, dfaStates: dfaStates(parsed.parser) };
+	return { observation: parsed.observation, parser: parsed.parser };
 }
 
 function loadRetained(
