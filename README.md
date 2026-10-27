@@ -110,6 +110,25 @@ Memory-constrained experiments can set `LAB_DFA_CLEAR_EVERY` or
 `LAB_DFA_MAX_HEAP_MIB`. Both clear the complete parser DFA and are deliberately
 opt-in: measured policies reduced RSS but regressed latency substantially.
 
+Selective per-decision eviction is also opt-in through
+`LAB_DFA_SELECTIVE_EVERY`, `LAB_DFA_SELECTIVE_HEAP_MIB`,
+`LAB_DFA_HOT_DECISIONS`, `LAB_DFA_HOT_MAX_STATES`,
+`LAB_DFA_COLD_MAX_STATES`, and `LAB_DFA_TOTAL_MAX_STATES`. The accepted
+[`018-selective-dfa-eviction`](experiments/018-selective-dfa-eviction/report.md)
+policy completes under Node's default heap with 26.4% lower peak RSS and a 12.0%
+core regression:
+
+```bash
+LAB_DFA_SELECTIVE_EVERY=10 \
+LAB_DFA_HOT_DECISIONS=2993,2251,2990,2595 \
+LAB_DFA_HOT_MAX_STATES=90000 \
+LAB_DFA_COLD_MAX_STATES=2000 \
+pnpm dfa:eviction -- --experiment selective-dfa-eviction
+```
+
+The production default remains the persistent cache. `pnpm dfa:eviction` also
+compares a candidate against a control observation file with `--compare`.
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
