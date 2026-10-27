@@ -15,6 +15,7 @@
 		"benchmark:production": "node scripts/benchmarkProduction.ts",
 		"benchmark:compare": "node scripts/compareReports.ts",
 		"conformance": "node scripts/semanticConformance.ts",
+		"conformance:cross-runtime": "node scripts/crossRuntimeConformance.ts",
 		"profile:memory": "node scripts/profileMemory.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint",

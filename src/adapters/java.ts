@@ -116,6 +116,43 @@ export type JavaConformanceProfile = Readonly<{
 	parseDiagnostics: number;
 }>;
 
+export type JavaConformanceObservation = Readonly<{
+	file: string;
+	parseTreeSha256: string;
+	lexerDiagnostics: number;
+	parseDiagnostics: number;
+	tokens: number;
+	hiddenTokens: number;
+	prediction: 'sll' | 'sll-fallback-ll';
+	llAttempts: number;
+}>;
+
+/** Runs the Java parser's cross-runtime conformance observation mode. */
+export const runJavaConformance = async (
+	input: Readonly<{ manifestPath: string; indexes: readonly number[] }>,
+): Promise<readonly JavaConformanceObservation[]> => {
+	await ensureImage();
+	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
+	const corpusRoot = path.dirname(input.manifestPath);
+	const byId = new Map(manifest.files.map((file) => [file.id, file]));
+	const paths = input.indexes.map((index) => {
+		const entry = byId.get(index);
+
+		if (entry === undefined) {
+			throw new Error(`No corpus entry with index ${String(index)}`);
+		}
+
+		return `/corpus/files/${entry.file}`;
+	});
+	const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'conformance', ...paths], false, true);
+	const parsed = JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{ files: readonly JavaConformanceObservation[] }>;
+
+	return parsed.files.map((observation) => ({
+		...observation,
+		file: path.relative('/corpus/files', observation.file).split(path.sep).join('/'),
+	}));
+};
+
 /** Profiles selected opaque corpus files with ANTLR's Java profiling simulator. */
 export const runJavaProfile = async (
 	input: Readonly<{ manifestPath: string; indexes: readonly number[] }>,

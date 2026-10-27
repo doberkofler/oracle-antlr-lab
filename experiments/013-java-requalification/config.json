@@ -1,0 +1,13 @@
+{
+	"experiment": "013-java-requalification",
+	"question": "Does the official Java target produce the same structural parse trees, tokens, acceptance, and diagnostics as optimized TypeScript on the frozen production corpus?",
+	"control": "Optimized TypeScript target using antlr4ng 3.0.16.",
+	"candidate": "Official Java target using antlr4-runtime 4.13.2.",
+	"command": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance:cross-runtime .work/private-production/manifest.json java-official-grammar-requalification",
+	"selection": "Complete frozen 1,244-file opaque production corpus.",
+	"acceptance": [
+		"Identical structural parse-tree SHA-256 for every file.",
+		"Identical visible and hidden token counts for every file.",
+		"Identical lexer and parser diagnostic counts for every file."
+	]
+}

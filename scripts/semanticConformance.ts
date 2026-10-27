@@ -492,7 +492,7 @@ function renderMarkdown(value: ConformanceArtifact): string {
 		'',
 		'Parse-tree identity is the strongest available semantic boundary in this laboratory. Declarations, references, and dependencies are not extracted here; external qualification remains required.',
 		'',
-		'Java remains an unmodified control with 486 parser diagnostics on the frozen production corpus. Its speed does not establish semantic viability.',
+		'Java remains evidence-only: cross-runtime conformance must pass before adoption, regardless of speed.',
 		'',
 	].join('\n');
 }
