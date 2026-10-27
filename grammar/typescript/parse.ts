@@ -1,4 +1,4 @@
-import { BaseErrorListener, CharStream, CommonTokenStream, type ParseTree, Token } from 'antlr4ng';
+import { BaseErrorListener, CharStream, CommonTokenStream, type ParseTree, type ParseTreeListener, Token } from 'antlr4ng';
 import { prepareConditional } from '../../src/conditional.ts';
 import { PlSqlLexer } from './generated/PlSqlLexer.ts';
 import { PlSqlParser } from './generated/PlSqlParser.ts';
@@ -45,6 +45,13 @@ export type ParsedSource = Readonly<{
 	source: string;
 }>;
 
+/** Transaction boundary for semantic extraction during parsing. */
+export type StreamingParseSink = Readonly<{
+	listenerFor: (mode: 'sll' | 'll') => ParseTreeListener;
+	commit: (mode: 'sll' | 'll') => void;
+	rollback: (mode: 'sll') => void;
+}>;
+
 /** Collects syntax errors without writing to stderr. */
 export class ErrorCollector extends BaseErrorListener {
 	readonly #messages: string[] = [];
@@ -76,7 +83,28 @@ export class ErrorCollector extends BaseErrorListener {
  * @param options - Optional parse-tree digest.
  * @returns Observation plus the retained parse tree, token stream, and parser.
  */
-export const parseSource = (source: string, entry: FileEntry, options: Readonly<{ treeHash?: boolean }> = {}): ParsedSource => {
+export const parseSource = (source: string, entry: FileEntry, options: Readonly<{ treeHash?: boolean }> = {}): ParsedSource =>
+	parse(source, entry, { buildParseTrees: true, treeHash: options.treeHash === true });
+
+/**
+ * Parses while emitting transactional listener events without retaining a tree.
+ *
+ * The sink must discard SLL attempt state when `rollback` is called. Exactly one
+ * attempt is committed. Existing retained-tree callers should use `parseSource`.
+ *
+ * @param source - Oracle source text.
+ * @param entry - Corpus entry that owns the source.
+ * @param sink - Transactional semantic-event consumer.
+ * @returns Parse observation; parser, token stream, source, and tree are released.
+ */
+export const parseSourceStreaming = (source: string, entry: FileEntry, sink: StreamingParseSink): HarnessObservation =>
+	parse(source, entry, { buildParseTrees: false, sink, treeHash: false }).observation;
+
+const parse = (
+	source: string,
+	entry: FileEntry,
+	options: Readonly<{ buildParseTrees: boolean; sink?: StreamingParseSink; treeHash: boolean }>,
+): ParsedSource => {
 	const startedAt = performance.now();
 	const conditionalStarted = performance.now();
 	const prepared = prepareConditional(source);
@@ -106,6 +134,12 @@ export const parseSource = (source: string, entry: FileEntry, options: Readonly<
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(parserErrors);
+		parser.buildParseTrees = options.buildParseTrees;
+
+		if (options.sink !== undefined) {
+			parser.addParseListener(options.sink.listenerFor(mode));
+		}
+
 		interpreter.predictionMode = mode === 'sll' ? 0 : 1;
 		return parser;
 	};
@@ -119,6 +153,7 @@ export const parseSource = (source: string, entry: FileEntry, options: Readonly<
 	let llAttempts = 0;
 
 	if (parserErrors.count > 0) {
+		options.sink?.rollback('sll');
 		parserErrors.clear();
 		stream.seek(0);
 		parser = parserFor('ll');
@@ -127,6 +162,7 @@ export const parseSource = (source: string, entry: FileEntry, options: Readonly<
 		llParseMs = performance.now() - llStarted;
 		llAttempts = 1;
 	}
+	options.sink?.commit(llAttempts > 0 ? 'll' : 'sll');
 
 	const totalMs = performance.now() - startedAt;
 
@@ -144,7 +180,7 @@ export const parseSource = (source: string, entry: FileEntry, options: Readonly<
 			sllAttempts: 1,
 			llAttempts,
 			peakRssBytes: process.resourceUsage().maxRSS * 1024,
-			...(options.treeHash === true ? { parseTreeSha256: treeSha256(tree) } : {}),
+			...(options.treeHash ? { parseTreeSha256: treeSha256(tree) } : {}),
 		},
 		tree,
 		stream,
