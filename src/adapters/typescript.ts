@@ -138,7 +138,7 @@ export const typeScriptAdapter: ParserAdapter = {
 	identity: {
 		name: 'typescript',
 		language: 'TypeScript',
-		grammar: 'pinned grammars-v4 plus local adaptations',
+		grammar: 'pinned official grammars-v4 with TypeScript target imports',
 		runtime: 'antlr4ng@3.0.16',
 		generator: 'antlr-ng@1.0.10',
 		extra: {

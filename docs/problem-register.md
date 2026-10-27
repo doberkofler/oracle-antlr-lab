@@ -156,9 +156,26 @@ Final status of the optimization sequence:
 | Latency              | 156.093 s → 92.241 s full-corpus TypeScript parser core; −40.9%, 1.69× speedup.          |
 | Memory               | DFA caches retain 90–96% of heap; no memory optimization is claimed by the latency work. |
 | Semantic conformance | All per-change gates pass; only intended fallback differences remain.                    |
-| Java                 | Faster constant factor, but 486 diagnostics remain unresolved; not viable evidence.      |
+| Java                 | Faster constant factor, but cross-runtime qualification remains required.                |
 
-## 9. Out of scope
+## 9. Official-grammar findings
+
+Experiments 011–016 rebaseline and test the follow-up opportunities on official
+`grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`.
+
+- Optimized TypeScript core is 103.888 s with 6.546 GB peak RSS, 107 diagnostics,
+  and 15 fallback files. The unchanged campaign exhausts Node's default heap.
+- Whole-DFA clearing restores default-heap completion and cuts RSS 29–41%, but
+  costs 22–38% latency; it remains opt-in.
+- Java core is 45.234 s, but 51 files fail cross-runtime structural conformance.
+- The optimized tail remains dominated by `general_element_part` and
+  `general_element` at 69.3% of measured prediction time.
+- Six fallback files require LL for acceptance; nine require its recovery tree.
+- Transactional streaming extraction can avoid a representative 43.4 MB retained
+  tree without breaking retained-tree callers; it does not reduce shared DFA
+  retention.
+
+## 10. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.
 - PL/Scope normalization and release gates.

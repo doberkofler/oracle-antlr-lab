@@ -49,13 +49,23 @@ promoted.
 - `009-semantic-conformance`: per-change and combined conformance gates for
   issues #1–#3; accepted units, parse trees, tokens, diagnostics, and recovery
   behavior matched, with only the documented LL-fallback removal classified as
-  intended. Java remains blocked by its 486 diagnostics.
+  intended.
+- `011-official-grammar-rebaseline`: official grammar baseline; TypeScript core
+  103.888 s, 6.546 GB peak RSS, 107 diagnostics, and 15 fallback files.
+- `012-dfa-cache-bounds`: periodic and heap-triggered whole-DFA clearing cuts
+  peak RSS 29–41% but costs 22–38% core latency; controls retained as opt-in.
+- `013-java-requalification`: reusable cross-runtime structural gate; Java is
+  2.30× faster but differs on 51 files and remains evidence-only.
+- `014-typescript-reprofile`: optimized tail profile; `general_element_part` and
+  `general_element` retain 69.3% of measured prediction time.
+- `015-remaining-ll-fallbacks`: 15 files classified; six require LL acceptance
+  and nine require LL recovery, so no global removal is correct.
+- `016-streaming-parse-seam`: transaction-safe parse-listener API avoids retained
+  trees without changing the existing retained-tree API.
 
 ## Remaining queue
 
-1. Measure process startup and generated recognizer/ATN initialization as
-   separate boundaries.
-2. Reduce the 20 remaining fallback files: six SLL-only conflicts and fourteen
-   LL-side grammar gaps.
-3. Resolve the Java target's 486 diagnostics before treating it as a viable
-   adapter.
+1. Prototype selective per-decision cache eviction; whole-cache clearing fails
+   the latency gate.
+2. Test local transforms for decisions 2993, 2990, 2989, and 2595 independently.
+3. Classify the 51 Java cross-runtime differences with external qualification.
