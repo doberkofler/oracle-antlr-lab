@@ -18,6 +18,7 @@
 		"conformance:cross-runtime": "node scripts/crossRuntimeConformance.ts",
 		"profile:memory": "node scripts/profileMemory.ts",
 		"profile:typescript": "node scripts/profileTypeScript.ts",
+		"fallbacks:classify": "node scripts/classifyFallbacks.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint",
 		"format": "oxfmt --write",
