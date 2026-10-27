@@ -44,26 +44,18 @@ returned to the external qualification suite.
 
 ## 3. Known parser and lexer risks
 
-| Risk                                                   | Effect                                                                                                              | Owner                                                 |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `REMARK_COMMENT` accepts ASCII space, not tab          | `REM<TAB>` lines become visible tokens; declaration-shaped comments can create phantom facts in a semantic consumer | Pinned grammar; upstream `grammars-v4#5124`           |
-| Non-literal `$IF` keeps both branches                  | Duplicate declarations when both branches declare the same name                                                     | Adapter policy, not grammar                           |
-| Dependency slicing is syntactic                        | `pkg.coll.exists` can be read as `schema.package` and preserved as an external package call                         | Adapter policy, not grammar                           |
-| Structural scanner does not materialize loop iterators | Iterator declarations differ from a full parse                                                                      | Production adapter                                    |
-| `%TYPE`/`%ROWTYPE` handling differs by consumer        | Current structural and full parsers both emit type references; old comparisons are stale                            | Retired statement; do not re-open without a new probe |
+| Risk                                                   | Effect                                                                                      | Owner                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Non-literal `$IF` keeps both branches                  | Duplicate declarations when both branches declare the same name                             | Adapter policy, not grammar                           |
+| Dependency slicing is syntactic                        | `pkg.coll.exists` can be read as `schema.package` and preserved as an external package call | Adapter policy, not grammar                           |
+| Structural scanner does not materialize loop iterators | Iterator declarations differ from a full parse                                              | Production adapter                                    |
+| `%TYPE`/`%ROWTYPE` handling differs by consumer        | Current structural and full parsers both emit type references; old comparisons are stale    | Retired statement; do not re-open without a new probe |
 
 ## 4. Open grammar gaps
 
-| Construct                                                                       | Upstream request         | Laboratory status                                                                        |
-| ------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
-| SQL*Plus `REM<TAB>`                                                             | `antlr/grammars-v4#5124` | Reproducer in the pinned grammar; production-relevant                                    |
-| `XMLTABLE ... RETURNING SEQUENCE BY REF`                                        | `antlr/grammars-v4#5125` | Valid documented order; upstream reproducer is valid                                     |
-| SQL*Plus `EXEC[UTE]`                                                            | `antlr/grammars-v4#5126` | Qualification-only for this adapter                                                      |
-| Keywords as identifiers (`DATE`, `DETECTED`, `ENCLOSED`)                        | `antlr/grammars-v4#720`  | Current-master comment posted                                                            |
-| Constant-sized type parameters, `IS JSON(STRICT)`, `DATE NULL`, record `INSERT` | None yet                 | Source origins known; Oracle 19c compile proof still required before upstream submission |
-
-Reduced fixtures can change validity. Correct a fixture before using it as
-upstream evidence; see the external decision record for the XMLTABLE correction.
+| Construct                                                                       | Upstream request | Laboratory status                                                                        |
+| ------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------- |
+| Constant-sized type parameters, `IS JSON(STRICT)`, `DATE NULL`, record `INSERT` | None yet         | Source origins known; Oracle 19c compile proof still required before upstream submission |
 
 ## 5. Baseline finding
 

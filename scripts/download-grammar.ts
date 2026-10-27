@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 /**
@@ -8,18 +8,22 @@ import path from 'node:path';
  * grammar in place: a grammar change is a new patch and a new experiment.
  */
 const PIN = {
-	commit: 'e199816b3f1a7a49ea1ad84fb6b87c382ea36a33',
+	commit: '5be087cfe78c4eb78374a1c81324848876661f9a',
 	lexer: {
 		path: 'sql/plsql/PlSqlLexer.g4',
-		sha256: 'fd82384ba3ba2f5a7b070a977cd77a05c01fefbfb52938d35dfaf472a2e6e59e',
+		sha256: 'aaddaa2f9d40e10ab71e83a402499ae893aa7f03497a631e5c12f2c4cd1d2567',
 	},
 	parser: {
 		path: 'sql/plsql/PlSqlParser.g4',
-		sha256: 'c57ec1819302de05beb08c44792883e159254e361e8627e981d9a3c99a0b4633',
+		sha256: '2437508c3e8126d0a09c4cc98fc12741a9d25350b4626350805afdcb74956827',
+	},
+	lexerBase: {
+		path: 'sql/plsql/Antlr4ng/PlSqlLexerBase.ts',
+		sha256: '60463fb2d8e19ff40b77f1428056f74c7d19bb55263451a0f4a84670e227ae91',
 	},
 	parserBase: {
 		path: 'sql/plsql/Antlr4ng/PlSqlParserBase.ts',
-		sha256: '240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb',
+		sha256: 'f83c2eab005f3174f2b506c7e553577f96c336fc18e7c456a58c273566c634eb',
 	},
 } as const;
 
@@ -28,55 +32,14 @@ const grammarRoot = path.join(root, 'grammar');
 const upstreamRoot = path.join(grammarRoot, 'upstream');
 const adaptedRoot = path.join(grammarRoot, 'adapted');
 const baseRoot = path.join(grammarRoot, 'typescript');
-const patchDirectory = path.join(grammarRoot, 'patches');
-
 type Patch = Readonly<{ file: string; find: string; replace: string; reason: string }>;
-
-const LEXER_HEADER = `@header {import {PlSqlLexerBase} from "../plSqlLexerBase.js";}
-
-@members {
-public isValidAlternativeQuotedString(): boolean {
-    const characters = Array.from(this.text);
-    const openingDelimiter = characters[2];
-    const closingDelimiter = characters.at(-2);
-    if (openingDelimiter === undefined || closingDelimiter === undefined || /\\s/u.test(openingDelimiter)) {
-        return false;
-    }
-
-    switch (openingDelimiter) {
-        case '[':
-            return closingDelimiter === ']';
-        case '{':
-            return closingDelimiter === '}';
-        case '<':
-            return closingDelimiter === '>';
-        case '(':
-            return closingDelimiter === ')';
-        default:
-            return closingDelimiter === openingDelimiter;
-    }
-}
-}`;
-
-const UPSTREAM_Q_STRING = readFileSync(path.join(patchDirectory, 'upstream-q-string.txt'), 'utf8')
-	.replaceAll(String.raw`\/`, '/')
-	.trimEnd();
-const ADAPTED_Q_STRING = readFileSync(path.join(patchDirectory, 'adapted-q-string.txt'), 'utf8')
-	.replaceAll(String.raw`\/`, '/')
-	.trimEnd();
 
 const patches: readonly Patch[] = [
 	{
 		file: 'PlSqlLexer.g4',
 		find: '// Insert here @header for C++ lexer.',
-		replace: LEXER_HEADER,
-		reason: 'TypeScript lexer base and the alternative-quoted-string predicate.',
-	},
-	{
-		file: 'PlSqlLexer.g4',
-		find: UPSTREAM_Q_STRING,
-		replace: ADAPTED_Q_STRING,
-		reason: 'Upstream Q-quote limitation; see grammars-v4#5029 and #5030.',
+		replace: '@header {import {PlSqlLexerBase} from "../plSqlLexerBase.js";}',
+		reason: 'TypeScript lexer base import.',
 	},
 	{
 		file: 'PlSqlParser.g4',
@@ -114,9 +77,10 @@ const applyPatch = (source: string, patch: Patch): string => {
 };
 
 const main = async (): Promise<void> => {
-	const [lexerBytes, parserBytes, parserBaseBytes] = await Promise.all([
+	const [lexerBytes, parserBytes, lexerBaseBytes, parserBaseBytes] = await Promise.all([
 		fetchPinned(PIN.lexer.path, PIN.lexer.sha256),
 		fetchPinned(PIN.parser.path, PIN.parser.sha256),
+		fetchPinned(PIN.lexerBase.path, PIN.lexerBase.sha256),
 		fetchPinned(PIN.parserBase.path, PIN.parserBase.sha256),
 	]);
 
@@ -126,6 +90,7 @@ const main = async (): Promise<void> => {
 
 	writeFileSync(path.join(upstreamRoot, 'PlSqlLexer.g4'), lexerBytes);
 	writeFileSync(path.join(upstreamRoot, 'PlSqlParser.g4'), parserBytes);
+	writeFileSync(path.join(upstreamRoot, 'PlSqlLexerBase.ts'), lexerBaseBytes);
 	writeFileSync(path.join(upstreamRoot, 'PlSqlParserBase.ts'), parserBaseBytes);
 
 	let lexer = lexerBytes.toString('utf8');
@@ -141,7 +106,7 @@ const main = async (): Promise<void> => {
 
 	writeFileSync(path.join(adaptedRoot, 'PlSqlLexer.g4'), lexer);
 	writeFileSync(path.join(adaptedRoot, 'PlSqlParser.g4'), parser);
-	writeFileSync(path.join(baseRoot, 'plSqlLexerBase.ts'), lexerBaseSource());
+	writeFileSync(path.join(baseRoot, 'plSqlLexerBase.ts'), lexerBaseSource(lexerBaseBytes.toString('utf8')));
 	writeFileSync(path.join(baseRoot, 'plSqlParserBase.ts'), parserBaseSource(parserBaseBytes.toString('utf8')));
 
 	const manifest = {
@@ -160,21 +125,19 @@ const main = async (): Promise<void> => {
 	);
 };
 
-const lexerBaseSource = (): string => `import {Lexer} from 'antlr4ng';
+const lexerBaseSource = (upstream: string): string => {
+	const adapted = upstream
+		.replace('import { CommonToken, Lexer, CharStream, Token, CommonTokenStream } from "antlr4ng";', "import {Lexer} from 'antlr4ng';")
+		.replace('  IsNewlineAtPos(pos: number): boolean {', '  public IsNewlineAtPos(pos: number): boolean {')
+		.replace('  IsQQuoteDelimiter(): boolean {', '  public IsQQuoteDelimiter(): boolean {')
+		.replaceAll(' == ', ' === ');
 
-/**
- * Base for the generated Oracle lexer.
- *
- * The upstream predicate relies on a one-character lookbehind. Keep this
- * implementation byte-for-byte equivalent when changing grammar actions.
- */
-export abstract class PlSqlLexerBase extends Lexer {
-	public IsNewlineAtPos(pos: number): boolean {
-		const la = this.inputStream.LA(pos);
-		return la === -1 || String.fromCharCode(la) === '\\n';
+	if (adapted === upstream || !adapted.includes('public IsQQuoteDelimiter')) {
+		throw new Error('Lexer base adaptation did not match');
 	}
-}
-`;
+
+	return adapted;
+};
 
 const parserBaseSource = (upstream: string): string => {
 	const withLexerImport = upstream.replace("import { PlSqlLexer } from './PlSqlLexer.js';", "import {PlSqlLexer} from './generated/PlSqlLexer.ts';");

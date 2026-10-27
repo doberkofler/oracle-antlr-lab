@@ -112,8 +112,8 @@ describe('BULK COLLECT recovery', () => {
 	});
 });
 
-describe('unsupported syntax stays explicit', () => {
-	it.each(modes)('reports XMLTABLE RETURNING SEQUENCE BY REF in %s mode', (mode) => {
+describe('grammar support stays explicit', () => {
+	it.each(modes)('reports an unsupported XMLTABLE PASSING alias in %s mode', (mode) => {
 		const source = `declare
 	c sys_refcursor;
 begin

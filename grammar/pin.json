@@ -1,28 +1,28 @@
 {
 	"schemaVersion": 1,
 	"upstream": {
-		"commit": "e199816b3f1a7a49ea1ad84fb6b87c382ea36a33",
+		"commit": "5be087cfe78c4eb78374a1c81324848876661f9a",
 		"lexer": {
 			"path": "sql/plsql/PlSqlLexer.g4",
-			"sha256": "fd82384ba3ba2f5a7b070a977cd77a05c01fefbfb52938d35dfaf472a2e6e59e"
+			"sha256": "aaddaa2f9d40e10ab71e83a402499ae893aa7f03497a631e5c12f2c4cd1d2567"
 		},
 		"parser": {
 			"path": "sql/plsql/PlSqlParser.g4",
-			"sha256": "c57ec1819302de05beb08c44792883e159254e361e8627e981d9a3c99a0b4633"
+			"sha256": "2437508c3e8126d0a09c4cc98fc12741a9d25350b4626350805afdcb74956827"
+		},
+		"lexerBase": {
+			"path": "sql/plsql/Antlr4ng/PlSqlLexerBase.ts",
+			"sha256": "60463fb2d8e19ff40b77f1428056f74c7d19bb55263451a0f4a84670e227ae91"
 		},
 		"parserBase": {
 			"path": "sql/plsql/Antlr4ng/PlSqlParserBase.ts",
-			"sha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+			"sha256": "f83c2eab005f3174f2b506c7e553577f96c336fc18e7c456a58c273566c634eb"
 		}
 	},
 	"patches": [
 		{
 			"file": "PlSqlLexer.g4",
-			"reason": "TypeScript lexer base and the alternative-quoted-string predicate."
-		},
-		{
-			"file": "PlSqlLexer.g4",
-			"reason": "Upstream Q-quote limitation; see grammars-v4#5029 and #5030."
+			"reason": "TypeScript lexer base import."
 		},
 		{
 			"file": "PlSqlParser.g4",
@@ -30,7 +30,7 @@
 		}
 	],
 	"adapted": {
-		"lexerSha256": "b5330652edcbd0d80100e19d3f99888624bb518c58fe089b38edd1ce33eba7f2",
-		"parserSha256": "fecc2f5b4c376a41ba725f83a1c0796763122fa007258be47aed0883d8c0068d"
+		"lexerSha256": "1c9e968dc8fb13743cc23863920035a60eb80cc376fb56b38d4f54c69f3880d5",
+		"parserSha256": "69cabb87021c814ab05562ff79b959ccfb71012da33944b94ad9c2b381a27ce1"
 	}
 }

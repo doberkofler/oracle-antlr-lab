@@ -1,4 +1,0 @@
-// See https://docs.oracle.com/en/database/oracle/oracle-database/26/sqlrf/Literals.html
-CHAR_STRING_PERL:
-    'Q' '\'' . .*? . '\'' {this.isValidAlternativeQuotedString()}? -> type(CHAR_STRING)
-;

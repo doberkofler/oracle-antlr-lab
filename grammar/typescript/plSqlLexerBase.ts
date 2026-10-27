@@ -1,14 +1,21 @@
 import {Lexer} from 'antlr4ng';
 
-/**
- * Base for the generated Oracle lexer.
- *
- * The upstream predicate relies on a one-character lookbehind. Keep this
- * implementation byte-for-byte equivalent when changing grammar actions.
- */
 export abstract class PlSqlLexerBase extends Lexer {
-	public IsNewlineAtPos(pos: number): boolean {
-		const la = this.inputStream.LA(pos);
-		return la === -1 || String.fromCharCode(la) === '\n';
-	}
+  public IsNewlineAtPos(pos: number): boolean {
+    const la = this.inputStream.LA(pos);
+    return la === -1 || String.fromCharCode(la) === '\n';
+  }
+
+  public IsQQuoteDelimiter(): boolean {
+    const opening = this.inputStream.LA(this.tokenStartCharIndex + 2 - this.inputStream.index);
+    const closing = this.inputStream.LA(-2);
+    switch (opening) {
+      case 91: return closing === 93;
+      case 123: return closing === 125;
+      case 60: return closing === 62;
+      case 40: return closing === 41;
+      default: return closing === opening;
+    }
+  }
+
 }

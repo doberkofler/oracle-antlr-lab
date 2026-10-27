@@ -56,6 +56,20 @@ public abstract class PlSqlParserBase extends Parser {
 		return next == null || next.getType() == Token.EOF || next.getLine() != solidusLine;
 	}
 
+	public boolean isLineStart() {
+		Token token = _input.LT(1);
+		if (token == null) {
+			return false;
+		}
+
+		Token previous = _input.LT(-1);
+		if (previous == null || previous.getType() == Token.EOF) {
+			return true;
+		}
+
+		return previous.getLine() < token.getLine();
+	}
+
 	public boolean isVersion10() {
 		return _isVersion10;
 	}
