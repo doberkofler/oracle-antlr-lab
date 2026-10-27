@@ -3,13 +3,13 @@
 ## Oracle PL/SQL grammar
 
 - Upstream project: [`antlr/grammars-v4`](https://github.com/antlr/grammars-v4)
-- Upstream paths: `sql/plsql/PlSqlLexer.g4`, `sql/plsql/PlSqlParser.g4`
-- Pinned commit: `e199816b3f1a7a49ea1ad84fb6b87c382ea36a33`
+- Upstream paths: `sql/plsql/PlSqlLexer.g4`, `sql/plsql/PlSqlParser.g4`, and the corresponding `Antlr4ng` base classes
+- Pinned commit: `5be087cfe78c4eb78374a1c81324848876661f9a`
 - License: Apache License 2.0
 
 `scripts/download-grammar.ts` verifies the upstream digests before applying the
-patches listed in `grammar/pin.json`. The local alternative-quoted-string
-adaptation tracks `antlr/grammars-v4#5029` and `#5030`.
+TypeScript target imports listed in `grammar/pin.json`. The grammar carries no
+local semantic patches.
 
 ## ANTLR runtimes and tools
 

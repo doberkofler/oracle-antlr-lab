@@ -1,0 +1,17 @@
+{
+	"experiment": "012-dfa-cache-bounds",
+	"question": "Can periodic or heap-pressure-triggered DFA clearing restore default-heap completion without an unacceptable latency regression?",
+	"control": "Official-grammar TypeScript baseline with persistent generated DFA caches.",
+	"candidates": [
+		"Clear all parser DFA caches every 250 files.",
+		"Clear all parser DFA caches every 500 files.",
+		"Clear all parser DFA caches at 3,072 MiB process heap use.",
+		"Clear all parser DFA caches at 3,800 MiB process heap use."
+	],
+	"selection": "Complete frozen 1,244-file opaque production corpus.",
+	"acceptance": [
+		"Complete under the default Node heap.",
+		"Produce unchanged diagnostics, fallback counts, and focused parse-tree structure.",
+		"Provide a credible memory reduction without catastrophic latency cost."
+	]
+}

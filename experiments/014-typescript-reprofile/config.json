@@ -1,0 +1,8 @@
+{
+	"experiment": "014-typescript-reprofile",
+	"question": "Which ATN decisions dominate the optimized TypeScript parser on the official grammar?",
+	"candidate": "Accepted generated-parser optimization state on official grammars-v4 commit 5be087cfe78c4eb78374a1c81324848876661f9a.",
+	"command": "NODE_OPTIONS=--max-old-space-size=8192 pnpm profile:typescript",
+	"selection": "The 12 files with highest median TypeScript parser-core time in the official-grammar production baseline.",
+	"method": "antlr4ng ProfilingATNSimulator; SLL-first and final LL fallback passes; aggregate by decision and owning rule."
+}

@@ -1,0 +1,12 @@
+{
+	"experiment": "015-remaining-ll-fallbacks",
+	"question": "How much cost remains in full-file LL fallback, and can it be removed without changing recovery behavior?",
+	"control": "Accepted optimized TypeScript parser on the official grammar.",
+	"command": "pnpm fallbacks:classify results/official-grammar-production/raw-report.json",
+	"selection": "All fallback files from each of three complete 1,244-file production passes.",
+	"acceptance": [
+		"No accepted file becomes rejected.",
+		"Parse trees, token counts, diagnostics, and recovery remain identical.",
+		"Retain only a candidate with a credible full-corpus latency gain."
+	]
+}

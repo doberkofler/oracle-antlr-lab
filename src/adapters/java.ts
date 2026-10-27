@@ -1,9 +1,11 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { prepareConditional } from '../conditional.ts';
 import { type MemoryPassBody, summarizeJavaHistogram } from '../memory.ts';
-import { type CorpusManifest, type ParseObservation, type ParserAdapter } from '../types.ts';
+import { type CorpusFile, type CorpusManifest, type ParseObservation, type ParserAdapter } from '../types.ts';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
 const imageInputs = [
@@ -115,6 +117,138 @@ export type JavaConformanceProfile = Readonly<{
 	maxFunctionArgumentsPerPart: number;
 	parseDiagnostics: number;
 }>;
+
+export type JavaConformanceObservation = Readonly<{
+	file: string;
+	parseTreeSha256: string;
+	lexerDiagnostics: number;
+	parseDiagnostics: number;
+	tokens: number;
+	hiddenTokens: number;
+	prediction: 'sll' | 'sll-fallback-ll';
+	llAttempts: number;
+}>;
+
+/** Symbolic Java token stream; token text and source offsets are excluded. */
+export type JavaTokenObservation = Readonly<{
+	file: string;
+	types: readonly number[];
+	channels: readonly number[];
+}>;
+
+const selectedEntries = (manifest: CorpusManifest, indexes: readonly number[]): readonly CorpusFile[] => {
+	const byId = new Map(manifest.files.map((file) => [file.id, file]));
+
+	return indexes.map((index) => {
+		const entry = byId.get(index);
+
+		if (entry === undefined) {
+			throw new Error(`No corpus entry with index ${String(index)}`);
+		}
+
+		return entry;
+	});
+};
+
+/**
+ * Mirrors the production conditional-compilation boundary into a private mount.
+ *
+ * Java has no equivalent preprocessing implementation in this laboratory, so
+ * semantic qualification must compare both targets against identical prepared
+ * source. The temporary corpus is removed after the container exits.
+ */
+const withPreparedCorpus = async <Result>(
+	input: Readonly<{ manifestPath: string; entries: readonly CorpusFile[]; conditional: boolean }>,
+	action: (mountRoot: string) => Promise<Result>,
+): Promise<Result> => {
+	if (!input.conditional) {
+		return action(path.dirname(input.manifestPath));
+	}
+
+	const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'oracle-antlr-lab-java-'));
+	const filesRoot = path.join(temporaryRoot, 'files');
+
+	try {
+		for (const entry of input.entries) {
+			const source = readFileSync(path.join(path.dirname(input.manifestPath), 'files', entry.file), 'utf8');
+			const target = path.join(filesRoot, entry.file);
+			mkdirSync(path.dirname(target), { recursive: true });
+			writeFileSync(target, prepareConditional(source));
+		}
+
+		return await action(temporaryRoot);
+	} finally {
+		rmSync(temporaryRoot, { recursive: true, force: true });
+	}
+};
+
+/**
+ * Runs the Java parser's cross-runtime conformance observation mode.
+ *
+ * @param input - Manifest, selected ids, and whether to apply the production
+ * conditional-compilation boundary before Java receives the source.
+ * @returns Per-file structural observations.
+ */
+export const runJavaConformance = async (
+	input: Readonly<{ manifestPath: string; indexes: readonly number[]; conditional?: boolean }>,
+): Promise<readonly JavaConformanceObservation[]> => {
+	await ensureImage();
+	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
+	const entries = selectedEntries(manifest, input.indexes);
+	const output = await withPreparedCorpus({ manifestPath: input.manifestPath, entries, conditional: input.conditional ?? true }, (mountRoot) =>
+		docker(
+			[
+				'run',
+				'--rm',
+				'--network',
+				'none',
+				'-v',
+				`${mountRoot}:/corpus:ro`,
+				image,
+				'conformance',
+				...entries.map((entry) => `/corpus/files/${entry.file}`),
+			],
+			false,
+			true,
+		),
+	);
+	const parsed = JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{ files: readonly JavaConformanceObservation[] }>;
+
+	return parsed.files.map((observation) => ({
+		...observation,
+		file: path.relative('/corpus/files', observation.file).split(path.sep).join('/'),
+	}));
+};
+
+/**
+ * Emits Java's symbolic token stream for cross-runtime diagnosis.
+ *
+ * @param input - Manifest, selected ids, and conditional-compilation mode.
+ * @returns Per-file token types and channels; no token text is returned.
+ */
+export const runJavaTokens = async (
+	input: Readonly<{ manifestPath: string; indexes: readonly number[]; conditional?: boolean }>,
+): Promise<readonly JavaTokenObservation[]> => {
+	await ensureImage();
+	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
+	const entries = selectedEntries(manifest, input.indexes);
+	const output = await withPreparedCorpus({ manifestPath: input.manifestPath, entries, conditional: input.conditional ?? true }, (mountRoot) =>
+		docker(
+			['run', '--rm', '--network', 'none', '-v', `${mountRoot}:/corpus:ro`, image, 'tokens', ...entries.map((entry) => `/corpus/files/${entry.file}`)],
+			false,
+			true,
+		),
+	);
+
+	return output
+		.split('\n')
+		.filter((line) => line.startsWith('{'))
+		.map((line) => JSON.parse(line) as JavaTokenObservation)
+		.map((observation) => ({
+			...observation,
+			file: path.relative('/corpus/files', observation.file).split(path.sep).join('/'),
+		}));
+};
 
 /** Profiles selected opaque corpus files with ANTLR's Java profiling simulator. */
 export const runJavaProfile = async (
@@ -305,6 +439,7 @@ export const javaAdapter: ParserAdapter = {
 			metric: 'lexer + SLL parse',
 			process: 'fresh Docker JVM per cold/warm invocation; JVM and container startup are not timed',
 			onePass: 'one JVM; parser instances are per file; generated lexer/parser DFA caches persist across files',
+			conditionalCompilation: 'benchmark path receives raw source; cross-runtime conformance mounts production-prepared source',
 		},
 	},
 	prepare: ensureImage,

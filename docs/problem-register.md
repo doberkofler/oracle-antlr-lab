@@ -44,26 +44,18 @@ returned to the external qualification suite.
 
 ## 3. Known parser and lexer risks
 
-| Risk                                                   | Effect                                                                                                              | Owner                                                 |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `REMARK_COMMENT` accepts ASCII space, not tab          | `REM<TAB>` lines become visible tokens; declaration-shaped comments can create phantom facts in a semantic consumer | Pinned grammar; upstream `grammars-v4#5124`           |
-| Non-literal `$IF` keeps both branches                  | Duplicate declarations when both branches declare the same name                                                     | Adapter policy, not grammar                           |
-| Dependency slicing is syntactic                        | `pkg.coll.exists` can be read as `schema.package` and preserved as an external package call                         | Adapter policy, not grammar                           |
-| Structural scanner does not materialize loop iterators | Iterator declarations differ from a full parse                                                                      | Production adapter                                    |
-| `%TYPE`/`%ROWTYPE` handling differs by consumer        | Current structural and full parsers both emit type references; old comparisons are stale                            | Retired statement; do not re-open without a new probe |
+| Risk                                                   | Effect                                                                                      | Owner                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Non-literal `$IF` keeps both branches                  | Duplicate declarations when both branches declare the same name                             | Adapter policy, not grammar                           |
+| Dependency slicing is syntactic                        | `pkg.coll.exists` can be read as `schema.package` and preserved as an external package call | Adapter policy, not grammar                           |
+| Structural scanner does not materialize loop iterators | Iterator declarations differ from a full parse                                              | Production adapter                                    |
+| `%TYPE`/`%ROWTYPE` handling differs by consumer        | Current structural and full parsers both emit type references; old comparisons are stale    | Retired statement; do not re-open without a new probe |
 
 ## 4. Open grammar gaps
 
-| Construct                                                                       | Upstream request         | Laboratory status                                                                        |
-| ------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
-| SQL*Plus `REM<TAB>`                                                             | `antlr/grammars-v4#5124` | Reproducer in the pinned grammar; production-relevant                                    |
-| `XMLTABLE ... RETURNING SEQUENCE BY REF`                                        | `antlr/grammars-v4#5125` | Valid documented order; upstream reproducer is valid                                     |
-| SQL*Plus `EXEC[UTE]`                                                            | `antlr/grammars-v4#5126` | Qualification-only for this adapter                                                      |
-| Keywords as identifiers (`DATE`, `DETECTED`, `ENCLOSED`)                        | `antlr/grammars-v4#720`  | Current-master comment posted                                                            |
-| Constant-sized type parameters, `IS JSON(STRICT)`, `DATE NULL`, record `INSERT` | None yet                 | Source origins known; Oracle 19c compile proof still required before upstream submission |
-
-Reduced fixtures can change validity. Correct a fixture before using it as
-upstream evidence; see the external decision record for the XMLTABLE correction.
+| Construct                                                                       | Upstream request | Laboratory status                                                                        |
+| ------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------- |
+| Constant-sized type parameters, `IS JSON(STRICT)`, `DATE NULL`, record `INSERT` | None yet         | Source origins known; Oracle 19c compile proof still required before upstream submission |
 
 ## 5. Baseline finding
 
@@ -159,14 +151,34 @@ sequences, and recovery behavior.
 
 Final status of the optimization sequence:
 
-| Dimension            | Result                                                                                   |
-| -------------------- | ---------------------------------------------------------------------------------------- |
-| Latency              | 156.093 s → 92.241 s full-corpus TypeScript parser core; −40.9%, 1.69× speedup.          |
-| Memory               | DFA caches retain 90–96% of heap; no memory optimization is claimed by the latency work. |
-| Semantic conformance | All per-change gates pass; only intended fallback differences remain.                    |
-| Java                 | Faster constant factor, but 486 diagnostics remain unresolved; not viable evidence.      |
+| Dimension            | Result                                                                                                                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Latency              | 156.093 s → 92.241 s full-corpus TypeScript parser core; −40.9%, 1.69× speedup.                                        |
+| Memory               | DFA caches retain 90–96% of heap; no memory optimization is claimed by the latency work.                               |
+| Semantic conformance | All per-change gates pass; only intended fallback differences remain.                                                  |
+| Java                 | Faster constant factor; structural trees match on prepared input, but a standalone preprocessing boundary is required. |
 
-## 9. Out of scope
+## 9. Official-grammar findings
+
+Experiments 011–017 rebaseline and test the follow-up opportunities on official
+`grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`.
+
+- Optimized TypeScript core is 103.888 s with 6.546 GB peak RSS, 107 diagnostics,
+  and 15 fallback files. The unchanged campaign exhausts Node's default heap.
+- Whole-DFA clearing restores default-heap completion and cuts RSS 29–41%, but
+  costs 22–38% latency; it remains opt-in.
+- Java core is 45.234 s. All 51 apparent cross-runtime differences begin at
+  `DOLLAR_IF`; with the same conditional-compilation boundary, all 1,244 token
+  streams, parse trees, and diagnostic counts match. Java remains evidence-only
+  until it owns that preprocessing boundary.
+- The optimized tail remains dominated by `general_element_part` and
+  `general_element` at 69.3% of measured prediction time.
+- Six fallback files require LL for acceptance; nine require its recovery tree.
+- Transactional streaming extraction can avoid a representative 43.4 MB retained
+  tree without breaking retained-tree callers; it does not reduce shared DFA
+  retention.
+
+## 10. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.
 - PL/Scope normalization and release gates.

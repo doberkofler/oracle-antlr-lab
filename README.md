@@ -38,8 +38,8 @@ pnpm benchmark:quick
 ```
 
 `pnpm grammar:download` fetches the pinned `antlr/grammars-v4` commit and
-verifies every upstream digest before applying local patches. The pinned
-identity and patch list are written to `grammar/pin.json`.
+verifies every upstream digest before adding the TypeScript target imports.
+The pinned identity and adaptation list are written to `grammar/pin.json`.
 
 `pnpm benchmark:quick` runs 15 files from the public synthetic corpus with one
 cold repetition. Full defaults use three cold repetitions, one warmup, and five
@@ -90,6 +90,26 @@ performance result without a passing per-change conformance result is
 incomplete. See
 [`docs/semantic-conformance.md`](docs/semantic-conformance.md).
 
+Java qualification uses a cross-runtime structural gate:
+
+```bash
+NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance:cross-runtime \
+  .work/private-production/manifest.json java-requalification
+```
+
+The gate applies the production conditional-compilation boundary before Java
+receives the source, matching the TypeScript input contract. Token-level
+divergence is diagnosable without publishing token text:
+
+```bash
+pnpm diagnose:cross-runtime .work/private-production/manifest.json \
+  java-token-diagnosis raw
+```
+
+Memory-constrained experiments can set `LAB_DFA_CLEAR_EVERY` or
+`LAB_DFA_MAX_HEAP_MIB`. Both clear the complete parser DFA and are deliberately
+opt-in: measured policies reduced RSS but regressed latency substantially.
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,
@@ -117,8 +137,9 @@ The runner records:
 Separate conformance runs record accepted-unit counts, structural parse-tree
 digests, diagnostics digests, and recovery behavior. They do not extract
 declarations, references, or dependencies; identical parse trees are the
-available semantic boundary. Java is not semantic acceptance evidence while its
-486 production diagnostics remain unresolved.
+available semantic boundary. Java is not semantic acceptance evidence until it
+owns a standalone conditional-compilation boundary; with the shared boundary all
+1,244 production files pass structural conformance.
 
 The one-pass value is a sample approximation, not a full production build. Do
 not extrapolate without a full-corpus manifest and an external decision report.
@@ -163,7 +184,9 @@ Do not commit a private corpus or a report that contains private paths. See
 ## Adapters
 
 The TypeScript adapter is the primary target. It runs the actual `antlr4ng`
-runtime against generated recognizers from the pinned grammar.
+runtime against generated recognizers from the pinned grammar. `parseSource`
+retains the complete parse state for compatibility; `parseSourceStreaming`
+provides transaction-safe listener extraction without retaining a tree.
 
 The Java adapter uses an official ANTLR target in a Docker image. Its pass runs
 all selected files in one JVM with a parser instance per file. Generated static

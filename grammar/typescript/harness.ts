@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { clearDfaAtBoundary, parseDfaCachePolicy } from './dfaCache.ts';
 import { type FileEntry, type HarnessObservation, parseSource } from './parse.ts';
 
 type Manifest = Readonly<{ files: readonly FileEntry[] }>;
@@ -10,6 +11,7 @@ const stage = process.env['LAB_STAGE'] ?? 'pass';
 const index = process.env['LAB_INDEX'] === undefined ? undefined : Number(process.env['LAB_INDEX']);
 const iterations = Number(process.env['LAB_ITERATIONS'] ?? '5');
 const warmups = Number(process.env['LAB_WARMUPS'] ?? '1');
+const dfaCachePolicy = parseDfaCachePolicy(process.env['LAB_DFA_CLEAR_EVERY'], process.env['LAB_DFA_MAX_HEAP_MIB']);
 
 if (manifestPath === undefined || filesDir === undefined) {
 	throw new Error('LAB_MANIFEST and LAB_FILES are required');
@@ -47,6 +49,11 @@ const sourceOf = (entry: FileEntry): string => readFileSync(path.join(filesDir, 
 const campaignStartedAt = performance.now();
 const results = selected.map((entry, selectedIndex) => {
 	const source = sourceOf(entry);
+	const parse = (): ReturnType<typeof parseSource> => parseSource(source, entry, { treeHash: process.env['LAB_TREE_HASH'] === '1' });
+	const finishParse = (parsed: ReturnType<typeof parseSource>): HarnessObservation => {
+		clearDfaAtBoundary(parsed.parser, selectedIndex + 1, dfaCachePolicy);
+		return parsed.observation;
+	};
 	const finish = (result: Readonly<{ observation: HarnessObservation; samples?: readonly HarnessObservation[] }>) => {
 		if (stage === 'pass' && (selectedIndex === 0 || (selectedIndex + 1) % 10 === 0 || selectedIndex + 1 === selected.length)) {
 			const completed = selectedIndex + 1;
@@ -58,14 +65,21 @@ const results = selected.map((entry, selectedIndex) => {
 	};
 
 	if (stage !== 'warm') {
-		return finish({ observation: parseSource(source, entry, { treeHash: process.env['LAB_TREE_HASH'] === '1' }).observation });
+		return finish({ observation: finishParse(parse()) });
 	}
 
 	for (let warmup = 0; warmup < warmups; warmup += 1) {
-		parseSource(source, entry, { treeHash: process.env['LAB_TREE_HASH'] === '1' });
+		parse();
 	}
 
-	const samples = Array.from({ length: iterations }, () => parseSource(source, entry, { treeHash: process.env['LAB_TREE_HASH'] === '1' }).observation);
+	const parsedSamples = Array.from({ length: iterations }, parse);
+	const samples = parsedSamples.map((parsed) => parsed.observation);
+	const last = parsedSamples.at(-1);
+
+	if (last !== undefined) {
+		clearDfaAtBoundary(last.parser, selectedIndex + 1, dfaCachePolicy);
+	}
+
 	return finish({ observation: merge(samples), samples });
 });
 

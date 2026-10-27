@@ -1,0 +1,12 @@
+{
+	"experiment": "016-streaming-parse-seam",
+	"question": "Can semantic consumers extract during parsing without retaining complete parse trees while preserving the existing retained-tree API?",
+	"control": "parseSource returns tree, stream, parser, and source.",
+	"candidate": "parseSourceStreaming disables parse-tree construction and emits transactional parse-listener events.",
+	"acceptance": [
+		"Existing parseSource API and behavior remain unchanged.",
+		"Streaming mode commits exactly one final parse attempt.",
+		"SLL listener state is explicitly rolled back before LL fallback.",
+		"Token, diagnostic, and prediction observations remain unchanged."
+	]
+}

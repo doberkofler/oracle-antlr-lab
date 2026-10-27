@@ -200,7 +200,7 @@ const artifact: ConformanceArtifact = {
 	},
 	runtimeBoundary: {
 		typescript: 'Semantic-conformance gated for issues #1–#3 and the combined final state.',
-		java: 'Unmodified control with 486 parser diagnostics on the frozen production corpus (experiments/003-production-scale); not semantic acceptance evidence and not eligible as a replacement until those diagnostics are resolved.',
+		java: 'The official grammar produces 367 parser diagnostics on the frozen production corpus; cross-runtime tree conformance remains required before Java is eligible as a replacement.',
 	},
 	status: gates.every((gate) => gate.status === 'pass') ? 'pass' : 'fail',
 	gates,
@@ -492,7 +492,7 @@ function renderMarkdown(value: ConformanceArtifact): string {
 		'',
 		'Parse-tree identity is the strongest available semantic boundary in this laboratory. Declarations, references, and dependencies are not extracted here; external qualification remains required.',
 		'',
-		'Java remains an unmodified control with 486 parser diagnostics on the frozen production corpus. Its speed does not establish semantic viability.',
+		'Java remains evidence-only: cross-runtime conformance must pass before adoption, regardless of speed.',
 		'',
 	].join('\n');
 }
