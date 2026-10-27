@@ -1,0 +1,16 @@
+{
+	"experiment": "011-official-grammar-rebaseline",
+	"question": "What latency, memory, diagnostics, and fallback baseline does the official grammar establish on the frozen production corpus?",
+	"control": "Optimized TypeScript and Java results from experiments/003-production-scale and 009-semantic-conformance using the former grammar pin.",
+	"candidate": "Official grammars-v4 commit 5be087cfe78c4eb78374a1c81324848876661f9a with the accepted generated-parser optimizations.",
+	"commands": {
+		"performance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --experiment official-grammar-production",
+		"conformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance --experiment official-grammar-production-conformance"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus; three fresh-process performance passes and complete conformance gates.",
+	"acceptance": [
+		"All 1,244 files complete in every measured pass.",
+		"No unexplained conformance difference appears between optimization states.",
+		"Private paths, source text, and original identities are not published."
+	]
+}
