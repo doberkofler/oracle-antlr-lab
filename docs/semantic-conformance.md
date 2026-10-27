@@ -66,6 +66,60 @@ The checked-in change sets are:
 Every grammar or parser-recovery commit must have its own gate. A final combined
 result does not replace the per-change result.
 
+## Cross-revision grammar states
+
+A grammar revision renumbers every token and rule declared after an insertion.
+Comparing numeric parse-tree digests across revisions would therefore report a
+difference for every file even when the parsed structure is unchanged.
+
+`grammar/states.json` pins the upstream control commit, each open pull-request
+head, and the ordered cumulative merge. `grammar/states.lock.json` records the
+verified upstream and adapted digests. `pnpm conformance:grammar` materializes
+each state, applies the same reviewed TypeScript adaptation, and compares the
+control with each candidate over both the production corpus and the reduced
+fixture corpus.
+
+Cross-revision gates use an additional symbolic digest:
+
+- rule identity is hashed by rule name instead of rule index;
+- token identity is hashed by symbolic or literal token name instead of token
+  type;
+- declared structural wrapper rules are flattened, so a refactor that only
+  introduces intermediate rules keeps the same digest;
+- rule start and end markers preserve tree shape without hashing child counts.
+
+The numeric digest remains in the harness output but is not the cross-revision
+boundary. A grammar revision that changes accepted units, tokens, diagnostic
+counts, or the symbolic structure is a defect unless the difference is a
+declared fixture transition.
+
+Reduced fixtures are imported from the pull-request heads into
+`corpora/upstream-prs` with provenance. `src/upstreamGrammarFixtures.ts` declares
+the exact control and candidate acceptance outcome for each fixture, and the
+gate applies an `intendedFiles` policy: only the declared file identity may
+change, only in the declared direction, and any other file remains a defect.
+
+Production-corpus differences are declared per candidate in a corpus-policy
+file. Three declarations are allowed:
+
+- **acceptance** — a rejected file becomes accepted, identified by opaque name,
+  SHA-256, and reason;
+- **reparenting** — an accepted file keeps acceptance, units, tokens,
+  diagnostics, prediction, and fallback counts, while the symbolic tree changes
+  because a redundant alternative moved a construct to its correct parent;
+- **unsupported** — both states reject the file; the recovery difference is
+  admitted as unsupported syntax and still requires external classification.
+
+Full-file LL fallback removal with an identical tree, units, tokens, and
+diagnostics is always intended, matching the existing optimization policy.
+
+```bash
+pnpm grammar:states
+pnpm conformance:grammar -- --manifest .work/private-production/manifest.json \
+  --corpus-policy experiments/010-upstream-grammar-prs/corpus-policy.json \
+  --experiment upstream-grammar
+```
+
 ## Commands
 
 ```bash

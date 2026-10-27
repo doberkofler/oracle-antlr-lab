@@ -6,13 +6,29 @@ import { BaseErrorListener, CharStream, CommonTokenStream, Lexer, Parser, Parser
 import { prepareConditional } from '../../src/conditional.ts';
 import { type ConformanceObservation, type ConformancePrediction } from '../../src/conformance.ts';
 import { type FileEntry } from './parse.ts';
-import { treeSha256 } from './treeDigest.ts';
+import { treeSha256, treeSha256Symbolic } from './treeDigest.ts';
 
 type Manifest = Readonly<{ files: readonly FileEntry[] }>;
 
-type GeneratedParser = Parser & Readonly<{ sql_script(): ParseTree }>;
+type GeneratedParser = Parser &
+	Readonly<{
+		sql_script(): ParseTree;
+		ruleNames: string[];
+		symbolicNames: (string | null)[];
+		literalNames: (string | null)[];
+	}>;
 type GeneratedParserConstructor = new (input: CommonTokenStream) => GeneratedParser;
 type GeneratedLexerConstructor = new (input: CharStream) => Lexer;
+
+/**
+ * Conformance observation plus the name-stable digests used when the control
+ * and the candidate are generated from different grammar revisions.
+ */
+type GrammarObservation = ConformanceObservation &
+	Readonly<{
+		symbolicTreeSha256: string;
+		normalizedTreeSha256: string;
+	}>;
 
 /** Collects diagnostic messages without writing them to stderr. */
 class DiagnosticCollector extends BaseErrorListener {
@@ -33,6 +49,11 @@ const manifestPath = process.env['LAB_MANIFEST'];
 const filesDir = process.env['LAB_FILES'];
 const parserDirectory = process.env['LAB_GENERATED_PARSER_DIR'];
 const state = process.env['LAB_STATE'] ?? 'unknown';
+const ignoredRules =
+	process.env['LAB_IGNORE_RULES']
+		?.split(',')
+		.map((rule) => rule.trim())
+		.filter((rule) => rule.length > 0) ?? [];
 
 if (manifestPath === undefined || filesDir === undefined || parserDirectory === undefined) {
 	throw new Error('LAB_MANIFEST, LAB_FILES, and LAB_GENERATED_PARSER_DIR are required');
@@ -70,7 +91,7 @@ const files = selected.map((entry, index) => {
 
 process.stdout.write(`${JSON.stringify({ state, files })}\n`);
 
-function parseFile(entry: FileEntry): ConformanceObservation {
+function parseFile(entry: FileEntry): GrammarObservation {
 	const source = prepareConditional(readFileSync(path.join(filesDir ?? '', entry.file), 'utf8'));
 	const lexer = new LexerConstructor(CharStream.fromString(source));
 	const lexerErrors = new DiagnosticCollector();
@@ -113,12 +134,21 @@ function parseFile(entry: FileEntry): ConformanceObservation {
 		(child) => child instanceof ParserRuleContext && child.ruleIndex === unitIndex,
 	).length;
 	const accepted = lexerErrors.messages.length === 0 && parsed.errors.messages.length === 0;
+	const vocabulary = {
+		ruleNames: parsed.parser.ruleNames,
+		symbolicNames: parsed.parser.symbolicNames,
+		literalNames: parsed.parser.literalNames,
+	};
+	const symbolicTreeSha256 = treeSha256Symbolic(parsed.tree, vocabulary);
+	const normalizedTreeSha256 = ignoredRules.length === 0 ? symbolicTreeSha256 : treeSha256Symbolic(parsed.tree, vocabulary, { ignoredRules });
 
 	return {
 		file: entry.path,
 		bytes: entry.bytes,
 		sha256: entry.sha256,
 		parseTreeSha256: treeSha256(parsed.tree),
+		symbolicTreeSha256,
+		normalizedTreeSha256,
 		unitCount,
 		accepted,
 		lexerDiagnostics: lexerErrors.messages.length,

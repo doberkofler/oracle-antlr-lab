@@ -1,0 +1,49 @@
+{
+	"experiment": "010-upstream-grammar-prs",
+	"question": "Do the open antlr/grammars-v4 PL/SQL pull requests change parser behavior or prediction cost, and can the cumulative candidate be integrated without a conformance defect?",
+	"hypothesis": "Each pull request fixes only its declared construct. The cumulative candidate preserves accepted units, symbolic parse structure, tokens, and diagnostics on the frozen production corpus, apart from declared acceptance transitions and declared structural wrapper rules.",
+	"control": "The common open-PR base 8714404279b53fb9856ac6162f468667b0b853bb, adapted with the laboratory's TypeScript patches. The current pin e199816b3f1a7a49ea1ad84fb6b87c382ea36a33 is measured separately so unrelated upstream changes are not attributed to these pull requests.",
+	"candidate": "Each open pull request pinned by head SHA (5127, 5128, 5129, 5131, 5132, 5133, 5134, 5135) and the ordered cumulative merge of all eight.",
+	"command": {
+		"states": "pnpm grammar:states",
+		"conformance": "pnpm conformance:grammar -- --manifest <private-manifest> --corpus-policy experiments/010-upstream-grammar-prs/corpus-policy.json --experiment 010-upstream-grammar-prs --publish experiments/010-upstream-grammar-prs",
+		"tail": "pnpm benchmark:grammar -- --states control,pr-5132,cumulative --selection tail --experiment 010-upstream-grammar-prs-tail",
+		"q4": "pnpm benchmark:grammar -- --states control,pr-5132,cumulative --selection q4 --experiment 010-upstream-grammar-prs-q4",
+		"full": "pnpm benchmark:grammar -- --states control,pr-5132,cumulative --selection full --experiment 010-upstream-grammar-prs-full"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus for conformance; the 12-file tail and the Q4 byte-size selection for screening; the complete corpus for the paired performance campaign.",
+	"oracle": {
+		"required": [
+			"top-level script_unit count",
+			"symbolic parse-tree SHA-256 over rule and token names",
+			"visible and hidden token counts",
+			"lexer and parser diagnostic counts",
+			"ordered diagnostic SHA-256",
+			"recovery behavior as final tree, units, and diagnostics",
+			"prediction mode and fallback attempts"
+		],
+		"crossRevisionBoundary": "Rule and token identity is hashed by name, so a revision that only renumbers symbols does not report a false difference. The numeric digest is retained as extra evidence but is not the cross-revision boundary.",
+		"wrapperRules": ["alter_table_body", "alter_table_action", "enable_disable_clauses"],
+		"semanticBoundary": "Identical symbolic parse trees bound the input to a semantic consumer. The laboratory does not implement an Oracle symbol index or PL/Scope qualification."
+	},
+	"classification": {
+		"intended": "A declared reduced-fixture transition, or a narrow corpus acceptance transition declared with the opaque file identity, SHA-256, direction, and reason in corpus-policy.json.",
+		"unsupported": "Not used by this experiment; every changed corpus file must be explained.",
+		"defect": "Any other difference; the gate fails."
+	},
+	"acceptance": [
+		"Every grammar state is reproducible from a pinned upstream identity and a verified digest lock.",
+		"Every pull request has its own conformance gate and its reduced fixture demonstrates the intended transition.",
+		"Every production-corpus difference is a declared acceptance transition; no conformance defect remains.",
+		"Generated-parser optimizations generate and pass their gates against every grammar state.",
+		"#5132 and the cumulative candidate have paired performance reports with a control.",
+		"pnpm verify passes."
+	],
+	"limitations": [
+		"Parse-tree identity is a proxy for semantic equivalence, not a semantic proof.",
+		"The corpus is frozen and may not exercise every grammar path.",
+		"The reduced fixtures are not a substitute for the upstream examples suite or external qualification.",
+		"Cross-revision symbolic digests cannot detect a semantic change that keeps rule and token names unchanged.",
+		"Oracle validation of fixtures is recorded where available; the laboratory does not compile against an Oracle instance in CI."
+	]
+}

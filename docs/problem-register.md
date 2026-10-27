@@ -172,3 +172,23 @@ Final status of the optimization sequence:
 - PL/Scope normalization and release gates.
 - Production corpus publication.
 - Claims that a parser-speed change alone justifies adoption.
+
+## 10. Upstream grammar pull requests
+
+Experiment
+[`010-upstream-grammar-prs`](../experiments/010-upstream-grammar-prs/conclusion.md)
+replays the eight open `antlr/grammars-v4` PL/SQL pull requests against their
+common open-PR base and compares each one plus the ordered cumulative merge.
+
+| Dimension           | Result                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Accepted files      | 1,231 control → 1,235 cumulative; four previously rejected production files now parse.                                 |
+| Parser diagnostics  | 176 → 107.                                                                                                             |
+| Full-file fallbacks | 19 → 14.                                                                                                               |
+| Conformance         | Nine of nine gates pass; every corpus difference is declared or classified as unsupported syntax.                      |
+| Prediction cost     | #5132 is −22.5% on one stable 12-file tail screening; Q4 and full-corpus results are within noise.                     |
+| Pin migration       | The control differs from the current pin on 445 of 1,244 files, so the PRs cannot be applied without absorbing master. |
+
+The cross-revision gate hashes rule and token names instead of indices and
+flattens three declared `ALTER TABLE` wrapper rules. The next step is the
+upstream merge, a pin advance, and a repetition of the gates against that pin.

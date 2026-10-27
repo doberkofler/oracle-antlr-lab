@@ -11,6 +11,18 @@
 patches listed in `grammar/pin.json`. The local alternative-quoted-string
 adaptation tracks `antlr/grammars-v4#5029` and `#5030`.
 
+## Upstream grammar fixtures
+
+- Upstream project: [`antlr/grammars-v4`](https://github.com/antlr/grammars-v4)
+- Upstream paths: `sql/plsql/examples/*.sql` at the pull-request head commits
+  recorded in `grammar/states.json`
+- License: Apache License 2.0
+
+`corpora/upstream-prs` contains reduced fixtures copied byte-for-byte from the
+open pull requests tracked by issue #13, plus two locally authored fixture
+groups for the changes without an upstream example. The provenance of every
+file is recorded in `corpora/upstream-prs/manifest.json`.
+
 ## ANTLR runtimes and tools
 
 - `antlr4ng` — TypeScript runtime, part of the independent ANTLR Next Generation

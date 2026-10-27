@@ -90,6 +90,26 @@ performance result without a passing per-change conformance result is
 incomplete. See
 [`docs/semantic-conformance.md`](docs/semantic-conformance.md).
 
+Upstream grammar revisions are evaluated the same way. `grammar/states.json`
+pins the control commit, every open pull-request head, and the ordered
+cumulative merge; `grammar/states.lock.json` records the verified source and
+adapted digests:
+
+```bash
+pnpm grammar:states
+pnpm conformance:grammar -- --manifest .work/private-production/manifest.json \
+  --experiment upstream-grammar --publish experiments/010-upstream-grammar-prs
+pnpm benchmark:grammar -- --states control,pr-5132,cumulative \
+  --selection tail --experiment upstream-grammar-tail
+```
+
+`pnpm grammar:states` downloads each pinned ref, applies the same reviewed
+TypeScript adaptation, three-way merges the cumulative candidate, and verifies
+the checked-in digests. The conformance gate compares rule and token identity by
+name, so a grammar revision that only renumbers symbols does not create false
+differences; declared structural wrapper rules are flattened. Generated parsers
+are never committed.
+
 ## What is measured
 
 `coreMs` is tokenization plus parsing. It excludes lexer/parser construction,

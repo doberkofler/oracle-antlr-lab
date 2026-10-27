@@ -50,6 +50,14 @@ export type ConformancePolicy = Readonly<{
 		/** Returns true only for the exact transition described by `reason`. */
 		allows: (control: ConformanceObservation, candidate: ConformanceObservation) => boolean;
 	}>;
+	/** Differences restricted to named corpus files, identified by SHA-256. */
+	intendedFiles?: Readonly<{
+		files: readonly string[];
+		fields: readonly ConformanceField[];
+		reason: string;
+		/** Returns true only for the exact transition described by `reason`. */
+		allows?: (control: ConformanceObservation, candidate: ConformanceObservation) => boolean;
+	}>;
 	unsupported?: Readonly<{
 		/** SHA-256 identities of files known to be unsupported by both states. */
 		files: readonly string[];
@@ -164,6 +172,8 @@ export const compareConformance = (
 	const differences = Object.fromEntries(CONFORMANCE_FIELDS.map((field) => [field, 0])) as Record<ConformanceField, number>;
 	const classifications: Record<ConformanceClassification, number> = { identical: 0, intended: 0, unsupported: 0, defect: 0 };
 	const intendedFields = new Set(policy.intended?.fields ?? []);
+	const intendedFileFields = new Set(policy.intendedFiles?.fields ?? []);
+	const intendedFiles = new Set(policy.intendedFiles?.files ?? []);
 	const unsupportedFiles = new Set(policy.unsupported?.files ?? []);
 	const files: ConformanceFileResult[] = [];
 	const evidence = createHash('sha256');
@@ -186,7 +196,7 @@ export const compareConformance = (
 		}
 
 		addEvidence(evidence, baseline, treated);
-		const classification = classify(baseline, treated, changedFields, intendedFields, unsupportedFiles, policy);
+		const classification = classify(baseline, treated, changedFields, intendedFields, intendedFiles, intendedFileFields, unsupportedFiles, policy);
 
 		classifications[classification.kind] += 1;
 		files.push({
@@ -231,6 +241,8 @@ const classify = (
 	candidate: ConformanceObservation,
 	changedFields: readonly ConformanceField[],
 	intendedFields: ReadonlySet<ConformanceField>,
+	intendedFiles: ReadonlySet<string>,
+	intendedFileFields: ReadonlySet<ConformanceField>,
 	unsupportedFiles: ReadonlySet<string>,
 	policy: ConformancePolicy,
 ): Readonly<{ kind: ConformanceClassification; reason?: string }> => {
@@ -244,6 +256,15 @@ const classify = (
 
 	if (policy.intended !== undefined && changedFields.every((field) => intendedFields.has(field)) && policy.intended.allows(control, candidate)) {
 		return { kind: 'intended', reason: policy.intended.reason };
+	}
+
+	if (
+		policy.intendedFiles !== undefined &&
+		intendedFiles.has(control.sha256) &&
+		changedFields.every((field) => intendedFileFields.has(field)) &&
+		(policy.intendedFiles.allows?.(control, candidate) ?? true)
+	) {
+		return { kind: 'intended', reason: policy.intendedFiles.reason };
 	}
 
 	return { kind: 'defect', reason: 'Unexplained difference in a required conformance field' };

@@ -27,6 +27,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm grammar:download
+      - run: pnpm grammar:states -- --check
       - run: pnpm grammar:generate
       - run: pnpm verify
       - run: pnpm conformance -- --manifest corpora/public/manifest.json --experiment ci-conformance

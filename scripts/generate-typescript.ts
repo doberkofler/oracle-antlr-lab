@@ -44,9 +44,16 @@ const root = path.resolve(import.meta.dirname, '..');
 const defaultOutput = path.join(root, 'grammar', 'typescript', 'generated');
 const output = process.env['LAB_GENERATED_OUTPUT'] === undefined ? defaultOutput : path.resolve(root, process.env['LAB_GENERATED_OUTPUT']);
 const relativeOutput = path.relative(root, output);
+const defaultGrammar = path.join(root, 'grammar', 'adapted');
+const grammarDirectory = process.env['LAB_GRAMMAR_DIR'] === undefined ? defaultGrammar : path.resolve(root, process.env['LAB_GRAMMAR_DIR']);
+const relativeGrammar = path.relative(root, grammarDirectory);
 
 if (relativeOutput === '' || relativeOutput.startsWith('..') || path.isAbsolute(relativeOutput)) {
 	throw new Error('LAB_GENERATED_OUTPUT must be a directory inside the repository');
+}
+
+if (relativeGrammar === '' || relativeGrammar.startsWith('..') || path.isAbsolute(relativeGrammar)) {
+	throw new Error('LAB_GRAMMAR_DIR must be a directory inside the repository');
 }
 
 const runner = path.join(root, 'node_modules', 'antlr-ng', 'dist', 'cli', 'runner.js');
@@ -68,8 +75,8 @@ const result = spawnSync(
 		'true',
 		'-o',
 		output,
-		path.join(root, 'grammar', 'adapted', 'PlSqlLexer.g4'),
-		path.join(root, 'grammar', 'adapted', 'PlSqlParser.g4'),
+		path.join(grammarDirectory, 'PlSqlLexer.g4'),
+		path.join(grammarDirectory, 'PlSqlParser.g4'),
 	],
 	{ cwd: root, stdio: 'inherit' },
 );

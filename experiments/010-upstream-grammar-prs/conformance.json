@@ -1,0 +1,1450 @@
+{
+	"schemaVersion": 1,
+	"experiment": "010-upstream-grammar-prs",
+	"generatedAt": "2026-10-27T01:04:01.745Z",
+	"upstream": {
+		"repository": "antlr/grammars-v4",
+		"control": "control",
+		"base": "8714404279b53fb9856ac6162f468667b0b853bb"
+	},
+	"corpus": {
+		"id": "private-production-20261027",
+		"visibility": "private",
+		"files": 1244,
+		"sourceBytes": 20944414
+	},
+	"fixtures": {
+		"id": "upstream-grammar-prs",
+		"visibility": "public",
+		"files": 11,
+		"sourceBytes": 2515
+	},
+	"corpusPolicy": {
+		"path": "experiments/010-upstream-grammar-prs/corpus-policy.json",
+		"sha256": "04551ddb5ad5dc25b8e0ba81fc211ec86a60881abd622c0bd608554682b2785a"
+	},
+	"optimizations": "default",
+	"treeDigest": {
+		"kind": "symbolic",
+		"ignoredRules": ["alter_table_body", "alter_table_action", "enable_disable_clauses"]
+	},
+	"states": [
+		{
+			"key": "control",
+			"title": "Common open-PR base",
+			"ref": "8714404279b53fb9856ac6162f468667b0b853bb",
+			"pullRequest": null,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "3bf2095e92e08976e9b6a22fb9d37e302811ee587bc353e00303ce102277ed75",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "622596e33873d90aa2507eb09a218f24c1ba6afd141ebf772bfd71af2d77d49a",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5127",
+			"title": "Accept tab after SQL*Plus command words",
+			"ref": "4828ebc978916b24f4ee081f25d5c840e751ebe7",
+			"pullRequest": 5127,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "72ad2991bfcc3c3949e5fbc57918145e756f89eeb097ef8c755f8d94eb374cd6",
+					"parserSha256": "3bf2095e92e08976e9b6a22fb9d37e302811ee587bc353e00303ce102277ed75",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "b2430d2297a3136a8cc0dd79afe2678dfbd456793a9cd6c448e8f43951f5074f",
+					"parserSha256": "622596e33873d90aa2507eb09a218f24c1ba6afd141ebf772bfd71af2d77d49a",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5128",
+			"title": "Support RETURNING SEQUENCE BY REF in XMLTABLE",
+			"ref": "0146ee3f3ee1b74ef1b2783d909d4424106db156",
+			"pullRequest": 5128,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "654464548d287aad2674a6479e0c49765c296dfed509667e0e9445439a02cef1",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "a84fe583c17b4921121493b297bdc409439aa694d300ef751764cfc338b4a38f",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5129",
+			"title": "Support SQL*Plus EXEC[UTE] command",
+			"ref": "4c56477163871fb9ba156ddd1b85896d1255d29d",
+			"pullRequest": 5129,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "6330358c0c35bdd172335952b1b94115d1ead1ab24533bb533449744dfe5be13",
+					"parserSha256": "46074e8593a3191391bb7a4609c1eebbc74af772cc92a179d3b33e8a0ee644dc",
+					"parserBaseSha256": "f83c2eab005f3174f2b506c7e553577f96c336fc18e7c456a58c273566c634eb"
+				},
+				"adapted": {
+					"lexerSha256": "df3e3022aa1bc18208b7793c422943b856281934fed09c51609caf34bf2b45fd",
+					"parserSha256": "101c0fe767e31c388dd8bb65577c0cbca51daf5d69c26af69c2f2c0d067fed26",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "4b149c2367fcfc56e5380e0a900166e43e70ea89c85d2637a00197641ae06428"
+				}
+			}
+		},
+		{
+			"key": "pr-5131",
+			"title": "Allow DATE, DETECTED and ENCLOSED as identifiers",
+			"ref": "9ca852617c209c9e6f36cb5c938a6aed7a5100b1",
+			"pullRequest": 5131,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "035580a106c297262ee5f388731fc040397aecc2dddd4a0121c0b099166e6387",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "2856612ea877988cae6a5ab425de12a04a3128957e0e35e8b530941cd0956ee8",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5132",
+			"title": "Remove redundant subquery_operation_part from atom",
+			"ref": "f5cb57f80137f474a9c59a393cc0afef64bb239c",
+			"pullRequest": 5132,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "c17cc0fca527d104e321d36fd2f88f119571c8d74eaeadfdf2c6a6a37f365c52",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "c01e5762dc89758ca98e859e99e562dfcff7f3f479230e40c61ede3970a103b6",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5133",
+			"title": "Fix dim_key attribute list and labels",
+			"ref": "4cbc15e8004f1cadd5904a93dfdf430c0c87d1e8",
+			"pullRequest": 5133,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "54ae6dc8ba44a245292aeb9491cf02fa9629c1af466d28545c7f0e61748d684f",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "7c569968fd592de96c781c9f16e25ed833070547bdfd4738704abf7cd810d292",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5134",
+			"title": "Reject empty ALTER TABLE action",
+			"ref": "d7ada8a36e68a7b1c4b1e0bad9e1633c7637880c",
+			"pullRequest": 5134,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "e5cab2fd1eb2c0e40f9111ff72e8accb44e947544e7d758e8dde9d9d5ceefd6a",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "6ba45f9aa6d7fb255297ff50286898cbd6693557e171544a54d9e4d42c317888",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "pr-5135",
+			"title": "Use TIME ZONE in time zone clauses",
+			"ref": "a7a3f9a8a9895218889e165ab9e1c0c411c5f694",
+			"pullRequest": 5135,
+			"merge": [],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "00d3289ed1d3f8a11cbe082db668a6a61a02252a2dd05ea587ccea6452eab1ec",
+					"parserSha256": "824421a91f2bd31ce90ee8da378586f7adcd3cd2d1d21e84de634c01e648709d",
+					"parserBaseSha256": "240545ca222036231d7044ce468e2c4ed0d1a0ef6df190cb71a717b47faccfcb"
+				},
+				"adapted": {
+					"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+					"parserSha256": "b7fd9351c9ad10349bb24924d43b695eff24d21a49c3e5fa3ace004d4cf89c7b",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+				}
+			}
+		},
+		{
+			"key": "cumulative",
+			"title": "Control plus every open pull request",
+			"ref": null,
+			"pullRequest": null,
+			"merge": ["pr-5127", "pr-5128", "pr-5129", "pr-5131", "pr-5132", "pr-5133", "pr-5134", "pr-5135"],
+			"digests": {
+				"upstream": {
+					"lexerSha256": "aaddaa2f9d40e10ab71e83a402499ae893aa7f03497a631e5c12f2c4cd1d2567",
+					"parserSha256": "7d5dc730a52b2348ab72e49ad12b99e2fccb9a294302c640324f5e57100bbb1f",
+					"parserBaseSha256": "f83c2eab005f3174f2b506c7e553577f96c336fc18e7c456a58c273566c634eb"
+				},
+				"adapted": {
+					"lexerSha256": "fca301ca2bade1fd5b780e80d8ca2bcd417fea030349e08cc9ae4393119cd490",
+					"parserSha256": "fc5d7248dda31b813df9d4fb603cc11a0c7ecb1668a6ce803948ccf4d1d0d9f1",
+					"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+					"parserBaseSha256": "4b149c2367fcfc56e5380e0a900166e43e70ea89c85d2637a00197641ae06428"
+				}
+			}
+		}
+	],
+	"status": "pass",
+	"gates": [
+		{
+			"id": "control-vs-pr-5127",
+			"title": "Accept tab after SQL*Plus command words",
+			"candidate": "pr-5127",
+			"pullRequest": 5127,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1244,
+					"intended": 0,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 176,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 19,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": []
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 0,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 0,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 1,
+					"hiddenTokens": 1,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 1,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 1,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 1,
+					"candidateUnits": 1
+				},
+				"changedFiles": [
+					{
+						"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+						"bytes": 216,
+						"sha256": "807c2fd92e83e25507ac80b9fc22d8b7551f10c48a4d3a5f990355c41751eae5",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "tokens", "hiddenTokens", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5127",
+					"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5128",
+			"title": "Support RETURNING SEQUENCE BY REF in XMLTABLE",
+			"candidate": "pr-5128",
+			"pullRequest": 5128,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1243,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 0,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1232,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 129,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 18,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": [
+					{
+						"file": "source-001143.pkb",
+						"bytes": 48761,
+						"sha256": "b94a6b634ba2677ef8e4c7581e9900bd8f8bfc901f16050892d85e198e8d274d",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					}
+				]
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 0,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 1,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 1,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 1,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 1,
+					"candidateUnits": 4
+				},
+				"changedFiles": [
+					{
+						"file": "5128-xmltable_returning_sequence_by_ref.sql",
+						"bytes": 581,
+						"sha256": "d8fa34e30e2e579e7dbe9ae3bdfc2f811f92752eb5dce5a0cbb226a180ef371f",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5128",
+					"file": "5128-xmltable_returning_sequence_by_ref.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5129",
+			"title": "Support SQL*Plus EXEC[UTE] command",
+			"candidate": "pr-5129",
+			"pullRequest": 5129,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1241,
+					"intended": 0,
+					"unsupported": 3,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 2,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 3,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 174,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 19,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": [
+					{
+						"file": "source-000571.pks",
+						"bytes": 4194,
+						"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+						"classification": "unsupported",
+						"changedFields": ["diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					},
+					{
+						"file": "source-001150.pkb",
+						"bytes": 50853,
+						"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+						"classification": "unsupported",
+						"changedFields": ["parseTreeSha256", "diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					},
+					{
+						"file": "source-001224.pkb",
+						"bytes": 153637,
+						"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+						"classification": "unsupported",
+						"changedFields": ["parseTreeSha256", "parseDiagnostics", "diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					}
+				]
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 0,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 1,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 1,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 1,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 1,
+					"candidateUnits": 0
+				},
+				"changedFiles": [
+					{
+						"file": "5129-sqlplus_exec_command.sql",
+						"bytes": 292,
+						"sha256": "c31f4911f2f97d115f5f4a03ea0c67c3ff5051f3a6b49d8f534449c601a9e956",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5129",
+					"file": "5129-sqlplus_exec_command.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5131",
+			"title": "Allow DATE, DETECTED and ENCLOSED as identifiers",
+			"candidate": "pr-5131",
+			"pullRequest": 5131,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1239,
+					"intended": 3,
+					"unsupported": 2,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 4,
+					"unitCount": 4,
+					"accepted": 3,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 4,
+					"diagnosticsSha256": 5,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 3,
+					"sllAttempts": 0,
+					"llAttempts": 3
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1234,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 156,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 16,
+					"controlUnits": 1308,
+					"candidateUnits": 1303
+				},
+				"changedFiles": [
+					{
+						"file": "source-000571.pks",
+						"bytes": 4194,
+						"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-000898.pks",
+						"bytes": 14487,
+						"sha256": "f9b9f56a0395a9191ba4d529245de2c7c0ef9743f5d5c1c0b8ddc3d31e7ee19b",
+						"classification": "unsupported",
+						"changedFields": ["parseTreeSha256", "unitCount", "parseDiagnostics", "diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					},
+					{
+						"file": "source-001056.pkb",
+						"bytes": 28421,
+						"sha256": "8dd01261ce1ba7f0cca26c5762590b7512d6b6e943b897f9121d03003d4b0567",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-001150.pkb",
+						"bytes": 50853,
+						"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-001224.pkb",
+						"bytes": 153637,
+						"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+						"classification": "unsupported",
+						"changedFields": ["diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					}
+				]
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 3,
+				"classifications": {
+					"identical": 0,
+					"intended": 3,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 3,
+					"unitCount": 0,
+					"accepted": 3,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 3,
+					"diagnosticsSha256": 3,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 3,
+					"sllAttempts": 0,
+					"llAttempts": 3
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 3,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 6,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 3,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 3,
+					"candidateUnits": 3
+				},
+				"changedFiles": [
+					{
+						"file": "5131-keywordasidentifier06.sql",
+						"bytes": 96,
+						"sha256": "348281ba596fa3229665304d4d060bc465f1ad65f3266081bfc972976732790e",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5131-keywordasidentifier07.sql",
+						"bytes": 103,
+						"sha256": "65d31e5ed6d830e02f7af55bfbc2346c5c40fe2e3be2bf30d7ecd5552e331d98",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5131-keywordasidentifier08.sql",
+						"bytes": 108,
+						"sha256": "d4359a8d9bb44eecfd6daf7704e9ee886e04647c95a196e118393758428f3c82",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5131",
+					"file": "5131-keywordasidentifier06.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "pr-5131",
+					"file": "5131-keywordasidentifier07.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "pr-5131",
+					"file": "5131-keywordasidentifier08.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5132",
+			"title": "Remove redundant subquery_operation_part from atom",
+			"candidate": "pr-5132",
+			"pullRequest": 5132,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1242,
+					"intended": 2,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 176,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 18,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": [
+					{
+						"file": "source-001084.pkb",
+						"bytes": 33377,
+						"sha256": "0782dc4461ce0a8cc41df00dc97c5a49f2b362f2472ab7f84eb6e2a458d9f22c",
+						"classification": "intended",
+						"changedFields": ["prediction", "llAttempts"],
+						"reason": "A file that no longer needs full-file LL fallback reports one SLL attempt and the same parse tree, units, tokens, and diagnostics."
+					},
+					{
+						"file": "source-001242.pkb",
+						"bytes": 311308,
+						"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256"],
+						"reason": "A declared corpus transition for this grammar revision."
+					}
+				]
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 1,
+					"intended": 0,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 0,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 0,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 3,
+					"candidateUnits": 3
+				},
+				"changedFiles": []
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5132",
+					"file": "5132-atom_subquery_operation.sql",
+					"control": "accepted",
+					"candidate": "accepted",
+					"expected": "accepted -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5133",
+			"title": "Fix dim_key attribute list and labels",
+			"candidate": "pr-5133",
+			"pullRequest": 5133,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1244,
+					"intended": 0,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 176,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 19,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": []
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 0,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 0,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 3,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 1,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 1,
+					"candidateUnits": 1
+				},
+				"changedFiles": [
+					{
+						"file": "5133-create_analytic_view_dim_key.sql",
+						"bytes": 378,
+						"sha256": "434422dbb862d3687e4bc19ac58788ee6ee8a0c0f1c93ffa0b399ab7017a6c6e",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5133",
+					"file": "5133-create_analytic_view_dim_key.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5134",
+			"title": "Reject empty ALTER TABLE action",
+			"candidate": "pr-5134",
+			"pullRequest": 5134,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1244,
+					"intended": 0,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 176,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 19,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": []
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 2,
+				"classifications": {
+					"identical": 1,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 2,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 0,
+					"candidateParseDiagnostics": 1,
+					"controlFallbackFiles": 0,
+					"candidateFallbackFiles": 1,
+					"controlUnits": 5,
+					"candidateUnits": 5
+				},
+				"changedFiles": [
+					{
+						"file": "5134-alter_table_empty.sql",
+						"bytes": 73,
+						"sha256": "a3fbfba2e8f9f3ab1c3f780fdc781e11a997d6d2e034b4331a2700580c6b3982",
+						"classification": "intended",
+						"changedFields": ["accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5134",
+					"file": "5134-alter_table_empty.sql",
+					"control": "accepted",
+					"candidate": "rejected",
+					"expected": "accepted -> rejected",
+					"pass": true
+				},
+				{
+					"state": "pr-5134",
+					"file": "5134-alter_table_actions.sql",
+					"control": "accepted",
+					"candidate": "accepted",
+					"expected": "accepted -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-pr-5135",
+			"title": "Use TIME ZONE in time zone clauses",
+			"candidate": "pr-5135",
+			"pullRequest": 5135,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1244,
+					"intended": 0,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 0,
+					"unitCount": 0,
+					"accepted": 0,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 0,
+					"diagnosticsSha256": 0,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 0,
+					"sllAttempts": 0,
+					"llAttempts": 0
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1231,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 176,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 19,
+					"controlUnits": 1308,
+					"candidateUnits": 1308
+				},
+				"changedFiles": []
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 1,
+				"classifications": {
+					"identical": 0,
+					"intended": 1,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 1,
+					"unitCount": 0,
+					"accepted": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 1,
+					"diagnosticsSha256": 1,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 1,
+					"sllAttempts": 0,
+					"llAttempts": 1
+				},
+				"totals": {
+					"controlAccepted": 0,
+					"candidateAccepted": 1,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 2,
+					"candidateParseDiagnostics": 0,
+					"controlFallbackFiles": 1,
+					"candidateFallbackFiles": 0,
+					"controlUnits": 3,
+					"candidateUnits": 3
+				},
+				"changedFiles": [
+					{
+						"file": "5135-time_zone.sql",
+						"bytes": 233,
+						"sha256": "caa18332a6f45e5eb018473918a90eae25149294558044a1f123f9151c732643",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "pr-5135",
+					"file": "5135-time_zone.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				}
+			]
+		},
+		{
+			"id": "control-vs-cumulative",
+			"title": "Control plus every open pull request",
+			"candidate": "cumulative",
+			"pullRequest": null,
+			"status": "pass",
+			"corpus": {
+				"status": "pass",
+				"comparedFiles": 1244,
+				"classifications": {
+					"identical": 1236,
+					"intended": 6,
+					"unsupported": 2,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 7,
+					"unitCount": 4,
+					"accepted": 4,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 6,
+					"diagnosticsSha256": 6,
+					"tokens": 0,
+					"hiddenTokens": 0,
+					"prediction": 5,
+					"sllAttempts": 0,
+					"llAttempts": 5
+				},
+				"totals": {
+					"controlAccepted": 1231,
+					"candidateAccepted": 1235,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 176,
+					"candidateParseDiagnostics": 107,
+					"controlFallbackFiles": 19,
+					"candidateFallbackFiles": 14,
+					"controlUnits": 1308,
+					"candidateUnits": 1303
+				},
+				"changedFiles": [
+					{
+						"file": "source-000571.pks",
+						"bytes": 4194,
+						"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-000898.pks",
+						"bytes": 14487,
+						"sha256": "f9b9f56a0395a9191ba4d529245de2c7c0ef9743f5d5c1c0b8ddc3d31e7ee19b",
+						"classification": "unsupported",
+						"changedFields": ["parseTreeSha256", "unitCount", "parseDiagnostics", "diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					},
+					{
+						"file": "source-001056.pkb",
+						"bytes": 28421,
+						"sha256": "8dd01261ce1ba7f0cca26c5762590b7512d6b6e943b897f9121d03003d4b0567",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-001084.pkb",
+						"bytes": 33377,
+						"sha256": "0782dc4461ce0a8cc41df00dc97c5a49f2b362f2472ab7f84eb6e2a458d9f22c",
+						"classification": "intended",
+						"changedFields": ["prediction", "llAttempts"],
+						"reason": "A file that no longer needs full-file LL fallback reports one SLL attempt and the same parse tree, units, tokens, and diagnostics."
+					},
+					{
+						"file": "source-001143.pkb",
+						"bytes": 48761,
+						"sha256": "b94a6b634ba2677ef8e4c7581e9900bd8f8bfc901f16050892d85e198e8d274d",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-001150.pkb",
+						"bytes": 50853,
+						"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A declared corpus transition for this grammar revision."
+					},
+					{
+						"file": "source-001224.pkb",
+						"bytes": 153637,
+						"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+						"classification": "unsupported",
+						"changedFields": ["parseTreeSha256", "parseDiagnostics", "diagnosticsSha256"],
+						"reason": "Declared corpus file that both grammar states reject; external classification is still required."
+					},
+					{
+						"file": "source-001242.pkb",
+						"bytes": 311308,
+						"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256"],
+						"reason": "A declared corpus transition for this grammar revision."
+					}
+				]
+			},
+			"fixtures": {
+				"status": "pass",
+				"comparedFiles": 11,
+				"classifications": {
+					"identical": 2,
+					"intended": 9,
+					"unsupported": 0,
+					"defect": 0
+				},
+				"differences": {
+					"parseTreeSha256": 8,
+					"unitCount": 2,
+					"accepted": 9,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 9,
+					"diagnosticsSha256": 9,
+					"tokens": 1,
+					"hiddenTokens": 1,
+					"prediction": 9,
+					"sllAttempts": 0,
+					"llAttempts": 9
+				},
+				"totals": {
+					"controlAccepted": 3,
+					"candidateAccepted": 10,
+					"controlLexerDiagnostics": 0,
+					"candidateLexerDiagnostics": 0,
+					"controlParseDiagnostics": 14,
+					"candidateParseDiagnostics": 1,
+					"controlFallbackFiles": 8,
+					"candidateFallbackFiles": 1,
+					"controlUnits": 18,
+					"candidateUnits": 20
+				},
+				"changedFiles": [
+					{
+						"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+						"bytes": 216,
+						"sha256": "807c2fd92e83e25507ac80b9fc22d8b7551f10c48a4d3a5f990355c41751eae5",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "tokens", "hiddenTokens", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5128-xmltable_returning_sequence_by_ref.sql",
+						"bytes": 581,
+						"sha256": "d8fa34e30e2e579e7dbe9ae3bdfc2f811f92752eb5dce5a0cbb226a180ef371f",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5129-sqlplus_exec_command.sql",
+						"bytes": 292,
+						"sha256": "c31f4911f2f97d115f5f4a03ea0c67c3ff5051f3a6b49d8f534449c601a9e956",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "unitCount", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5131-keywordasidentifier06.sql",
+						"bytes": 96,
+						"sha256": "348281ba596fa3229665304d4d060bc465f1ad65f3266081bfc972976732790e",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5131-keywordasidentifier07.sql",
+						"bytes": 103,
+						"sha256": "65d31e5ed6d830e02f7af55bfbc2346c5c40fe2e3be2bf30d7ecd5552e331d98",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5131-keywordasidentifier08.sql",
+						"bytes": 108,
+						"sha256": "d4359a8d9bb44eecfd6daf7704e9ee886e04647c95a196e118393758428f3c82",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5133-create_analytic_view_dim_key.sql",
+						"bytes": 378,
+						"sha256": "434422dbb862d3687e4bc19ac58788ee6ee8a0c0f1c93ffa0b399ab7017a6c6e",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5135-time_zone.sql",
+						"bytes": 233,
+						"sha256": "caa18332a6f45e5eb018473918a90eae25149294558044a1f123f9151c732643",
+						"classification": "intended",
+						"changedFields": ["parseTreeSha256", "accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					},
+					{
+						"file": "5134-alter_table_empty.sql",
+						"bytes": 73,
+						"sha256": "a3fbfba2e8f9f3ab1c3f780fdc781e11a997d6d2e034b4331a2700580c6b3982",
+						"classification": "intended",
+						"changedFields": ["accepted", "parseDiagnostics", "diagnosticsSha256", "prediction", "llAttempts"],
+						"reason": "A reduced upstream fixture moves from the declared control outcome to the declared candidate outcome."
+					}
+				]
+			},
+			"fixtureChecks": [
+				{
+					"state": "cumulative",
+					"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5128-xmltable_returning_sequence_by_ref.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5129-sqlplus_exec_command.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5131-keywordasidentifier06.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5131-keywordasidentifier07.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5131-keywordasidentifier08.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5133-create_analytic_view_dim_key.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5134-alter_table_empty.sql",
+					"control": "accepted",
+					"candidate": "rejected",
+					"expected": "accepted -> rejected",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5135-time_zone.sql",
+					"control": "rejected",
+					"candidate": "accepted",
+					"expected": "rejected -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5132-atom_subquery_operation.sql",
+					"control": "accepted",
+					"candidate": "accepted",
+					"expected": "accepted -> accepted",
+					"pass": true
+				},
+				{
+					"state": "cumulative",
+					"file": "5134-alter_table_actions.sql",
+					"control": "accepted",
+					"candidate": "accepted",
+					"expected": "accepted -> accepted",
+					"pass": true
+				}
+			]
+		}
+	]
+}

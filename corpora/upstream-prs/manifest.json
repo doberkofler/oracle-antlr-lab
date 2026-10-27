@@ -1,0 +1,205 @@
+{
+	"id": "upstream-grammar-prs",
+	"description": "Reduced PL/SQL fixtures imported from the open grammars-v4 pull requests tracked by issue #13, plus two local fixture groups for the changes without an upstream example.",
+	"visibility": "public",
+	"root": "files",
+	"sourceFiles": 11,
+	"sourceBytes": 2515,
+	"selection": "All 11 reduced fixtures",
+	"files": [
+		{
+			"id": 0,
+			"path": "5127-sqlplus_remark_prompt_whitespace.sql",
+			"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+			"bytes": 216,
+			"lines": 9,
+			"sha256": "807c2fd92e83e25507ac80b9fc22d8b7551f10c48a4d3a5f990355c41751eae5"
+		},
+		{
+			"id": 1,
+			"path": "5128-xmltable_returning_sequence_by_ref.sql",
+			"file": "5128-xmltable_returning_sequence_by_ref.sql",
+			"bytes": 581,
+			"lines": 12,
+			"sha256": "d8fa34e30e2e579e7dbe9ae3bdfc2f811f92752eb5dce5a0cbb226a180ef371f"
+		},
+		{
+			"id": 2,
+			"path": "5129-sqlplus_exec_command.sql",
+			"file": "5129-sqlplus_exec_command.sql",
+			"bytes": 292,
+			"lines": 12,
+			"sha256": "c31f4911f2f97d115f5f4a03ea0c67c3ff5051f3a6b49d8f534449c601a9e956"
+		},
+		{
+			"id": 3,
+			"path": "5131-keywordasidentifier06.sql",
+			"file": "5131-keywordasidentifier06.sql",
+			"bytes": 96,
+			"lines": 5,
+			"sha256": "348281ba596fa3229665304d4d060bc465f1ad65f3266081bfc972976732790e"
+		},
+		{
+			"id": 4,
+			"path": "5131-keywordasidentifier07.sql",
+			"file": "5131-keywordasidentifier07.sql",
+			"bytes": 103,
+			"lines": 5,
+			"sha256": "65d31e5ed6d830e02f7af55bfbc2346c5c40fe2e3be2bf30d7ecd5552e331d98"
+		},
+		{
+			"id": 5,
+			"path": "5131-keywordasidentifier08.sql",
+			"file": "5131-keywordasidentifier08.sql",
+			"bytes": 108,
+			"lines": 5,
+			"sha256": "d4359a8d9bb44eecfd6daf7704e9ee886e04647c95a196e118393758428f3c82"
+		},
+		{
+			"id": 6,
+			"path": "5133-create_analytic_view_dim_key.sql",
+			"file": "5133-create_analytic_view_dim_key.sql",
+			"bytes": 378,
+			"lines": 12,
+			"sha256": "434422dbb862d3687e4bc19ac58788ee6ee8a0c0f1c93ffa0b399ab7017a6c6e"
+		},
+		{
+			"id": 7,
+			"path": "5135-time_zone.sql",
+			"file": "5135-time_zone.sql",
+			"bytes": 233,
+			"lines": 6,
+			"sha256": "caa18332a6f45e5eb018473918a90eae25149294558044a1f123f9151c732643"
+		},
+		{
+			"id": 8,
+			"path": "5132-atom_subquery_operation.sql",
+			"file": "5132-atom_subquery_operation.sql",
+			"bytes": 305,
+			"lines": 8,
+			"sha256": "be7d4c923e7a33557bea5f972cb3251f857f0790cdc61f9c37e7e14fdbe7561b"
+		},
+		{
+			"id": 9,
+			"path": "5134-alter_table_empty.sql",
+			"file": "5134-alter_table_empty.sql",
+			"bytes": 73,
+			"lines": 3,
+			"sha256": "a3fbfba2e8f9f3ab1c3f780fdc781e11a997d6d2e034b4331a2700580c6b3982"
+		},
+		{
+			"id": 10,
+			"path": "5134-alter_table_actions.sql",
+			"file": "5134-alter_table_actions.sql",
+			"bytes": 130,
+			"lines": 8,
+			"sha256": "d5d90d68dbf463db972cfea42681a00c8407f33d6720c6f9fe805bb584f150b6"
+		}
+	],
+	"sources": [
+		{
+			"file": "5127-sqlplus_remark_prompt_whitespace.sql",
+			"sources": [
+				{
+					"pullRequest": 5127,
+					"state": "pr-5127",
+					"path": "sql/plsql/examples/sqlplus_remark_prompt_whitespace.sql"
+				}
+			]
+		},
+		{
+			"file": "5128-xmltable_returning_sequence_by_ref.sql",
+			"sources": [
+				{
+					"pullRequest": 5128,
+					"state": "pr-5128",
+					"path": "sql/plsql/examples/xmltable_returning_sequence_by_ref.sql"
+				}
+			]
+		},
+		{
+			"file": "5129-sqlplus_exec_command.sql",
+			"sources": [
+				{
+					"pullRequest": 5129,
+					"state": "pr-5129",
+					"path": "sql/plsql/examples/sqlplus_exec_command.sql"
+				}
+			]
+		},
+		{
+			"file": "5131-keywordasidentifier06.sql",
+			"sources": [
+				{
+					"pullRequest": 5131,
+					"state": "pr-5131",
+					"path": "sql/plsql/examples/keywordasidentifier06.sql"
+				}
+			]
+		},
+		{
+			"file": "5131-keywordasidentifier07.sql",
+			"sources": [
+				{
+					"pullRequest": 5131,
+					"state": "pr-5131",
+					"path": "sql/plsql/examples/keywordasidentifier07.sql"
+				}
+			]
+		},
+		{
+			"file": "5131-keywordasidentifier08.sql",
+			"sources": [
+				{
+					"pullRequest": 5131,
+					"state": "pr-5131",
+					"path": "sql/plsql/examples/keywordasidentifier08.sql"
+				}
+			]
+		},
+		{
+			"file": "5133-create_analytic_view_dim_key.sql",
+			"sources": [
+				{
+					"pullRequest": 5133,
+					"state": "pr-5133",
+					"path": "sql/plsql/examples/create_analytic_view_dim_key.sql"
+				}
+			]
+		},
+		{
+			"file": "5135-time_zone.sql",
+			"sources": [
+				{
+					"pullRequest": 5135,
+					"state": "pr-5135",
+					"path": "sql/plsql/examples/time_zone.sql"
+				}
+			]
+		},
+		{
+			"file": "5132-atom_subquery_operation.sql",
+			"sources": [
+				{
+					"local": "Authored in this repository for the experiment."
+				}
+			]
+		},
+		{
+			"file": "5134-alter_table_empty.sql",
+			"sources": [
+				{
+					"local": "Authored in this repository for the experiment."
+				}
+			]
+		},
+		{
+			"file": "5134-alter_table_actions.sql",
+			"sources": [
+				{
+					"local": "Authored in this repository for the experiment."
+				}
+			]
+		}
+	]
+}

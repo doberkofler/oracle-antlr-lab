@@ -1,0 +1,144 @@
+{
+	"schemaVersion": 1,
+	"states": {
+		"pr-5128": {
+			"transitions": [
+				{
+					"kind": "acceptance",
+					"file": "source-001143.pkb",
+					"sha256": "b94a6b634ba2677ef8e4c7581e9900bd8f8bfc901f16050892d85e198e8d274d",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "Uses XMLTABLE RETURNING SEQUENCE BY REF. The control reports 47 parser diagnostics; the candidate reports none."
+				}
+			]
+		},
+		"pr-5129": {
+			"unsupported": [
+				{
+					"file": "source-000571.pks",
+					"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+					"reason": "Both states reject the file; adding the EXEC token changes only recovery diagnostics."
+				},
+				{
+					"file": "source-001150.pkb",
+					"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+					"reason": "Both states reject the file with 23 parser diagnostics; the recovery tree changes because EXEC joins the token vocabulary."
+				},
+				{
+					"file": "source-001224.pkb",
+					"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+					"reason": "Both states reject the file; recovery diagnostics fall from 13 to 11 with the new token vocabulary."
+				}
+			]
+		},
+		"pr-5131": {
+			"transitions": [
+				{
+					"kind": "acceptance",
+					"file": "source-000571.pks",
+					"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 7 diagnostics."
+				},
+				{
+					"kind": "acceptance",
+					"file": "source-001056.pkb",
+					"sha256": "8dd01261ce1ba7f0cca26c5762590b7512d6b6e943b897f9121d03003d4b0567",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 6 diagnostics."
+				},
+				{
+					"kind": "acceptance",
+					"file": "source-001150.pkb",
+					"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 23 diagnostics."
+				}
+			],
+			"unsupported": [
+				{
+					"file": "source-000898.pks",
+					"sha256": "f9b9f56a0395a9191ba4d529245de2c7c0ef9743f5d5c1c0b8ddc3d31e7ee19b",
+					"reason": "Both states reject the file; recovery units and diagnostics increase from 1 to 17 because the additional identifiers change the synchronisation path."
+				},
+				{
+					"file": "source-001224.pkb",
+					"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+					"reason": "Both states reject the file with 13 parser diagnostics; only the diagnostic message text changes."
+				}
+			]
+		},
+		"pr-5132": {
+			"transitions": [
+				{
+					"kind": "reparenting",
+					"file": "source-001242.pkb",
+					"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af",
+					"control": "accepted",
+					"candidate": "accepted",
+					"reason": "Removing the redundant atom alternative re-parents a parenthesised subquery's set operation to the enclosing subquery. Tokens, script units, acceptance, diagnostics, and the rule-name multiset are unchanged."
+				}
+			]
+		},
+		"cumulative": {
+			"transitions": [
+				{
+					"kind": "acceptance",
+					"file": "source-001143.pkb",
+					"sha256": "b94a6b634ba2677ef8e4c7581e9900bd8f8bfc901f16050892d85e198e8d274d",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "The cumulative candidate contains the XMLTABLE RETURNING SEQUENCE BY REF fix; the control reports 47 parser diagnostics."
+				},
+				{
+					"kind": "acceptance",
+					"file": "source-000571.pks",
+					"sha256": "e3a451ed8251a4ef0f82916ed40b88e9ecf7d74042206012c00530ba063562e1",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 7 diagnostics."
+				},
+				{
+					"kind": "acceptance",
+					"file": "source-001056.pkb",
+					"sha256": "8dd01261ce1ba7f0cca26c5762590b7512d6b6e943b897f9121d03003d4b0567",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 6 diagnostics."
+				},
+				{
+					"kind": "acceptance",
+					"file": "source-001150.pkb",
+					"sha256": "8b69dd975b160635bb67d4da4411150caa4194f8e7691dd45ae2033b8993e9de",
+					"control": "rejected",
+					"candidate": "accepted",
+					"reason": "DATE, DETECTED, or ENCLOSED as an identifier was rejected by the control with 23 diagnostics."
+				},
+				{
+					"kind": "reparenting",
+					"file": "source-001242.pkb",
+					"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af",
+					"control": "accepted",
+					"candidate": "accepted",
+					"reason": "Removing the redundant atom alternative re-parents a parenthesised subquery's set operation to the enclosing subquery. Tokens, script units, acceptance, diagnostics, and the rule-name multiset are unchanged."
+				}
+			],
+			"unsupported": [
+				{
+					"file": "source-000898.pks",
+					"sha256": "f9b9f56a0395a9191ba4d529245de2c7c0ef9743f5d5c1c0b8ddc3d31e7ee19b",
+					"reason": "Both states reject the file; recovery units and diagnostics increase from 1 to 17 because the additional identifiers change the synchronisation path."
+				},
+				{
+					"file": "source-001224.pkb",
+					"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948",
+					"reason": "Both states reject the file; recovery diagnostics fall from 13 to 11 and only the diagnostic sequence changes."
+				}
+			]
+		}
+	}
+}

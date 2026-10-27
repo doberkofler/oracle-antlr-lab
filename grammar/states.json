@@ -1,0 +1,71 @@
+{
+	"$comment": "Upstream grammar states for issue #13. Digests are recorded in states.lock.json; generated parsers are never committed.",
+	"schemaVersion": 1,
+	"upstream": "antlr/grammars-v4",
+	"states": [
+		{
+			"key": "pin-e199816",
+			"title": "Current laboratory pin",
+			"ref": "e199816b3f1a7a49ea1ad84fb6b87c382ea36a33"
+		},
+		{
+			"key": "control",
+			"title": "Common open-PR base",
+			"ref": "8714404279b53fb9856ac6162f468667b0b853bb"
+		},
+		{
+			"key": "pr-5127",
+			"title": "Accept tab after SQL*Plus command words",
+			"pullRequest": 5127,
+			"ref": "4828ebc978916b24f4ee081f25d5c840e751ebe7"
+		},
+		{
+			"key": "pr-5128",
+			"title": "Support RETURNING SEQUENCE BY REF in XMLTABLE",
+			"pullRequest": 5128,
+			"ref": "0146ee3f3ee1b74ef1b2783d909d4424106db156"
+		},
+		{
+			"key": "pr-5129",
+			"title": "Support SQL*Plus EXEC[UTE] command",
+			"pullRequest": 5129,
+			"ref": "4c56477163871fb9ba156ddd1b85896d1255d29d"
+		},
+		{
+			"key": "pr-5131",
+			"title": "Allow DATE, DETECTED and ENCLOSED as identifiers",
+			"pullRequest": 5131,
+			"ref": "9ca852617c209c9e6f36cb5c938a6aed7a5100b1"
+		},
+		{
+			"key": "pr-5132",
+			"title": "Remove redundant subquery_operation_part from atom",
+			"pullRequest": 5132,
+			"ref": "f5cb57f80137f474a9c59a393cc0afef64bb239c"
+		},
+		{
+			"key": "pr-5133",
+			"title": "Fix dim_key attribute list and labels",
+			"pullRequest": 5133,
+			"ref": "4cbc15e8004f1cadd5904a93dfdf430c0c87d1e8"
+		},
+		{
+			"key": "pr-5134",
+			"title": "Reject empty ALTER TABLE action",
+			"pullRequest": 5134,
+			"ref": "d7ada8a36e68a7b1c4b1e0bad9e1633c7637880c"
+		},
+		{
+			"key": "pr-5135",
+			"title": "Use TIME ZONE in time zone clauses",
+			"pullRequest": 5135,
+			"ref": "a7a3f9a8a9895218889e165ab9e1c0c411c5f694"
+		},
+		{
+			"key": "cumulative",
+			"title": "Control plus every open pull request",
+			"base": "control",
+			"merge": ["pr-5127", "pr-5128", "pr-5129", "pr-5131", "pr-5132", "pr-5133", "pr-5134", "pr-5135"]
+		}
+	]
+}

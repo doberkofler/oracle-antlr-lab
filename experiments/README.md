@@ -50,12 +50,22 @@ promoted.
   issues #1–#3; accepted units, parse trees, tokens, diagnostics, and recovery
   behavior matched, with only the documented LL-fallback removal classified as
   intended. Java remains blocked by its 486 diagnostics.
+- `010-upstream-grammar-prs`: eight open upstream PL/SQL pull requests pinned by
+  head SHA against their common base, plus the ordered cumulative merge. All
+  nine gates pass on the 1,244-file production corpus and eleven reduced
+  fixtures; the cumulative candidate accepts four more files and removes five
+  fallback files. #5132 reduced the tail parser core by 22.5% in one stable
+  screening campaign, but Q4 and full-corpus campaigns are within noise; no
+  speedup is claimed. Migration from the current pin is measured separately and
+  remains a prerequisite.
 
 ## Remaining queue
 
 1. Measure process startup and generated recognizer/ATN initialization as
    separate boundaries.
-2. Reduce the 20 remaining fallback files: six SLL-only conflicts and fourteen
+2. Reduce the remaining fallback files: six SLL-only conflicts and fourteen
    LL-side grammar gaps.
 3. Resolve the Java target's 486 diagnostics before treating it as a viable
    adapter.
+4. Rebase the #13 candidate onto a newer upstream pin and correct the two
+   Oracle-invalid `XMLTABLE` forms in the upstream #5128 example.

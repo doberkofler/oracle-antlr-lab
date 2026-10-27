@@ -7,6 +7,7 @@
 	"type": "module",
 	"scripts": {
 		"grammar:download": "node scripts/download-grammar.ts",
+		"grammar:states": "node scripts/materializeGrammarStates.ts",
 		"grammar:generate": "node scripts/generate-typescript.ts",
 		"corpus:public": "node scripts/make-public-corpus.ts",
 		"corpus:select": "node scripts/select-corpus.ts",
@@ -21,7 +22,10 @@
 		"format": "oxfmt --write",
 		"format:check": "oxfmt --check",
 		"test": "vitest run",
-		"verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
+		"verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
+		"conformance:grammar": "node scripts/upstreamGrammarConformance.ts",
+		"fixtures:upstream": "node scripts/makeUpstreamFixtures.ts",
+		"benchmark:grammar": "node scripts/benchmarkGrammarStates.ts"
 	},
 	"dependencies": {
 		"antlr4ng": "3.0.16"

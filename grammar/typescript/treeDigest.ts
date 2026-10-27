@@ -40,3 +40,77 @@ export const treeSha256 = (tree: ParseTree): string => {
 	addTree(tree);
 	return digest.digest('hex');
 };
+
+/** Generated recognizer symbol tables used for name-stable tree digests. */
+export type TreeVocabulary = Readonly<{
+	ruleNames: readonly string[];
+	symbolicNames: readonly (string | null)[];
+	literalNames: readonly (string | null)[];
+}>;
+
+/** Rules that are structural wrappers and contribute no semantics. */
+export type SymbolicTreeOptions = Readonly<{ ignoredRules?: readonly string[] }>;
+
+/**
+ * Structural parse-tree digest that is stable across grammar revisions.
+ *
+ * Rule and token identity is hashed by name instead of by numeric index. ANTLR
+ * assigns indices in declaration order, so adding a token or rule renumbers
+ * every later symbol even when the parsed structure is unchanged. The optional
+ * ignored-rule list flattens declared wrapper rules so a refactor that only
+ * introduces intermediate rules keeps the same digest.
+ *
+ * @param tree - Parse tree root.
+ * @param vocabulary - Rule and token names of the generated recognizer.
+ * @param options - Rules flattened out of the structure.
+ * @returns SHA-256 over rule names, token names, and tree shape.
+ */
+export const treeSha256Symbolic = (tree: ParseTree, vocabulary: TreeVocabulary, options: SymbolicTreeOptions = {}): string => {
+	const digest = createHash('sha256');
+	const ignoredRules = new Set(options.ignoredRules ?? []);
+	const addText = (kind: string, value: string): void => {
+		digest.update(kind);
+		digest.update(`${String(value.length)}:${value}`);
+	};
+	const tokenName = (type: number): string => {
+		if (type === -1) {
+			return 'EOF';
+		}
+
+		return vocabulary.symbolicNames[type] ?? vocabulary.literalNames[type] ?? `token-${String(type)}`;
+	};
+	const addTree = (node: ParseTree): void => {
+		if (node instanceof ParserRuleContext) {
+			const ruleName = vocabulary.ruleNames[node.ruleIndex] ?? `rule-${String(node.ruleIndex)}`;
+			const flattened = ignoredRules.has(ruleName);
+
+			if (!flattened) {
+				addText('R', ruleName);
+			}
+
+			for (let childIndex = 0; childIndex < node.getChildCount(); childIndex += 1) {
+				const child = node.getChild(childIndex);
+
+				if (child !== null) {
+					addTree(child);
+				}
+			}
+
+			if (!flattened) {
+				addText('E', ruleName);
+			}
+
+			return;
+		}
+
+		if (node instanceof TerminalNode) {
+			addText('T', tokenName(node.symbol.type));
+			return;
+		}
+
+		addText('X', '');
+	};
+
+	addTree(tree);
+	return digest.digest('hex');
+};

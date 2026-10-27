@@ -1,0 +1,576 @@
+{
+	"schemaVersion": 1,
+	"experiment": "010-upstream-grammar-prs-tail-rerun",
+	"generatedAt": "2026-10-27T01:30:53.226Z",
+	"environment": {
+		"node": "v26.10.0",
+		"platform": "darwin",
+		"arch": "arm64",
+		"release": "27.0.0",
+		"cpuModel": "Apple M5 Max",
+		"logicalCpus": 18,
+		"totalMemoryBytes": 68719476736
+	},
+	"selection": {
+		"schemaVersion": 1,
+		"mode": "tail",
+		"criteria": "12 highest medianCoreMs files from experiments/004-bottleneck-profile/report.json; tail-biased by design.",
+		"corpus": {
+			"id": "private-production-20261027",
+			"sourceFiles": 1244,
+			"sourceBytes": 20944414
+		},
+		"artifact": {
+			"kind": "report",
+			"path": "experiments/004-bottleneck-profile/report.json",
+			"sha256": "003fc07520f8541b2a7193c9f82a3fdf4cbde5dfb59860af8891daca5b33b25f",
+			"experiment": "004-bottleneck-profile",
+			"selection": "12 files with highest median TypeScript parser-core time in experiment 003"
+		},
+		"population": {
+			"files": 1244,
+			"bytes": 20944414
+		},
+		"selected": {
+			"files": 12,
+			"bytes": 2650765,
+			"minBytes": 72825,
+			"maxBytes": 370020
+		},
+		"fingerprint": "b32a43a1f03ae4c4f1ec8f282b19015d446e19e4f8c209223a1c62f3419f1444",
+		"files": [
+			{
+				"id": 1186,
+				"path": "source-001186.pkb",
+				"file": "source-001186.pkb",
+				"bytes": 72825,
+				"lines": 2121,
+				"sha256": "4c34320919394307ec32f04fedfaeeaac7b497236eb1f2f22e96d495a38859b4"
+			},
+			{
+				"id": 1190,
+				"path": "source-001190.pkb",
+				"file": "source-001190.pkb",
+				"bytes": 73978,
+				"lines": 1892,
+				"sha256": "8c7f35b6952bfd8b7fa05e4a9500cd3fd0c929bd3a6c40e03bae1ff39d397ca7"
+			},
+			{
+				"id": 1214,
+				"path": "source-001214.pkb",
+				"file": "source-001214.pkb",
+				"bytes": 116829,
+				"lines": 3123,
+				"sha256": "e58b977b57d13554b12f588c1d10ea2740bbf7e7bd75c4041a92eb1566f0e09d"
+			},
+			{
+				"id": 1224,
+				"path": "source-001224.pkb",
+				"file": "source-001224.pkb",
+				"bytes": 153637,
+				"lines": 5239,
+				"sha256": "8d76e005b668409d6612d477b3a5802bcc03b7d91b3c77e075f858ee2cabe948"
+			},
+			{
+				"id": 1235,
+				"path": "source-001235.pkb",
+				"file": "source-001235.pkb",
+				"bytes": 193821,
+				"lines": 4995,
+				"sha256": "9d074478371cc13f2e50e615943d89493f027dfa3b9c3749a4390656dc1ae7f4"
+			},
+			{
+				"id": 1237,
+				"path": "source-001237.pkb",
+				"file": "source-001237.pkb",
+				"bytes": 226232,
+				"lines": 7411,
+				"sha256": "0241806cc3348287a6399aa9a5931a3d18d2276e20a7cf3e7bd26cd4c212ae88"
+			},
+			{
+				"id": 1238,
+				"path": "source-001238.pkb",
+				"file": "source-001238.pkb",
+				"bytes": 261402,
+				"lines": 8258,
+				"sha256": "cb243a424c424ef46ed88b31ed9c959aea9ec6e21c1f70da102c56f0977a422e"
+			},
+			{
+				"id": 1239,
+				"path": "source-001239.pkb",
+				"file": "source-001239.pkb",
+				"bytes": 267550,
+				"lines": 5253,
+				"sha256": "daf5ba154f65af7d1eaa47c532f3935254febb02e64f1dc68c70a25852b7fea6"
+			},
+			{
+				"id": 1240,
+				"path": "source-001240.pkb",
+				"file": "source-001240.pkb",
+				"bytes": 296248,
+				"lines": 9419,
+				"sha256": "72d6d6295f1c5717ee0cea1c3bea4dbdca780a041569b76016a9f4404c75f3df"
+			},
+			{
+				"id": 1241,
+				"path": "source-001241.pkb",
+				"file": "source-001241.pkb",
+				"bytes": 306915,
+				"lines": 7567,
+				"sha256": "ae4457b8877c952bca25b800dbd1611d66311400d2a3f6487e94f030040e32fe"
+			},
+			{
+				"id": 1242,
+				"path": "source-001242.pkb",
+				"file": "source-001242.pkb",
+				"bytes": 311308,
+				"lines": 7259,
+				"sha256": "f163f75df4aeca5b5856095baf9867268742cb3dcf565d21d4b8992578a465af"
+			},
+			{
+				"id": 1243,
+				"path": "source-001243.pkb",
+				"file": "source-001243.pkb",
+				"bytes": 370020,
+				"lines": 8398,
+				"sha256": "ad528235c25ebe607c0fce248265b11cf04c6b2f1018f4ab440d6c79bcd0ee94"
+			}
+		],
+		"ranking": [
+			{
+				"id": 1239,
+				"file": "source-001239.pkb",
+				"metric": "medianCoreMs",
+				"value": 6017.928792000021,
+				"rank": 1
+			},
+			{
+				"id": 1224,
+				"file": "source-001224.pkb",
+				"metric": "medianCoreMs",
+				"value": 4649.189582999999,
+				"rank": 2
+			},
+			{
+				"id": 1238,
+				"file": "source-001238.pkb",
+				"metric": "medianCoreMs",
+				"value": 4235.360874000005,
+				"rank": 3
+			},
+			{
+				"id": 1241,
+				"file": "source-001241.pkb",
+				"metric": "medianCoreMs",
+				"value": 4175.464708000014,
+				"rank": 4
+			},
+			{
+				"id": 1240,
+				"file": "source-001240.pkb",
+				"metric": "medianCoreMs",
+				"value": 3542.267083999992,
+				"rank": 5
+			},
+			{
+				"id": 1237,
+				"file": "source-001237.pkb",
+				"metric": "medianCoreMs",
+				"value": 3325.2032920000056,
+				"rank": 6
+			},
+			{
+				"id": 1242,
+				"file": "source-001242.pkb",
+				"metric": "medianCoreMs",
+				"value": 3324.3130419999943,
+				"rank": 7
+			},
+			{
+				"id": 1190,
+				"file": "source-001190.pkb",
+				"metric": "medianCoreMs",
+				"value": 2752.306666000004,
+				"rank": 8
+			},
+			{
+				"id": 1235,
+				"file": "source-001235.pkb",
+				"metric": "medianCoreMs",
+				"value": 2362.5033749999857,
+				"rank": 9
+			},
+			{
+				"id": 1243,
+				"file": "source-001243.pkb",
+				"metric": "medianCoreMs",
+				"value": 2163.2087069999834,
+				"rank": 10
+			},
+			{
+				"id": 1214,
+				"file": "source-001214.pkb",
+				"metric": "medianCoreMs",
+				"value": 1851.6028340000048,
+				"rank": 11
+			},
+			{
+				"id": 1186,
+				"file": "source-001186.pkb",
+				"metric": "medianCoreMs",
+				"value": 1708.9675430000061,
+				"rank": 12
+			}
+		]
+	},
+	"config": {
+		"repeats": 5,
+		"pass": "one fresh process per repetition; generated DFA caches persist across files within a repetition",
+		"errorListener": "silent collector; SLL-first with LL fallback on the first parser diagnostic"
+	},
+	"states": [
+		{
+			"key": "control",
+			"title": "Common open-PR base",
+			"ref": "8714404279b53fb9856ac6162f468667b0b853bb",
+			"pullRequest": null,
+			"digests": {
+				"lexerSha256": "356626e76e3cf3391f4293f8547974a202921a9acdb4674301c79070fa7381e9",
+				"parserSha256": "622596e33873d90aa2507eb09a218f24c1ba6afd141ebf772bfd71af2d77d49a",
+				"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+				"parserBaseSha256": "a1b9ebc15a30f2d2daf3dc31b817c008503a72ef562b991fb854aa6ca63407c1"
+			},
+			"runs": [
+				{
+					"repeat": 1,
+					"wallMs": 31881.141499999998,
+					"coreMs": 31199.52071,
+					"adapterMs": 31250.594207000013,
+					"setupMs": 16.298248000001763,
+					"lexerMs": 101.55691700000011,
+					"sllParseMs": 30230.291418000004,
+					"llParseMs": 867.6723749999983,
+					"peakRssBytes": 2806071296,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 13
+				},
+				{
+					"repeat": 2,
+					"wallMs": 106357.079708,
+					"coreMs": 105526.54120699999,
+					"adapterMs": 105717.58437400001,
+					"setupMs": 65.74750300000028,
+					"lexerMs": 323.92958299999486,
+					"sllParseMs": 100060.91624899999,
+					"llParseMs": 5141.695374999999,
+					"peakRssBytes": 3113730048,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 13
+				},
+				{
+					"repeat": 3,
+					"wallMs": 34750.01354099999,
+					"coreMs": 33983.39329100001,
+					"adapterMs": 34034.72146000001,
+					"setupMs": 17.285414000014157,
+					"lexerMs": 103.64279100000101,
+					"sllParseMs": 32952.66225,
+					"llParseMs": 927.0882500000007,
+					"peakRssBytes": 2889695232,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 13
+				},
+				{
+					"repeat": 4,
+					"wallMs": 34497.1305,
+					"coreMs": 33746.26733300001,
+					"adapterMs": 33803.00358399999,
+					"setupMs": 18.25624799999514,
+					"lexerMs": 111.93083400001046,
+					"sllParseMs": 32728.572915999997,
+					"llParseMs": 905.7635829999999,
+					"peakRssBytes": 3187769344,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 13
+				},
+				{
+					"repeat": 5,
+					"wallMs": 74177.894791,
+					"coreMs": 73103.84299900001,
+					"adapterMs": 73254.820708,
+					"setupMs": 53.9821650000074,
+					"lexerMs": 298.52058399999316,
+					"sllParseMs": 71847.112124,
+					"llParseMs": 958.2102909999994,
+					"peakRssBytes": 2738814976,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 13
+				}
+			]
+		},
+		{
+			"key": "cumulative",
+			"title": "Control plus every open pull request",
+			"ref": null,
+			"pullRequest": null,
+			"digests": {
+				"lexerSha256": "fca301ca2bade1fd5b780e80d8ca2bcd417fea030349e08cc9ae4393119cd490",
+				"parserSha256": "fc5d7248dda31b813df9d4fb603cc11a0c7ecb1668a6ce803948ccf4d1d0d9f1",
+				"lexerBaseSha256": "0b36800c0311be80c6312948f8e357c18c7bd3bd12249b6c3cf666560969302e",
+				"parserBaseSha256": "4b149c2367fcfc56e5380e0a900166e43e70ea89c85d2637a00197641ae06428"
+			},
+			"runs": [
+				{
+					"repeat": 1,
+					"wallMs": 79946.70945799997,
+					"coreMs": 76305.07154000002,
+					"adapterMs": 76402.52845999997,
+					"setupMs": 38.020790999987184,
+					"lexerMs": 287.64091600002257,
+					"sllParseMs": 74858.00491599998,
+					"llParseMs": 1159.4257080000025,
+					"peakRssBytes": 3111714816,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 11
+				},
+				{
+					"repeat": 2,
+					"wallMs": 34130.211083,
+					"coreMs": 33303.34666800002,
+					"adapterMs": 33363.92225,
+					"setupMs": 20.437750000008805,
+					"lexerMs": 111.71375200000193,
+					"sllParseMs": 32197.68575000001,
+					"llParseMs": 993.9471660000017,
+					"peakRssBytes": 3120316416,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 11
+				},
+				{
+					"repeat": 3,
+					"wallMs": 34712.76083300001,
+					"coreMs": 33806.091458999996,
+					"adapterMs": 33867.965,
+					"setupMs": 21.34941700001309,
+					"lexerMs": 113.83191700000134,
+					"sllParseMs": 32701.98637499999,
+					"llParseMs": 990.2731669999994,
+					"peakRssBytes": 3213475840,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 11
+				},
+				{
+					"repeat": 4,
+					"wallMs": 35817.84025000001,
+					"coreMs": 34898.48841500001,
+					"adapterMs": 34960.618916,
+					"setupMs": 21.7127920000097,
+					"lexerMs": 123.84800000000507,
+					"sllParseMs": 33779.68179,
+					"llParseMs": 994.9586249999993,
+					"peakRssBytes": 3170631680,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 11
+				},
+				{
+					"repeat": 5,
+					"wallMs": 36131.81470799999,
+					"coreMs": 35208.08724900001,
+					"adapterMs": 35272.546708,
+					"setupMs": 21.975751999998124,
+					"lexerMs": 143.14687299999719,
+					"sllParseMs": 33980.401709000005,
+					"llParseMs": 1084.5386670000007,
+					"peakRssBytes": 3180871680,
+					"llFallbackFiles": 1,
+					"lexerDiagnostics": 0,
+					"parseDiagnostics": 11
+				}
+			]
+		}
+	],
+	"paired": [
+		{
+			"candidate": "cumulative",
+			"controlCoreMs": {
+				"count": 5,
+				"min": 31199.52071,
+				"mean": 55511.91310800001,
+				"standardDeviation": 32936.499308514874,
+				"coefficientOfVariation": 0.5933230808391701,
+				"meanCi95": {
+					"lower": 32774.9938754,
+					"upper": 84176.59746599999
+				},
+				"p50": 33983.39329100001,
+				"p95": 99042.00156539999,
+				"p99": 104229.63327867999,
+				"max": 105526.54120699999
+			},
+			"candidateCoreMs": {
+				"count": 5,
+				"min": 33303.34666800002,
+				"mean": 42704.217066200006,
+				"standardDeviation": 18799.546450295198,
+				"coefficientOfVariation": 0.4402269317138439,
+				"meanCi95": {
+					"lower": 33784.843742400015,
+					"upper": 59585.87866560001
+				},
+				"p50": 34898.48841500001,
+				"p95": 68085.67468180001,
+				"p99": 74661.19216836002,
+				"max": 76305.07154000002
+			},
+			"pairedDeltaMs": {
+				"count": 5,
+				"min": -72223.19453899996,
+				"mean": -12807.696041799994,
+				"standardDeviation": 44350.768056554974,
+				"coefficientOfVariation": 3.4628217215499997,
+				"meanCi95": {
+					"lower": -50682.623656999975,
+					"upper": 19714.62356440001
+				},
+				"p50": -177.30183200001193,
+				"p95": 36314.88488040001,
+				"p99": 43347.41764008002,
+				"max": 45105.55083000002
+			},
+			"deltaPercent": -23.0719773913795,
+			"perFileDeltaMs": {
+				"count": 12,
+				"min": -751.323374999999,
+				"mean": 0.7493715833337168,
+				"standardDeviation": 340.2482617906656,
+				"coefficientOfVariation": 454.04478813702656,
+				"meanCi95": {
+					"lower": -191.59924222708278,
+					"upper": 175.55108307291553
+				},
+				"p50": 8.63575049999963,
+				"p95": 454.6702898499958,
+				"p99": 455.32535877000237,
+				"max": 455.48912600000403
+			},
+			"claim": "no-change",
+			"fallbacks": {
+				"control": 1,
+				"candidate": 1
+			},
+			"largestImprovements": [
+				{
+					"file": "source-001190.pkb",
+					"bytes": 73978,
+					"deltaMs": -751.323374999999
+				},
+				{
+					"file": "source-001238.pkb",
+					"bytes": 261402,
+					"deltaMs": -391.4179170000025
+				},
+				{
+					"file": "source-001186.pkb",
+					"bytes": 72825,
+					"deltaMs": -197.7668760000006
+				},
+				{
+					"file": "source-001224.pkb",
+					"bytes": 153637,
+					"deltaMs": -36.85108300000138
+				},
+				{
+					"file": "source-001241.pkb",
+					"bytes": 306915,
+					"deltaMs": -15.004918000002363
+				},
+				{
+					"file": "source-001239.pkb",
+					"bytes": 267550,
+					"deltaMs": -8.175499000000855
+				},
+				{
+					"file": "source-001237.pkb",
+					"bytes": 226232,
+					"deltaMs": 25.447000000000116
+				},
+				{
+					"file": "source-001243.pkb",
+					"bytes": 370020,
+					"deltaMs": 47.96650000001682
+				},
+				{
+					"file": "source-001214.pkb",
+					"bytes": 116829,
+					"deltaMs": 152.21350100000018
+				},
+				{
+					"file": "source-001240.pkb",
+					"bytes": 296248,
+					"deltaMs": 274.4156670000011
+				}
+			],
+			"largestRegressions": [
+				{
+					"file": "source-001235.pkb",
+					"bytes": 193821,
+					"deltaMs": 455.48912600000403
+				},
+				{
+					"file": "source-001242.pkb",
+					"bytes": 311308,
+					"deltaMs": 454.00033299998904
+				},
+				{
+					"file": "source-001240.pkb",
+					"bytes": 296248,
+					"deltaMs": 274.4156670000011
+				},
+				{
+					"file": "source-001214.pkb",
+					"bytes": 116829,
+					"deltaMs": 152.21350100000018
+				},
+				{
+					"file": "source-001243.pkb",
+					"bytes": 370020,
+					"deltaMs": 47.96650000001682
+				},
+				{
+					"file": "source-001237.pkb",
+					"bytes": 226232,
+					"deltaMs": 25.447000000000116
+				},
+				{
+					"file": "source-001239.pkb",
+					"bytes": 267550,
+					"deltaMs": -8.175499000000855
+				},
+				{
+					"file": "source-001241.pkb",
+					"bytes": 306915,
+					"deltaMs": -15.004918000002363
+				},
+				{
+					"file": "source-001224.pkb",
+					"bytes": 153637,
+					"deltaMs": -36.85108300000138
+				},
+				{
+					"file": "source-001186.pkb",
+					"bytes": 72825,
+					"deltaMs": -197.7668760000006
+				}
+			]
+		}
+	]
+}
