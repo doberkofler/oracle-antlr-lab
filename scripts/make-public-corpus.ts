@@ -108,6 +108,50 @@ end edge_nested;
 );
 
 writeFileSync(
+	path.join(sourceRoot, 'edge_declare_specs.pkb'),
+	`create or replace package body edge_declare_specs as
+\tfunction run(p_value in number) return boolean
+\tis
+\tbegin
+\t\tp_value := p_value + 1;
+\t\tbegin
+\t\t\tnull;
+\t\texception
+\t\t\twhen others then
+\t\t\t\treturn false;
+\t\tend;
+\t\tbegin
+\t\t\tnull;
+\t\texception
+\t\t\twhen others then
+\t\t\t\tnull;
+\t\tend;
+\t\treturn true;
+\texception
+\t\twhen others then return null;
+\tend run;
+end edge_declare_specs;
+/
+`,
+);
+
+writeFileSync(
+	path.join(sourceRoot, 'edge_join_alias.pkb'),
+	`create or replace package body edge_join_alias as
+\tprocedure run is
+\tbegin
+\t\tselect customer.name
+\t\tfrom   customer
+\t\t       join address
+\t\t            on address.customer_id = customer.id
+\t\twhere  customer.active = 1;
+\tend run;
+end edge_join_alias;
+/
+`,
+);
+
+writeFileSync(
 	path.join(sourceRoot, 'edge_outer_join.sql'),
 	`select a.id, b.value
 from a, b

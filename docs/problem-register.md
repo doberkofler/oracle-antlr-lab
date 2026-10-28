@@ -193,9 +193,19 @@ Experiments 011–019 rebaseline and test the follow-up opportunities on officia
   at the decision fell 97.1% on the tail profile. All 1,244 files remain
   structurally identical, with fallback files and diagnostics unchanged at 15
   and 107.
+- Experiment 022 replaces every accepted full-file fallback with a local
+  decision. Declaration sections defer to `BEGIN`, which is reserved and cannot
+  name a declaration, and the `table_ref_aux` alias decision defers to a bare
+  `JOIN`, which is also reserved. Core fell from 61.524 s to 60.889 s against a
+  same-session control (−1.03%, paired −0.510 ms per file). Fallback files fell
+  from 15 to 9; the nine remaining files are rejected in both prediction modes
+  and keep LL for their recovery tree. All 1,244 files remain structurally
+  identical with diagnostics unchanged at 107. The cumulative result is
+  `156.093 s → 60.889 s` (−61.0%, 2.56×, 95.204 s saved per pass).
 - `CASE` is a non-reserved keyword: malformed `CASE` input can fall back to
   `atom`, so the case expression deliberately keeps adaptive prediction.
-- Six fallback files require LL for acceptance; nine require its recovery tree.
+- The nine remaining fallback files are rejected in both prediction modes; LL is
+  required only for their recovery tree and diagnostics.
 - Transactional streaming extraction can avoid a representative 43.4 MB retained
   tree without breaking retained-tree callers; it does not reduce shared DFA
   retention.

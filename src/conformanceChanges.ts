@@ -33,7 +33,10 @@ const ESTABLISHED_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
 /** Optimizations accepted before issue #19, frozen for the #19 gate. */
 const PRE_ISSUE_19_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [...ESTABLISHED_OPTIMIZATIONS, 'generalElementPartPrediction'];
 
-/** Conformance gates for issues #1–#3, #18, #19, and the combined final state. */
+/** Optimizations accepted before issue #20, frozen for the #20 gate. */
+const PRE_ISSUE_20_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [...PRE_ISSUE_19_OPTIMIZATIONS, 'unaryExpressionCore'];
+
+/** Conformance gates for issues #1–#3, #18, #19, #20, and the combined final state. */
 export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 	{
 		id: 'issue-1-general-element-part',
@@ -77,8 +80,17 @@ export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 		experiment: '021-unary-expression-core',
 		title: 'Resolve unary_expression_core without adaptive prediction for unambiguous tokens',
 		control: PRE_ISSUE_19_OPTIMIZATIONS,
-		candidate: ALL_OPTIMIZATIONS,
+		candidate: PRE_ISSUE_20_OPTIMIZATIONS,
 		policy: 'none',
+	},
+	{
+		id: 'issue-20-remaining-ll-fallbacks',
+		issue: 20,
+		experiment: '022-remaining-ll-fallbacks',
+		title: 'Resolve declaration-section and bare-JOIN aliasing fallbacks locally',
+		control: PRE_ISSUE_20_OPTIMIZATIONS,
+		candidate: ALL_OPTIMIZATIONS,
+		policy: 'fallback-removal',
 	},
 	{
 		id: 'combined-final',

@@ -6,10 +6,12 @@ import { PlSqlParser, Unary_expression_coreContext } from '../grammar/typescript
 import {
 	optimizeBulkCollectAlias,
 	optimizeCollectionMethodCall,
+	optimizeDeclareSpecs,
 	optimizeGeneralElement,
 	optimizeGeneralElementPart,
 	optimizeGeneralElementPartPrediction,
 	optimizeGeneratedParser,
+	optimizeJoinAlias,
 	optimizeRoutineName,
 	optimizeUnaryExpressionCore,
 } from '../src/generatedParserOptimization.ts';
@@ -254,6 +256,69 @@ describe('optimizeUnaryExpressionCore', () => {
 	});
 });
 
+describe('optimizeDeclareSpecs', () => {
+	it('resolves the declaration loop and optional section from BEGIN', () => {
+		const optimized = optimizeDeclareSpecs(declareSpecsSource());
+
+		expect(optimized.match(/LA\(1\) === PlSqlParser\.BEGIN \? 2/gu)).toHaveLength(2);
+		expect(optimized).toContain('this.declare_spec();');
+		expect(optimized).toContain('this.seq_of_declare_specs();');
+		expect(optimized).toContain('adaptivePredict(this.tokenStream, 2217');
+		expect(optimized).toContain('adaptivePredict(this.tokenStream, 219');
+	});
+
+	it('rejects an unexpected generated parser shape', () => {
+		expect(() => optimizeDeclareSpecs('')).toThrow(/did not match/u);
+	});
+
+	it('accepts a nested block followed by statements in a function body', () => {
+		const tokens = new CommonTokenStream(new PlSqlLexer(CharStream.fromString(declareSpecsFixture())));
+		const parser = new PlSqlParser(tokens);
+		parser.removeErrorListeners();
+		parser.interpreter.predictionMode = 0;
+		parser.sql_script();
+
+		expect(parser.numberOfSyntaxErrors).toBe(0);
+	});
+
+	it('keeps reporting invalid declaration sections', () => {
+		const tokens = new CommonTokenStream(
+			new PlSqlLexer(
+				CharStream.fromString('create or replace package body p as function f return number is l_value number := ; begin return 1; end f; end p; /'),
+			),
+		);
+		const parser = new PlSqlParser(tokens);
+		parser.removeErrorListeners();
+		parser.sql_script();
+
+		expect(parser.numberOfSyntaxErrors).toBeGreaterThan(0);
+	});
+});
+
+describe('optimizeJoinAlias', () => {
+	it('defers the table alias decision to a bare JOIN', () => {
+		const optimized = optimizeJoinAlias(tableRefAuxSource());
+
+		expect(optimized).toContain('this.tokenStream.LA(1) === PlSqlParser.JOIN ? 2');
+		expect(optimized).toContain('this.isNotStartOfJoin()');
+		expect(optimized).toContain('this.table_alias();');
+	});
+
+	it('rejects an unexpected generated parser shape', () => {
+		expect(() => optimizeJoinAlias('')).toThrow(/did not match/u);
+	});
+
+	it('accepts a join without an alias on the first table', () => {
+		const tokens = new CommonTokenStream(new PlSqlLexer(CharStream.fromString(joinFixture())));
+		const parser = new PlSqlParser(tokens);
+		parser.removeErrorListeners();
+		parser.interpreter.predictionMode = 0;
+		parser.sql_script();
+
+		expect(parser.numberOfSyntaxErrors).toBe(0);
+	});
+});
+
 describe('optimizeGeneratedParser', () => {
 	it('applies only the selected optimizations', () => {
 		const source = `${routineNameSource()}${generalElementSource()}${generalElementPartSource()}`;
@@ -279,6 +344,95 @@ describe('optimizeGeneratedParser', () => {
 		expect(optimized.match(/adaptivePredict\(this\.tokenStream, 2985/gu)).toHaveLength(2);
 	});
 });
+
+const declareSpecsSource = (): string => `    public seq_of_declare_specs(): Seq_of_declare_specsContext {
+        try {
+            let alternative: number;
+            this.enterOuterAlt(localContext, 1);
+            {
+            this.state = 16340;
+            this.errorHandler.sync(this);
+            alternative = 1;
+            do {
+                switch (alternative) {
+                case 1:
+                    {
+                    this.state = 16339;
+                    this.declare_spec();
+                    }
+                    break;
+                }
+                this.state = 16342;
+                this.errorHandler.sync(this);
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 2217, this.context);
+            } while (alternative !== 2 && alternative !== antlr.ATN.INVALID_ALT_NUMBER);
+            }
+        }
+    }
+
+    public function_body(): Function_bodyContext {
+                switch (this.interpreter.adaptivePredict(this.tokenStream, 219, this.context) ) {
+                case 1:
+                    {
+                    this.state = 4066;
+                    this.seq_of_declare_specs();
+                    }
+                    break;
+                }
+    }`;
+
+const tableRefAuxSource = (): string => `    public table_ref_aux(): Table_ref_auxContext {
+            this.state = 17394;
+            this.errorHandler.sync(this);
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 2390, this.context) ) {
+            case 1:
+                {
+                this.state = 17392;
+                if (!(this.isNotStartOfJoin())) {
+                    throw this.createFailedPredicateException("this.isNotStartOfJoin()");
+                }
+                this.state = 17393;
+                this.table_alias();
+                }
+                break;
+            }
+    }`;
+
+const declareSpecsFixture = (): string => `create or replace package body edge_declare_specs as
+	function run(p_value in number) return boolean
+	is
+	begin
+		p_value := p_value + 1;
+		begin
+			null;
+		exception
+			when others then
+				return false;
+		end;
+		begin
+			null;
+		exception
+			when others then
+				null;
+		end;
+		return true;
+	exception
+		when others then return null;
+	end run;
+end edge_declare_specs;
+/`;
+
+const joinFixture = (): string => `create or replace package body edge_join_alias as
+	procedure run is
+	begin
+		select customer.name
+		from   customer
+		       join address
+		            on address.customer_id = customer.id
+		where  customer.active = 1;
+	end run;
+end edge_join_alias;
+/`;
 
 const routineNameSource = (): string => `    public routine_name(): Routine_nameContext {
         try {

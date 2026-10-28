@@ -522,13 +522,103 @@ export const optimizeUnaryExpressionCore = (source: string): string => {
 	return source.replace(UNARY_EXPRESSION_CORE_METHOD, `${UNARY_EXPRESSION_CORE_HELPER}${optimizedPrefix}${suffix}`);
 };
 
+const SEQ_OF_DECLARE_SPECS_LOOP =
+	/(?<prefix>    public seq_of_declare_specs\(\): Seq_of_declare_specsContext \{[\s\S]*?)this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\)(?<suffix>;\n {12}\} while)/u;
+
+const SEQ_OF_DECLARE_SPECS_DECISION =
+	/(?<switch>switch \(this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) \) \{\n[ \t]*case 1:\n[ \t]*\{\n[ \t]*this\.state = \d+;\n[ \t]*this\.seq_of_declare_specs\(\);)/gu;
+
+const declareSpecsBodyGuard = (decision: string): string =>
+	`this.tokenStream.LA(1) === PlSqlParser.BEGIN ? 2 : this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context)`;
+
+/**
+ * Resolves `seq_of_declare_specs` decisions when `BEGIN` starts the body.
+ *
+ * The grammar admits `BEGIN` through `regular_id`, so both the optional
+ * declaration section and its repetition loop can consume it as a declaration
+ * name during SLL prediction. `BEGIN` is reserved in Oracle and cannot name a
+ * declaration, so its only valid role is the start of `body`. Every generated
+ * decision whose only consuming alternative is `seq_of_declare_specs` therefore
+ * selects the non-consuming alternative.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose declaration-section decisions defer to `BEGIN`.
+ */
+export const optimizeDeclareSpecs = (source: string): string => {
+	const loop = SEQ_OF_DECLARE_SPECS_LOOP.exec(source);
+
+	if (loop?.groups === undefined) {
+		throw new Error('Generated seq_of_declare_specs loop did not match the expected ANTLR shape');
+	}
+	const loopDecision = loop.groups['decision'];
+	const loopPrefix = loop.groups['prefix'];
+	const loopSuffix = loop.groups['suffix'];
+
+	if (loopDecision === undefined || loopPrefix === undefined || loopSuffix === undefined) {
+		throw new Error('Generated seq_of_declare_specs loop has incomplete captures');
+	}
+	const optimizedLoop = source.replace(loop[0], `${loopPrefix}${declareSpecsBodyGuard(loopDecision)}${loopSuffix}`);
+	const decisions = [...optimizedLoop.matchAll(SEQ_OF_DECLARE_SPECS_DECISION)];
+
+	if (decisions.length === 0) {
+		throw new Error('Generated parser has no seq_of_declare_specs decision in the expected ANTLR shape');
+	}
+
+	return decisions.reduce((optimized, match) => {
+		const decision = match.groups?.['decision'];
+		const matchedSwitch = match.groups?.['switch'];
+		const whole = match[0];
+
+		if (decision === undefined || matchedSwitch === undefined) {
+			throw new Error('Generated seq_of_declare_specs decision has incomplete captures');
+		}
+		const prediction = `this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context)`;
+
+		return optimized.replace(whole, matchedSwitch.replace(prediction, declareSpecsBodyGuard(decision)));
+	}, optimizedLoop);
+};
+
+const TABLE_REF_AUX_ALIAS_DECISION =
+	/(?<switch>switch \(this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) \) \{\n[ \t]*case 1:\n[ \t]*\{\n[ \t]*this\.state = \d+;\n[ \t]*if \(!\(this\.isNotStartOfJoin\(\)\)\))/u;
+
+/**
+ * Resolves a bare `JOIN` before the `table_ref_aux` alias decision.
+ *
+ * `isNotStartOfJoin` excludes every join starter except `JOIN` itself, so SLL
+ * can consume `JOIN` as a table alias and then fail at the joined table.
+ * `JOIN` is reserved and cannot be an alias, so the alias alternative cannot
+ * match and the join clause owns the token.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose `table_ref_aux` alias decision defers to `JOIN`.
+ */
+export const optimizeJoinAlias = (source: string): string => {
+	const match = TABLE_REF_AUX_ALIAS_DECISION.exec(source);
+
+	if (match?.groups === undefined) {
+		throw new Error('Generated table_ref_aux alias decision did not match the expected ANTLR shape');
+	}
+	const decision = match.groups['decision'];
+	const matchedSwitch = match.groups['switch'];
+
+	if (decision === undefined || matchedSwitch === undefined) {
+		throw new Error('Generated table_ref_aux alias decision has incomplete captures');
+	}
+	const prediction = `this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context)`;
+	const guarded = `this.tokenStream.LA(1) === PlSqlParser.JOIN ? 2 : ${prediction}`;
+
+	return source.replace(match[0], matchedSwitch.replace(prediction, guarded));
+};
+
 /** Generated-parser optimizations that experiments may enable independently. */
 export type GeneratedParserOptimization =
 	| 'bulkCollectAlias'
 	| 'collectionMethodCall'
+	| 'declareSpecs'
 	| 'generalElement'
 	| 'generalElementPart'
 	| 'generalElementPartPrediction'
+	| 'joinAlias'
 	| 'routineName'
 	| 'unaryExpressionCore';
 
@@ -541,14 +631,18 @@ export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimizatio
 	'bulkCollectAlias',
 	'routineName',
 	'unaryExpressionCore',
+	'declareSpecs',
+	'joinAlias',
 ];
 
 const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) => string>> = {
 	bulkCollectAlias: optimizeBulkCollectAlias,
 	collectionMethodCall: optimizeCollectionMethodCall,
+	declareSpecs: optimizeDeclareSpecs,
 	generalElement: optimizeGeneralElement,
 	generalElementPart: optimizeGeneralElementPart,
 	generalElementPartPrediction: optimizeGeneralElementPartPrediction,
+	joinAlias: optimizeJoinAlias,
 	routineName: optimizeRoutineName,
 	unaryExpressionCore: optimizeUnaryExpressionCore,
 };
