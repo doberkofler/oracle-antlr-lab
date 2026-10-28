@@ -3,6 +3,8 @@ import { cpus, release, totalmem } from 'node:os';
 import path from 'node:path';
 import { javaAdapter } from '../src/adapters/java.ts';
 import { typeScriptAdapter } from '../src/adapters/typescript.ts';
+import { type BenchmarkPolicy, assessHeapSafety, describePolicy, type HeapSafetyFinding } from '../src/benchmarkPolicy.ts';
+import { probeTypeScriptRuntime } from '../src/benchmarkRuntime.ts';
 import { loadManifest } from '../src/corpus.ts';
 import { type BenchmarkSelection, resolveBenchmarkSelection, type SelectionMode } from '../src/selection.ts';
 import { statistics } from '../src/stats.ts';
@@ -54,6 +56,7 @@ Options:
   --selection <mode>         full, q4, or tail (default: full)
   --tail-size <n>            Tail file count (default: 12)
   --selection-source <path>  Audited report that justifies q4/tail; use "manifest" for q4 without one
+  --allow-unsafe-heap        Run even when the preflight finds an unsafe heap configuration
   --dry-run                  Resolve and print the selection without running a campaign
   --help                     Show this message
 
@@ -97,6 +100,8 @@ const files = selection.files.map((selected) => {
 	return file;
 });
 
+const selectedBytes = files.reduce((total, file) => total + file.bytes, 0);
+
 if (parsed.dryRun) {
 	process.stdout.write(
 		`${selection.mode}: ${String(selection.selected.files)} files, ${String(selection.selected.minBytes)}–${String(selection.selected.maxBytes)} bytes, fingerprint ${selection.fingerprint}\nSource: ${selection.artifact.kind} ${selection.artifact.path ?? 'in-memory'} (${selection.artifact.sha256})\nCriteria: ${selection.criteria}\n`,
@@ -104,11 +109,28 @@ if (parsed.dryRun) {
 	process.exit(0);
 }
 
+const benchmarkPolicy = await probeTypeScriptRuntime();
+const heapFindings = assessHeapSafety({ policy: benchmarkPolicy, mode: selection.mode, files: files.length, bytes: selectedBytes });
+const unsafeFindings = heapFindings.filter((finding) => finding.level === 'error');
+
+process.stdout.write(`TypeScript policy: ${describePolicy(benchmarkPolicy)}\n`);
+
+for (const finding of heapFindings) {
+	process.stdout.write(`${finding.level === 'error' ? 'ERROR' : finding.level.toUpperCase()} preflight: ${finding.message}\n`);
+}
+
+if (unsafeFindings.length > 0 && !parsed.allowUnsafeHeap) {
+	throw new Error(`Unsafe heap configuration rejected before the campaign:\n${unsafeFindings.map((finding) => finding.message).join('\n')}`);
+}
+
+if (unsafeFindings.length > 0) {
+	process.stdout.write('WARNING: --allow-unsafe-heap overrides a failing preflight; the campaign may crash before completion.\n');
+}
+
 const adapters: readonly ParserAdapter[] = [typeScriptAdapter, javaAdapter];
 const indexes = files.map((file) => file.id);
 const runs: Record<string, PassRun[]> = {};
 const campaignStartedAt = performance.now();
-const selectedBytes = files.reduce((total, file) => total + file.bytes, 0);
 const corpusFraction = manifest.sourceBytes === 0 ? 1 : selectedBytes / manifest.sourceBytes;
 const estimatedPassMs: Record<string, number> = {
 	typescript: Math.max(15_000, 180_000 * corpusFraction),
@@ -230,8 +252,14 @@ const rawReport = {
 		repeats,
 		selection: selection.mode,
 		pass: 'one fresh process per repetition; generated DFA caches persist across files within a repetition',
-		typeScriptDfaClearEveryFiles: process.env['LAB_DFA_CLEAR_EVERY'] ?? 'never',
-		typeScriptDfaMaxHeapMiB: process.env['LAB_DFA_MAX_HEAP_MIB'] ?? 'never',
+		typeScriptPolicy: benchmarkPolicy,
+		heapSafety: {
+			override: parsed.allowUnsafeHeap,
+			findings: heapFindings,
+			scope: 'benchmark',
+			productionGuidance:
+				'The recorded heap limit and DFA policy describe this measurement configuration, not a production requirement. Production must size its heap from its own workload; selective DFA eviction remains opt-in.',
+		},
 	},
 	adapters: adapters.map((adapter) => adapter.identity),
 	aggregate,
@@ -246,7 +274,7 @@ mkdirSync(output, { recursive: true });
 writeFileSync(path.join(output, 'raw-report.json'), `${JSON.stringify(rawReport, null, 2)}\n`);
 writeFileSync(path.join(output, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
 writeFileSync(path.join(output, 'selection.json'), `${JSON.stringify(selection, null, 2)}\n`);
-writeFileSync(path.join(output, 'report.md'), renderMarkdown(experiment, selection, aggregate, stratumResults, runs));
+writeFileSync(path.join(output, 'report.md'), renderMarkdown(experiment, selection, aggregate, stratumResults, runs, benchmarkPolicy, heapFindings));
 process.stdout.write(`Reports: ${path.relative(root, output)}/report.md, selection.json, and raw-report.json (external evidence only)\n`);
 
 function parseArguments(args: readonly string[]): Readonly<{
@@ -257,6 +285,7 @@ function parseArguments(args: readonly string[]): Readonly<{
 	tailSize: number;
 	selectionSource: string | undefined;
 	dryRun: boolean;
+	allowUnsafeHeap: boolean;
 }> {
 	const positionals: string[] = [];
 	let manifestValue = path.join(root, '.work', 'private-production', 'manifest.json');
@@ -266,6 +295,7 @@ function parseArguments(args: readonly string[]): Readonly<{
 	let tailSize = 12;
 	let selectionSource: string | undefined;
 	let dryRun = false;
+	let allowUnsafeHeap = false;
 
 	for (let index = 0; index < args.length; index += 1) {
 		const argument = args[index];
@@ -279,8 +309,17 @@ function parseArguments(args: readonly string[]): Readonly<{
 			process.exit(0);
 		}
 
+		if (argument === '--') {
+			continue;
+		}
+
 		if (argument === '--dry-run') {
 			dryRun = true;
+			continue;
+		}
+
+		if (argument === '--allow-unsafe-heap') {
+			allowUnsafeHeap = true;
 			continue;
 		}
 
@@ -348,7 +387,16 @@ function parseArguments(args: readonly string[]): Readonly<{
 		throw new Error('Too many positional arguments');
 	}
 
-	return { manifest: manifestValue, repeats: repeatCount, experiment: experimentName, selection: selectionMode, tailSize, selectionSource, dryRun };
+	return {
+		manifest: manifestValue,
+		repeats: repeatCount,
+		experiment: experimentName,
+		selection: selectionMode,
+		tailSize,
+		selectionSource,
+		dryRun,
+		allowUnsafeHeap,
+	};
 }
 
 function positiveInteger(value: string): number {
@@ -417,6 +465,8 @@ function renderMarkdown(
 		>
 	>,
 	passRuns: Readonly<Record<string, readonly PassRun[]>>,
+	policy: BenchmarkPolicy,
+	safetyFindings: readonly HeapSafetyFinding[],
 ): string {
 	const adapterRows = Object.entries(aggregateResults).map(([name, metrics]) => {
 		const diagnostics = metrics.lexerDiagnostics.mean + metrics.parseDiagnostics.mean;
@@ -440,6 +490,12 @@ function renderMarkdown(
 		`Corpus: ${campaignSelection.corpus.id}; ${campaignSelection.criteria} ${String(campaignSelection.selected.files)} opaque files, ${formatBytes(campaignSelection.selected.bytes)} of ${formatBytes(campaignSelection.population.bytes)}. Three fresh-process cache-reuse passes unless config states otherwise.`,
 		'',
 		`Selection ${campaignSelection.mode}: fingerprint ${campaignSelection.fingerprint}, source ${campaignSelection.artifact.kind} ${campaignSelection.artifact.path ?? 'in-memory'} (SHA-256 ${campaignSelection.artifact.sha256.slice(0, 16)}…).`,
+		'',
+		`TypeScript execution policy: ${describePolicy(policy)}. Policy fingerprint ${policy.fingerprint}.`,
+		'',
+		`Heap preflight: ${safetyFindings.map((finding) => `${finding.level}: ${finding.message}`).join(' ')}`,
+		'',
+		'The recorded heap limit and DFA policy describe this benchmark configuration, not a production requirement. Production must size its heap from its own workload; selective DFA eviction remains opt-in.',
 		'',
 		'| Adapter | Wall mean ms [bootstrap 95% CI] | Wall SD | Wall CV | Core mean ms [bootstrap 95% CI] | Core SD | Core CV | Peak RSS max | LL fallback files mean | Diagnostics mean |',
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',

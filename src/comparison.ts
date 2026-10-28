@@ -1,3 +1,4 @@
+import { comparePolicy, describePolicy, type PolicyComparison, type ReportPolicy } from './benchmarkPolicy.ts';
 import { selectionFingerprint, type BenchmarkSelection } from './selection.ts';
 import { statistics } from './stats.ts';
 import { type CorpusFile, type MetricStatistics, type ParseObservation } from './types.ts';
@@ -43,6 +44,8 @@ export type ProductionReport = Readonly<{
 		files: readonly CorpusFile[];
 	}>;
 	selection: BenchmarkSelection | null;
+	/** Execution identity recorded with the campaign, when available. */
+	policy: ReportPolicy | null;
 	adapters: readonly Readonly<{ name: string }>[];
 	runs: Readonly<Record<string, readonly ProductionPassRun[]>>;
 }>;
@@ -105,6 +108,7 @@ export type ComparisonReport = Readonly<{
 	control: Readonly<{ artifact: string; experiment: string; generatedAt: string }>;
 	candidate: Readonly<{ artifact: string; experiment: string; generatedAt: string }>;
 	environment: Readonly<{ matches: boolean | null; control: ReportEnvironment | null; candidate: ReportEnvironment | null }>;
+	policy: Readonly<PolicyComparison & { overridden: boolean }>;
 	adapters: Readonly<Record<string, ComparedAdapter>>;
 }>;
 
@@ -145,6 +149,8 @@ export const compareReports = (
 		candidateArtifact: string;
 		control: ProductionReport;
 		candidate: ProductionReport;
+		/** Allows differing heap or cache identities after explicit operator review. */
+		allowPolicyMismatch?: boolean;
 	}>,
 ): ComparisonReport => {
 	const controlFingerprint = reportFingerprint(input.control);
@@ -156,6 +162,12 @@ export const compareReports = (
 
 	if (input.control.corpus.id !== input.candidate.corpus.id) {
 		throw new Error(`Corpus differs: control ${input.control.corpus.id}, candidate ${input.candidate.corpus.id}`);
+	}
+
+	const policy = comparePolicy(input.control.policy, input.candidate.policy);
+
+	if (policy.matches === false && input.allowPolicyMismatch !== true) {
+		throw new Error(`Benchmark policy differs: ${policy.differences.join('; ')}. Rerun with --allow-policy-mismatch only when the difference is intended.`);
 	}
 
 	const adapters = Object.keys(input.control.runs).filter((name) => input.candidate.runs[name] !== undefined);
@@ -192,6 +204,7 @@ export const compareReports = (
 			control: controlEnvironment,
 			candidate: candidateEnvironment,
 		},
+		policy: { ...policy, overridden: policy.matches === false },
 		adapters: compared,
 	};
 };
@@ -439,6 +452,16 @@ export const renderComparisonMarkdown = (report: ComparisonReport): string => {
 		`Control: ${report.control.experiment} (${report.control.generatedAt}). Candidate: ${report.candidate.experiment} (${report.candidate.generatedAt}).`,
 		'',
 		`Environment match: ${report.environment.matches === null ? 'not recorded' : report.environment.matches ? 'yes' : 'no'}.`,
+		'',
+		`Policy identity: ${
+			report.policy.matches === null
+				? 'not recorded in one or both reports'
+				: report.policy.matches
+					? 'match'
+					: `MISMATCH${report.policy.overridden ? ' (overridden)' : ''}: ${report.policy.differences.join('; ')}`
+		}.`,
+		'',
+		`Control policy: ${report.policy.control === null ? 'not recorded' : describePolicy(report.policy.control)}. Candidate policy: ${report.policy.candidate === null ? 'not recorded' : describePolicy(report.policy.candidate)}.`,
 		'',
 		'| Adapter | Control core mean ms | Candidate core mean ms | Change | Paired core delta ms [bootstrap 95% CI] | LL fallback files | Diagnostics first pass |',
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
