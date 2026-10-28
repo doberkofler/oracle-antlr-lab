@@ -190,7 +190,25 @@ Experiments 011–019 rebaseline and test the follow-up opportunities on officia
   tree without breaking retained-tree callers; it does not reduce shared DFA
   retention.
 
-## 10. Out of scope
+## 10. Benchmark execution identity
+
+- `v8.getHeapStatistics().heap_size_limit` on this host defaults to 4,192 MiB;
+  `NODE_OPTIONS=--max-old-space-size=8192` yields 8,288 MiB.
+- The parser harness child inherits `NODE_OPTIONS` but not a parent command-line
+  `--max-old-space-size` flag. The production report now probes the child
+  runtime rather than reading the parent process.
+- A persistent-cache production-scale campaign requires at least 8,192 MiB and
+  fails before the first file otherwise. `--allow-unsafe-heap` records an
+  explicit override. Bounded policies, tail selections, and the 51-file public
+  corpus remain usable under the default heap.
+- Production reports record the effective heap, its origin, the complete DFA
+  cache policy, and a policy fingerprint. Comparison rejects differing heap or
+  cache identities unless `--allow-policy-mismatch` is explicit.
+- The benchmark heap is a measurement configuration, not a production
+  requirement; experiments 017 and 018 remain the evidence for bounded-cache
+  memory at a latency cost.
+
+## 11. Out of scope
 
 - Semantic symbol, reference, and dependency extraction.
 - PL/Scope normalization and release gates.

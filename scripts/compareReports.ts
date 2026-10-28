@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { parseReportPolicy } from '../src/benchmarkPolicy.ts';
 import { compareReports, type ProductionPassRun, type ProductionReport, type ReportEnvironment, renderComparisonMarkdown } from '../src/comparison.ts';
 import { type BenchmarkSelection, workspaceRelative } from '../src/selection.ts';
 import { type CorpusFile, type ParseObservation } from '../src/types.ts';
@@ -10,6 +11,7 @@ Options:
   --control <path>    Control raw-report.json or report.json
   --candidate <path>  Candidate raw-report.json or report.json
   --experiment <name> Output directory under results/ (default: comparison)
+  --allow-policy-mismatch  Compare campaigns with different heap or cache identities
   --help              Show this message
 
 Paired per-file deltas require raw-report.json. Published report.json files
@@ -28,6 +30,7 @@ const comparison = compareReports({
 	candidateArtifact: workspaceRelative(candidatePath, root),
 	control,
 	candidate,
+	...(options.allowPolicyMismatch ? { allowPolicyMismatch: true } : {}),
 });
 const output = path.join(root, 'results', options.experiment);
 
@@ -47,10 +50,19 @@ for (const [name, adapter] of Object.entries(comparison.adapters)) {
 
 process.stdout.write(`Comparison: ${path.relative(root, output)}/comparison.md\n`);
 
-function parseArguments(args: readonly string[]): Readonly<{ control: string; candidate: string; experiment: string }> {
+const policyState =
+	comparison.policy.matches === null
+		? 'not recorded in one or both reports'
+		: comparison.policy.matches
+			? 'match'
+			: `mismatch (overridden): ${comparison.policy.differences.join('; ')}`;
+process.stdout.write(`Policy identity: ${policyState}\n`);
+
+function parseArguments(args: readonly string[]): Readonly<{ control: string; candidate: string; experiment: string; allowPolicyMismatch: boolean }> {
 	let controlArgument: string | undefined;
 	let candidateArgument: string | undefined;
 	let experiment = 'comparison';
+	let allowPolicyMismatch = false;
 
 	for (let index = 0; index < args.length; index += 1) {
 		const argument = args[index];
@@ -62,6 +74,15 @@ function parseArguments(args: readonly string[]): Readonly<{ control: string; ca
 		if (argument === '--help') {
 			process.stdout.write(usage);
 			process.exit(0);
+		}
+
+		if (argument === '--') {
+			continue;
+		}
+
+		if (argument === '--allow-policy-mismatch') {
+			allowPolicyMismatch = true;
+			continue;
 		}
 
 		const value = args[index + 1];
@@ -95,7 +116,7 @@ function parseArguments(args: readonly string[]): Readonly<{ control: string; ca
 		throw new Error('--control and --candidate are required');
 	}
 
-	return { control: controlArgument, candidate: candidateArgument, experiment };
+	return { control: controlArgument, candidate: candidateArgument, experiment, allowPolicyMismatch };
 }
 
 function parseProductionReport(text: string, label: string): ProductionReport {
@@ -117,6 +138,7 @@ function parseProductionReport(text: string, label: string): ProductionReport {
 			),
 		},
 		selection,
+		policy: parseReportPolicy(document['config']),
 		adapters: [],
 		runs: parseRuns(document['runs'], `${label}.runs`),
 	};

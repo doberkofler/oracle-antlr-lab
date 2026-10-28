@@ -1,0 +1,27 @@
+{
+	"experiment": "020-benchmark-policy-identity",
+	"issue": 22,
+	"question": "Can heap limits and DFA cache policy be recorded, preflighted, and enforced in control/candidate comparison without changing parser behavior or requiring a larger heap for small campaigns?",
+	"control": "Pre-change production reports recorded raw DFA cache environment text but not the effective heap limit, so an unsafe full-corpus campaign started and failed near the end, and comparison did not reject different execution identities.",
+	"change": [
+		"Probe the TypeScript harness runtime for its effective V8 heap limit and record it with the DFA cache policy in every production report.",
+		"Reject a persistent-cache production-scale campaign below 8,192 MiB before the first file, unless --allow-unsafe-heap is explicit.",
+		"Reject comparison of campaigns with different heap or cache identities unless --allow-policy-mismatch is explicit, and record the override.",
+		"Distinguish the benchmark heap from production guidance in the report and contract."
+	],
+	"commands": {
+		"rejectDefaultHeap": "pnpm benchmark:production --manifest .work/private-production/manifest.json --repeats 1 --experiment preflight-reject",
+		"publicCampaign": "NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest corpora/public/manifest.json --repeats 1 --selection full --experiment 020-public-policy",
+		"selfCompare": "pnpm benchmark:compare --control results/020-public-policy/raw-report.json --candidate results/020-public-policy/raw-report.json --experiment self-compare",
+		"mismatchReject": "pnpm benchmark:compare --control results/020-public-policy/raw-report.json --candidate results/020-public-policy-altered.json --experiment mismatch-reject",
+		"mismatchOverride": "pnpm benchmark:compare --control results/020-public-policy/raw-report.json --candidate results/020-public-policy-altered.json --experiment mismatch-override --allow-policy-mismatch",
+		"verify": "pnpm verify"
+	},
+	"acceptance": [
+		"Every TypeScript campaign report states the effective heap limit and cache policy.",
+		"Full-corpus runs fail early with an actionable message when configuration is known unsafe.",
+		"Comparisons cannot silently mix persistent-cache, bounded-cache, or different-heap campaigns.",
+		"Quick and public workflows remain usable without requiring an 8 GB heap.",
+		"No automatic heap increase is hidden from the operator."
+	]
+}

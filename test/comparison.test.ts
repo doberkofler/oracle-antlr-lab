@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { benchmarkPolicy } from '../src/benchmarkPolicy.ts';
 import { compareReports, type ProductionPassRun, type ProductionReport } from '../src/comparison.ts';
 import { type CorpusFile, type ParseObservation } from '../src/types.ts';
 
@@ -44,12 +45,13 @@ const pass = (repeat: number, entries: readonly ParseObservation[]): ProductionP
 	files: entries,
 });
 
-const reportOf = (name: string, runs: readonly ProductionPassRun[]): ProductionReport => ({
+const reportOf = (name: string, runs: readonly ProductionPassRun[], policy: ProductionReport['policy'] = null): ProductionReport => ({
 	experiment: name,
 	generatedAt: '2026-01-01T00:00:00.000Z',
 	environment: null,
 	corpus: { id: 'test', sourceFiles: files.length, sourceBytes: 30, selection: 'all', files },
 	selection: null,
+	policy,
 	adapters: [],
 	runs: { typescript: runs },
 });
@@ -84,5 +86,74 @@ describe('report comparison', () => {
 		expect(() => compareReports({ experiment: 'test', controlArtifact: 'control', candidateArtifact: 'candidate', control, candidate: changed })).toThrow(
 			/fingerprint differs/u,
 		);
+	});
+
+	it('rejects campaigns with different heap or cache identities', () => {
+		const runs = [pass(1, [observation('a.sql', 10, 0), observation('b.sql', 20, 0)])];
+		const defaultHeap = benchmarkPolicy(undefined, 4_192 * 1024 * 1024);
+		const benchmarkHeap = benchmarkPolicy('--max-old-space-size=8192', 8_288 * 1024 * 1024);
+		const bounded = benchmarkPolicy(undefined, 4_192 * 1024 * 1024, {
+			LAB_DFA_SELECTIVE_EVERY: '10',
+			LAB_DFA_HOT_MAX_STATES: '90000',
+			LAB_DFA_COLD_MAX_STATES: '2000',
+		});
+
+		expect(() =>
+			compareReports({
+				experiment: 'test',
+				controlArtifact: 'control',
+				candidateArtifact: 'candidate',
+				control: reportOf('control', runs, defaultHeap),
+				candidate: reportOf('candidate', runs, benchmarkHeap),
+			}),
+		).toThrow(/heap limit differs/u);
+		expect(() =>
+			compareReports({
+				experiment: 'test',
+				controlArtifact: 'control',
+				candidateArtifact: 'candidate',
+				control: reportOf('control', runs, defaultHeap),
+				candidate: reportOf('candidate', runs, bounded),
+			}),
+		).toThrow(/DFA cache policy differs/u);
+	});
+
+	it('records an explicitly overridden policy mismatch', () => {
+		const runs = [pass(1, [observation('a.sql', 10, 0), observation('b.sql', 20, 0)])];
+		const comparison = compareReports({
+			experiment: 'test',
+			controlArtifact: 'control',
+			candidateArtifact: 'candidate',
+			control: reportOf('control', runs, benchmarkPolicy(undefined, 4_192 * 1024 * 1024)),
+			candidate: reportOf('candidate', runs, benchmarkPolicy('--max-old-space-size=8192', 8_288 * 1024 * 1024)),
+			allowPolicyMismatch: true,
+		});
+
+		expect(comparison.policy.matches).toBe(false);
+		expect(comparison.policy.overridden).toBe(true);
+		expect(comparison.policy.differences.length).toBeGreaterThan(0);
+	});
+
+	it('records a matching policy and leaves a missing identity unknown', () => {
+		const runs = [pass(1, [observation('a.sql', 10, 0), observation('b.sql', 20, 0)])];
+		const policy = benchmarkPolicy('--max-old-space-size=8192', 8_288 * 1024 * 1024);
+		const matched = compareReports({
+			experiment: 'test',
+			controlArtifact: 'control',
+			candidateArtifact: 'candidate',
+			control: reportOf('control', runs, policy),
+			candidate: reportOf('candidate', runs, policy),
+		});
+		const unknown = compareReports({
+			experiment: 'test',
+			controlArtifact: 'control',
+			candidateArtifact: 'candidate',
+			control: reportOf('control', runs),
+			candidate: reportOf('candidate', runs),
+		});
+
+		expect(matched.policy.matches).toBe(true);
+		expect(matched.policy.overridden).toBe(false);
+		expect(unknown.policy.matches).toBeNull();
 	});
 });
