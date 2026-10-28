@@ -63,6 +63,17 @@ fingerprint. Add `--dry-run` to resolve and print a selection without starting a
 campaign. Comparison rejects different fingerprints and reports paired per-file
 deltas. Full-corpus validation remains required before accepting an optimization.
 
+Every production report records the effective TypeScript harness heap limit and
+DFA cache policy. A production-scale selection with the persistent cache
+requires at least 8,192 MiB of effective heap and fails before the first file
+otherwise. Set `NODE_OPTIONS=--max-old-space-size=8192`; the harness child does
+not inherit a parent command-line `--max-old-space-size` flag. A bounded cache
+policy is the lower-memory alternative, and `--allow-unsafe-heap` records an
+explicit override. `pnpm benchmark:compare` rejects differing heap or cache
+identities unless `--allow-policy-mismatch` is passed, and records the override.
+The benchmark heap is not a production requirement; see the
+[benchmark contract](docs/benchmark-contract.md).
+
 Memory attribution is a separate instrumented campaign:
 
 ```bash

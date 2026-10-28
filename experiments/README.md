@@ -72,6 +72,10 @@ promoted.
   tokens for ordinary calls, with `(+)`, `TREAT`, and post-error recovery kept
   on the original path. Core fell 33.6% against a same-session control and the
   full corpus remained structurally identical.
+- `020-benchmark-policy-identity`: production reports record the effective
+  harness heap limit and DFA cache policy; a persistent-cache production-scale
+  campaign below 8,192 MiB fails before measurement, and comparison rejects
+  differing heap or cache identities unless explicitly overridden.
 
 ## Remaining queue
 

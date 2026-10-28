@@ -41,6 +41,45 @@ candidate reports can be compared only when their fingerprints match. File
 identities, digests, byte sizes, and opaque identifiers are publishable; source
 text, original paths, and object names are not.
 
+## Execution identity
+
+Every production report records the TypeScript harness execution identity in
+`config.typeScriptPolicy`:
+
+- `heap.limitBytes` / `heap.limitMiB` is
+  `v8.getHeapStatistics().heap_size_limit` read from a child process spawned the
+  same way as the parser harness, not from the parent process.
+- `heap.origin` is `max-old-space-size` when `NODE_OPTIONS` sets the limit and
+  `v8-default` otherwise. `heap.maxOldSpaceSizeMiB` and `heap.nodeOptions`
+  record the configured value and raw text.
+- `dfa` records `persistent`, `periodic-clear`, or `selective-eviction`, with the
+  effective interval, heap trigger, hot decisions, and per-decision bounds.
+  Triggers without bounds, or bounds without triggers, remain `persistent`
+  because no eviction can run.
+- `fingerprint` is SHA-256 over the effective heap limit, its origin, the
+  configured old-space size, and the DFA policy.
+
+The harness child inherits `NODE_OPTIONS` but not the parent command-line
+`--max-old-space-size` flag. A campaign that needs a larger heap must set
+`NODE_OPTIONS`; a parent-only flag is not sufficient and the recorded limit
+makes that visible.
+
+### Heap preflight
+
+`pnpm benchmark:production` probes the harness limit and cache policy before the
+first file. A persistent cache on a production-scale selection (at least 1,000
+files, or a full selection of at least 10 MB) requires at least 8,192 MiB of
+effective heap. Below that limit the campaign fails with the setting to change
+and the bounded-policy alternative. `--allow-unsafe-heap` records an explicit
+override in `config.heapSafety.override` instead of hiding the risk. A persistent
+Q4 campaign below 8,192 MiB warns but proceeds.
+
+Bounded policies, tail selections, and the 51-file public corpus run under the
+runtime default heap. The recorded heap and cache policy describe the benchmark
+configuration, not a production requirement; each report also records
+`config.heapSafety.scope` and the production guidance. No campaign raises the
+heap automatically.
+
 ## Measurement boundaries
 
 - Process, container, and runtime startup occur before the in-process timer.
@@ -111,7 +150,14 @@ fingerprint. It reports:
   file-selection and host-level constant effects;
 - LL fallback transitions (`stopped`, `introduced`, `both`, `neither`);
 - first-pass diagnostic totals and changed-file counts;
-- the recorded machine identity for both campaigns.
+- the recorded machine identity and TypeScript heap/DFA identity for both
+  campaigns.
+
+A different recorded heap limit or DFA policy rejects the comparison unless
+`--allow-policy-mismatch` is passed; the override is written to
+`comparison.json` and `comparison.md`. Reports that predate execution identity
+record the legacy cache fields but no heap, so policy match is reported as not
+recorded rather than assumed equal.
 
 Paired deltas require `raw-report.json`. A published `report.json` supports
 aggregate comparison only. A negative paired core delta means the candidate is
@@ -125,6 +171,8 @@ faster. Pairing does not turn a tail selection into a full-corpus result.
 4. Grammar and patch identity recorded.
 5. Runtime and generator versions recorded.
 6. No result from a superseded report is mixed into a current comparison.
+7. Same effective heap limit and DFA cache policy. `--allow-policy-mismatch` is
+   only for a reviewed difference and records the override.
 
 ## Conformance gate
 
@@ -161,6 +209,9 @@ production benchmark result and must not be compared with a latency report.
 - Extrapolating a full build from a 15-file pass.
 - Reporting a Q4 or tail result as a full-corpus result.
 - Comparing control and candidate reports with different selection fingerprints.
+- Comparing campaigns with different heap limits or DFA cache policies without
+  recording an override.
+- Presenting the benchmark heap as a production requirement.
 - Comparing SLL-only and SLL-first-with-LL-fallback without saying so.
 - Comparing forced-GC memory runs with production latency runs.
 - Proposing a memory optimization from RSS or a single allocation profile.
