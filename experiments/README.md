@@ -68,9 +68,14 @@ promoted.
 - `018-selective-dfa-eviction`: per-decision bounds complete under Node's default
   heap; 26.4% lower peak RSS and 59.9% fewer final DFA states at a 12.0% core
   cost, with zero structural differences. Opt-in; production default unchanged.
+- `019-general-element-part-prediction`: decision 2993 is resolved from three
+  tokens for ordinary calls, with `(+)`, `TREAT`, and post-error recovery kept
+  on the original path. Core fell 33.6% against a same-session control and the
+  full corpus remained structurally identical.
 
 ## Remaining queue
 
-1. Test local transforms for decisions 2993, 2990, 2989, and 2595 independently.
+1. Test local transforms for decisions 2990 and 2989 in `general_element` and
+   decision 2595 in `unary_expression_core`.
 2. Require a standalone Java conditional-compilation boundary before adoption.
 3. Localize the remaining valid LL fallbacks.

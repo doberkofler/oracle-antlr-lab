@@ -153,31 +153,38 @@ Final status of the optimization sequence:
 
 | Dimension            | Result                                                                                                                 |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Latency              | 156.093 s → 92.241 s full-corpus TypeScript parser core; −40.9%, 1.69× speedup.                                        |
-| Memory               | DFA caches retain 90–96% of heap; no memory optimization is claimed by the latency work.                               |
-| Semantic conformance | All per-change gates pass; only intended fallback differences remain.                                                  |
-| Java                 | Faster constant factor; structural trees match on prepared input, but a standalone preprocessing boundary is required. |
+| Latency              | 156.093 s → 71.717 s full-corpus TypeScript parser core; −54.1%, 2.18× speedup (official grammar, after issue #18).    |
+| Memory               | DFA caches retain most of the heap; selective per-decision eviction is opt-in, and issue #18 lowers peak RSS by 16.6%. |
+| Semantic conformance | All per-change gates pass, including issue #18; only intended fallback differences remain.                             |
+| Java                 | Unchanged control; structural trees match on prepared input, but a standalone preprocessing boundary is required.      |
 
 ## 9. Official-grammar findings
 
-Experiments 011–018 rebaseline and test the follow-up opportunities on official
+Experiments 011–019 rebaseline and test the follow-up opportunities on official
 `grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`.
 
-- Optimized TypeScript core is 103.888 s with 6.546 GB peak RSS, 107 diagnostics,
-  and 15 fallback files. The unchanged campaign exhausts Node's default heap.
+- The official-grammar baseline before issue #18 was 103.888 s with 6.546 GB peak
+  RSS, 107 diagnostics, and 15 fallback files. The persistent-cache campaign
+  exhausts Node's default heap.
 - Whole-DFA clearing restores default-heap completion and cuts RSS 29–41%, but
   costs 22–38% latency; it remains opt-in.
 - Java core is 45.234 s. All 51 apparent cross-runtime differences begin at
   `DOLLAR_IF`; with the same conditional-compilation boundary, all 1,244 token
   streams, parse trees, and diagnostic counts match. Java remains evidence-only
   until it owns that preprocessing boundary.
-- The optimized tail remains dominated by `general_element_part` and
-  `general_element` at 69.3% of measured prediction time.
-- Decision 2993 alone retains 64.5% of final DFA states. Selective per-decision
+- Before issue #18, the optimized tail was dominated by `general_element_part`
+  and `general_element` at 69.3% of measured prediction time.
+- Decision 2993 alone retained 64.5% of final DFA states. Selective per-decision
   eviction (hot 90,000 states, cold 2,000 states, every 10 files) completes under
   Node's default heap with 26.4% lower peak RSS and 59.9% fewer final states at a
   12.0% core cost. All 1,244 structural observations match the persistent-cache
   control. It remains opt-in because a 12% regression is still a regression.
+- Experiment 019 resolves decision 2993 from three tokens: ordinary calls
+  continue, `(+)` exits, and `TREAT` plus post-error recovery keep the original
+  prediction. Core fell from 108.019 s to 71.717 s against a same-session control
+  (−33.6%, 1.51×); against the 103.888 s official baseline it is −31.0%. All
+  1,244 files remain structurally identical, with fallback files and diagnostics
+  unchanged at 15 and 107.
 - Six fallback files require LL for acceptance; nine require its recovery tree.
 - Transactional streaming extraction can avoid a representative 43.4 MB retained
   tree without breaking retained-tree callers; it does not reduce shared DFA

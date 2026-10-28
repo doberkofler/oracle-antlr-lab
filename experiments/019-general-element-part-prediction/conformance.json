@@ -1,0 +1,104 @@
+{
+	"schemaVersion": 1,
+	"experiment": "019-general-element-part-prediction",
+	"generatedAt": "2026-10-28T05:36:10.021Z",
+	"corpus": {
+		"id": "private-production-20261027",
+		"visibility": "private",
+		"files": 1244,
+		"sourceBytes": 20944414,
+		"selection": "Size quantiles over 1244 files; 1244 selected"
+	},
+	"oracle": {
+		"fields": [
+			"parseTreeSha256",
+			"unitCount",
+			"accepted",
+			"lexerDiagnostics",
+			"parseDiagnostics",
+			"diagnosticsSha256",
+			"tokens",
+			"hiddenTokens",
+			"prediction",
+			"sllAttempts",
+			"llAttempts"
+		],
+		"semanticBoundary": {
+			"acceptedUnits": "Top-level script_unit count plus structural parse-tree SHA-256.",
+			"declarations": "Not extracted by this laboratory; identical parse trees bound the semantic consumer input.",
+			"references": "Not extracted by this laboratory; external qualification remains required.",
+			"dependencies": "Not extracted by this laboratory; external qualification remains required.",
+			"diagnostics": "Counts plus a SHA-256 over the ordered lexer and final parser diagnostics; message text is never published.",
+			"recovery": "Final parse tree, unit count, and diagnostic sequence must match."
+		},
+		"classification": {
+			"intended": "Only the declared field transition, with parse trees, units, tokens, and diagnostics unchanged.",
+			"unsupported": "Explicitly allowlisted files that both states reject; requires external classification.",
+			"defect": "Any other difference; the gate fails."
+		}
+	},
+	"runtimeBoundary": {
+		"typescript": "Semantic-conformance gated for issues #1–#3, #18, and the combined final state.",
+		"java": "The official grammar produces 367 parser diagnostics on the frozen production corpus; cross-runtime tree conformance remains required before Java is eligible as a replacement."
+	},
+	"status": "pass",
+	"gates": [
+		{
+			"id": "issue-18-general-element-part-prediction",
+			"issue": 18,
+			"experiment": "019-general-element-part-prediction",
+			"title": "Resolve general_element_part argument prediction with bounded lookahead",
+			"control": {
+				"state": "generalElement+collectionMethodCall+generalElementPart+bulkCollectAlias+routineName",
+				"optimizations": ["generalElement", "collectionMethodCall", "generalElementPart", "bulkCollectAlias", "routineName"]
+			},
+			"candidate": {
+				"state": "generalElement+collectionMethodCall+generalElementPart+generalElementPartPrediction+bulkCollectAlias+routineName",
+				"optimizations": ["generalElement", "collectionMethodCall", "generalElementPart", "generalElementPartPrediction", "bulkCollectAlias", "routineName"]
+			},
+			"command": {
+				"control": "LAB_GENERATED_OPTIMIZATIONS=generalElement,collectionMethodCall,generalElementPart,bulkCollectAlias,routineName pnpm grammar:generate (output under .work/conformance/<experiment>/generalElement+collectionMethodCall+generalElementPart+bulkCollectAlias+routineName)",
+				"candidate": "LAB_GENERATED_OPTIMIZATIONS=generalElement,collectionMethodCall,generalElementPart,generalElementPartPrediction,bulkCollectAlias,routineName pnpm grammar:generate (output under .work/conformance/<experiment>/generalElement+collectionMethodCall+generalElementPart+generalElementPartPrediction+bulkCollectAlias+routineName)",
+				"compare": "node scripts/semanticConformance.ts --manifest <manifest> --change-set <id>"
+			},
+			"policy": "none",
+			"intended": null,
+			"unsupported": null,
+			"status": "pass",
+			"comparedFiles": 1244,
+			"evidenceSha256": "00b3ffbb661438d5d83fc485172e051256124d1de107f6177dc4b24b3d6eb367",
+			"differences": {
+				"parseTreeSha256": 0,
+				"unitCount": 0,
+				"accepted": 0,
+				"lexerDiagnostics": 0,
+				"parseDiagnostics": 0,
+				"diagnosticsSha256": 0,
+				"tokens": 0,
+				"hiddenTokens": 0,
+				"prediction": 0,
+				"sllAttempts": 0,
+				"llAttempts": 0
+			},
+			"classifications": {
+				"identical": 1244,
+				"intended": 0,
+				"unsupported": 0,
+				"defect": 0
+			},
+			"totals": {
+				"controlAccepted": 1235,
+				"candidateAccepted": 1235,
+				"controlLexerDiagnostics": 0,
+				"candidateLexerDiagnostics": 0,
+				"controlParseDiagnostics": 107,
+				"candidateParseDiagnostics": 107,
+				"controlFallbackFiles": 15,
+				"candidateFallbackFiles": 15,
+				"controlUnits": 1303,
+				"candidateUnits": 1303
+			},
+			"changedFiles": []
+		}
+	]
+}
