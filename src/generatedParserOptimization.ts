@@ -300,6 +300,228 @@ export const optimizeBulkCollectAlias = (source: string): string => {
 	return source.replace(SELECT_LIST_ELEMENTS_METHOD, `${matchedPrefix}${replacementBody}${suffix}`);
 };
 
+const UNARY_EXPRESSION_CORE_METHOD =
+	/(?<prefix>    public unary_expression_core\(\): Unary_expression_coreContext \{[\s\S]*?switch \(this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) \) \{)(?<suffix>[\s\S]*?^    \})/mu;
+
+const UNARY_EXPRESSION_CORE_ATOM_STATE =
+	/case 4:\s*this\.enterOuterAlt\(localContext, 4\);\s*\{\s*this\.state = (?<atomState>\d+);\s*if \(!\(this\.IsNotNumericFunction\(\)\)\)/u;
+
+const UNARY_EXPRESSION_CORE_STANDARD_STATE =
+	/case 3:\s*this\.enterOuterAlt\(localContext, 3\);\s*\{\s*this\.state = (?<standardState>\d+);\s*this\.standard_function\(\);/u;
+
+const UNARY_EXPRESSION_CORE_HELPER = `    private static unaryExpressionCoreAtomFirst: ReadonlySet<number> | null = null;
+    private static unaryExpressionCoreStandardKeywords: ReadonlySet<number> | null = null;
+
+    /**
+     * First tokens of \`atom\`, resolved once from the generated ATN.
+     */
+    private static unaryExpressionCoreAtomTokens(atomState: number): ReadonlySet<number> {
+        PlSqlParser.unaryExpressionCoreAtomFirst ??= new Set(PlSqlParser._ATN.nextTokens(PlSqlParser._ATN.states[atomState]!).toArray());
+        return PlSqlParser.unaryExpressionCoreAtomFirst;
+    }
+
+    /**
+     * Tokens that reach \`standard_function\` only through a dedicated
+     * alternative, not through \`regular_id\`, \`id_expression\`, or \`cursor_name\`.
+     *
+     * Those generic entry points are the only way a plain name becomes a
+     * standard function, and they require a \`USING\` modeling clause or a
+     * cursor attribute, both resolved separately. Walking the ATN keeps this
+     * list correct if the pinned grammar changes.
+     */
+    private static unaryExpressionCoreStandardTokens(standardState: number): ReadonlySet<number> {
+        if (PlSqlParser.unaryExpressionCoreStandardKeywords !== null) {
+            return PlSqlParser.unaryExpressionCoreStandardKeywords;
+        }
+
+        const genericRules = new Set([
+            PlSqlParser.RULE_regular_id,
+            PlSqlParser.RULE_id_expression,
+            PlSqlParser.RULE_cursor_name,
+        ]);
+        const tokens = new Set<number>();
+        const visited = new Set<number>();
+
+        const visit = (stateNumber: number): void => {
+            if (visited.has(stateNumber)) {
+                return;
+            }
+            visited.add(stateNumber);
+            const state = PlSqlParser._ATN.states[stateNumber];
+
+            if (state === null || state === undefined) {
+                return;
+            }
+
+            for (const transition of state.transitions) {
+                if (transition instanceof antlr.RuleTransition) {
+                    if (!genericRules.has(transition.ruleIndex)) {
+                        visit(transition.target.stateNumber);
+                    }
+                } else if (transition instanceof antlr.AtomTransition) {
+                    tokens.add(transition.labelValue);
+                } else if (transition instanceof antlr.SetTransition) {
+                    for (const token of transition.set.toArray()) {
+                        tokens.add(token);
+                    }
+                } else if (transition.isEpsilon) {
+                    visit(transition.target.stateNumber);
+                }
+            }
+        };
+
+        visit(standardState);
+        PlSqlParser.unaryExpressionCoreStandardKeywords = tokens;
+        return tokens;
+    }
+
+    /**
+     * Reports whether the current argument list contains a bare \`USING\`
+     * modeling clause, the only \`standard_function\` path entered by a name
+     * that is not a dedicated function keyword.
+     */
+    private unaryExpressionCoreUsesModelingClause(): boolean {
+        let depth = 0;
+
+        for (let index = 2; ; index += 1) {
+            const token = this.tokenStream.LA(index);
+
+            if (token === -1) {
+                return false;
+            }
+
+            if (token === PlSqlParser.LEFT_PAREN) {
+                depth += 1;
+            } else if (token === PlSqlParser.RIGHT_PAREN) {
+                depth -= 1;
+
+                if (depth === 0) {
+                    return false;
+                }
+            } else if (depth === 1 && token === PlSqlParser.USING) {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Resolves the \`unary_expression_core\` alternatives from the first tokens.
+     *
+     * \`CASE\` is a non-reserved keyword, so malformed input can fall back to
+     * \`atom\` and it keeps adaptive prediction. \`standard_function\` and
+     * \`atom\` overlap only for a dedicated function keyword, a \`USING\`
+     * modeling clause, or a cursor attribute, so those keep prediction too.
+     * Every other token selects the only viable alternative, including after a
+     * syntax error: prediction cannot choose a different alternative when no
+     * other alternative can match.
+     */
+    private unaryExpressionCoreAlternative(decision: number, atomState: number, standardState: number): number {
+        const first = this.tokenStream.LA(1);
+        const second = this.tokenStream.LA(2);
+
+        if (first === PlSqlParser.CASE) {
+            return this.interpreter.adaptivePredict(this.tokenStream, decision, this.context);
+        }
+
+        if (second === PlSqlParser.LEFT_PAREN) {
+            if (first === PlSqlParser.SUM
+                || first === PlSqlParser.COUNT
+                || first === PlSqlParser.AVG
+                || first === PlSqlParser.MIN
+                || first === PlSqlParser.MAX
+                || first === PlSqlParser.ROUND
+                || first === PlSqlParser.LEAST
+                || first === PlSqlParser.GREATEST
+            ) {
+                return 3;
+            }
+
+            if (first === PlSqlParser.SOME
+                || first === PlSqlParser.EXISTS
+                || first === PlSqlParser.ALL
+                || first === PlSqlParser.ANY
+            ) {
+                return 2;
+            }
+
+            return PlSqlParser.unaryExpressionCoreStandardTokens(standardState).has(first)
+                || this.unaryExpressionCoreUsesModelingClause()
+                ? this.interpreter.adaptivePredict(this.tokenStream, decision, this.context)
+                : 4;
+        }
+
+        if (second === PlSqlParser.PERCENT_ISOPEN
+            || second === PlSqlParser.PERCENT_FOUND
+            || second === PlSqlParser.PERCENT_NOTFOUND
+            || second === PlSqlParser.PERCENT_ROWCOUNT
+        ) {
+            return this.interpreter.adaptivePredict(this.tokenStream, decision, this.context);
+        }
+
+        if (first === PlSqlParser.DOLLAR_IF) {
+            return 6;
+        }
+
+        if (first === PlSqlParser.SQL
+            && (second === PlSqlParser.PERCENT_BULK_ROWCOUNT || second === PlSqlParser.PERCENT_BULK_EXCEPTIONS)
+        ) {
+            return 5;
+        }
+
+        if (first === PlSqlParser.TIME && second === PlSqlParser.CHAR_STRING) {
+            return this.interpreter.adaptivePredict(this.tokenStream, decision, this.context);
+        }
+
+        return PlSqlParser.unaryExpressionCoreAtomTokens(atomState).has(first)
+            ? 4
+            : this.interpreter.adaptivePredict(this.tokenStream, decision, this.context);
+    }
+
+`;
+
+/**
+ * Replaces `unary_expression_core` prediction with first-token selection.
+ *
+ * `case_expression`, `quantified_expression`, `implicit_cursor_expression`, and
+ * `selection_directive_expression` start with tokens that cannot begin
+ * `standard_function`. When the second token is neither `LEFT_PAREN` nor a
+ * cursor attribute, no `standard_function` alternative can match, so `atom` is
+ * the only remaining alternative and adaptive prediction is redundant.
+ * Parenthesized arguments, cursor attributes, `TIME` literals, `SQL%BULK_*`, and
+ * `CASE` keep the original decision.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose `unary_expression_core` decision uses a token switch.
+ */
+export const optimizeUnaryExpressionCore = (source: string): string => {
+	const match = UNARY_EXPRESSION_CORE_METHOD.exec(source);
+
+	if (match?.groups === undefined) {
+		throw new Error('Generated unary_expression_core method did not match the expected ANTLR shape');
+	}
+	const decision = match.groups['decision'];
+	const matchedPrefix = match.groups['prefix'];
+	const suffix = match.groups['suffix'];
+
+	if (decision === undefined || matchedPrefix === undefined || suffix === undefined) {
+		throw new Error('Generated unary_expression_core method has incomplete captures');
+	}
+	const atomMatch = UNARY_EXPRESSION_CORE_ATOM_STATE.exec(suffix);
+	const atomState = atomMatch?.groups?.['atomState'];
+	const standardMatch = UNARY_EXPRESSION_CORE_STANDARD_STATE.exec(suffix);
+	const standardState = standardMatch?.groups?.['standardState'];
+
+	if (atomState === undefined || standardState === undefined) {
+		throw new Error('Generated unary_expression_core method has no atom or standard_function alternative');
+	}
+	const optimizedPrefix = matchedPrefix.replace(
+		`switch (this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context) ) {`,
+		`switch (this.unaryExpressionCoreAlternative(${decision}, ${atomState}, ${standardState})) {`,
+	);
+
+	return source.replace(UNARY_EXPRESSION_CORE_METHOD, `${UNARY_EXPRESSION_CORE_HELPER}${optimizedPrefix}${suffix}`);
+};
+
 /** Generated-parser optimizations that experiments may enable independently. */
 export type GeneratedParserOptimization =
 	| 'bulkCollectAlias'
@@ -307,7 +529,8 @@ export type GeneratedParserOptimization =
 	| 'generalElement'
 	| 'generalElementPart'
 	| 'generalElementPartPrediction'
-	| 'routineName';
+	| 'routineName'
+	| 'unaryExpressionCore';
 
 /** Every generated-parser optimization, in the order required by its transforms. */
 export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
@@ -317,6 +540,7 @@ export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimizatio
 	'generalElementPartPrediction',
 	'bulkCollectAlias',
 	'routineName',
+	'unaryExpressionCore',
 ];
 
 const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) => string>> = {
@@ -326,6 +550,7 @@ const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) 
 	generalElementPart: optimizeGeneralElementPart,
 	generalElementPartPrediction: optimizeGeneralElementPartPrediction,
 	routineName: optimizeRoutineName,
+	unaryExpressionCore: optimizeUnaryExpressionCore,
 };
 
 /**

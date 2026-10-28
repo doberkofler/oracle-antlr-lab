@@ -199,7 +199,7 @@ const artifact: ConformanceArtifact = {
 		},
 	},
 	runtimeBoundary: {
-		typescript: 'Semantic-conformance gated for issues #1–#3, #18, and the combined final state.',
+		typescript: 'Semantic-conformance gated for issues #1–#3, #18, #19, and the combined final state.',
 		java: 'The official grammar produces 367 parser diagnostics on the frozen production corpus; cross-runtime tree conformance remains required before Java is eligible as a replacement.',
 	},
 	status: gates.every((gate) => gate.status === 'pass') ? 'pass' : 'fail',
