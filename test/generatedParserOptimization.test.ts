@@ -2,7 +2,7 @@ import { CharStream, CommonTokenStream, ParserRuleContext, type ParseTree } from
 import { describe, expect, it } from 'vitest';
 
 import { PlSqlLexer } from '../grammar/typescript/generated/PlSqlLexer.ts';
-import { PlSqlParser } from '../grammar/typescript/generated/PlSqlParser.ts';
+import { PlSqlParser, Unary_expression_coreContext } from '../grammar/typescript/generated/PlSqlParser.ts';
 import {
 	optimizeBulkCollectAlias,
 	optimizeCollectionMethodCall,
@@ -11,6 +11,7 @@ import {
 	optimizeGeneralElementPartPrediction,
 	optimizeGeneratedParser,
 	optimizeRoutineName,
+	optimizeUnaryExpressionCore,
 } from '../src/generatedParserOptimization.ts';
 
 describe('optimizeGeneralElementPart', () => {
@@ -203,6 +204,56 @@ describe('optimizeBulkCollectAlias', () => {
 	});
 });
 
+describe('optimizeUnaryExpressionCore', () => {
+	it('selects from the first tokens and keeps the ambiguous alternatives predicted', () => {
+		const optimized = optimizeUnaryExpressionCore(unaryExpressionCoreSource());
+
+		expect(optimized).toContain('switch (this.unaryExpressionCoreAlternative(2595, 18636, 18635)) {');
+		expect(optimized).toContain('PlSqlParser.unaryExpressionCoreStandardTokens(standardState).has(first)');
+		expect(optimized).toContain('this.unaryExpressionCoreUsesModelingClause()');
+		expect(optimized).toContain('PlSqlParser.unaryExpressionCoreAtomTokens(atomState).has(first)');
+		expect(optimized).toContain('second === PlSqlParser.PERCENT_ISOPEN');
+		expect(optimized).toContain('return 2;');
+		expect(optimized).toContain('return 5;');
+		expect(optimized.match(/adaptivePredict\(this\.tokenStream, decision, this\.context\)/gu)?.length).toBeGreaterThan(4);
+	});
+
+	it('rejects an unexpected generated parser shape', () => {
+		expect(() => optimizeUnaryExpressionCore('')).toThrow(/did not match/u);
+	});
+
+	it.each([
+		['begin x := case when 1 = 1 then 1 else 2 end; end;', 'Case_expressionContext'],
+		['begin x := case (1 > 0) when true then 1 else 2 end; end;', 'Case_expressionContext'],
+		['select 1 from dual where exists (select 1 from dual);', 'Quantified_expressionContext'],
+		['begin x := foo(1); end;', 'AtomContext'],
+		['begin x := foo; end;', 'AtomContext'],
+		['select to_char(1), chr(65), nvl(a, b), sum(a) from t;', 'Standard_functionContext'],
+		['begin x := c%isopen; end;', 'Standard_functionContext'],
+		['begin x := sql%bulk_rowcount(1); end;', 'Implicit_cursor_expressionContext'],
+		['begin x := :bind; end;', 'AtomContext'],
+	] as const)('selects the expected alternative for %s', (source, expected) => {
+		const tokens = new CommonTokenStream(new PlSqlLexer(CharStream.fromString(source)));
+		const parser = new PlSqlParser(tokens);
+		parser.removeErrorListeners();
+		const tree = parser.sql_script();
+
+		expect(parser.numberOfSyntaxErrors).toBe(0);
+		expect(unaryCoreAlternatives(tree)).toContain(expected);
+	});
+
+	it('keeps parsing and reporting invalid expressions', () => {
+		for (const source of ['select - from dual /', 'select 1 + from dual /', 'begin x := 1 +; end;']) {
+			const tokens = new CommonTokenStream(new PlSqlLexer(CharStream.fromString(source)));
+			const parser = new PlSqlParser(tokens);
+			parser.removeErrorListeners();
+			parser.sql_script();
+
+			expect(parser.numberOfSyntaxErrors).toBeGreaterThan(0);
+		}
+	});
+});
+
 describe('optimizeGeneratedParser', () => {
 	it('applies only the selected optimizations', () => {
 		const source = `${routineNameSource()}${generalElementSource()}${generalElementPartSource()}`;
@@ -312,6 +363,67 @@ const selectListElementsSource = (): string => `    public select_list_elements(
                 break;
             }
     }`;
+
+const unaryExpressionCoreSource = (): string => `    public unary_expression_core(): Unary_expression_coreContext {
+        try {
+            this.state = 18640;
+            this.errorHandler.sync(this);
+            switch (this.interpreter.adaptivePredict(this.tokenStream, 2595, this.context) ) {
+            case 1:
+                this.enterOuterAlt(localContext, 1);
+                {
+                this.state = 18633;
+                this.case_expression();
+                }
+                break;
+            case 2:
+                this.enterOuterAlt(localContext, 2);
+                {
+                this.state = 18634;
+                this.quantified_expression();
+                }
+                break;
+            case 3:
+                this.enterOuterAlt(localContext, 3);
+                {
+                this.state = 18635;
+                this.standard_function();
+                }
+                break;
+            case 4:
+                this.enterOuterAlt(localContext, 4);
+                {
+                this.state = 18636;
+                if (!(this.IsNotNumericFunction())) {
+                    throw this.createFailedPredicateException("this.IsNotNumericFunction()");
+                }
+                this.state = 18637;
+                this.atom();
+                }
+                break;
+            case 5:
+                this.enterOuterAlt(localContext, 5);
+                {
+                this.state = 18638;
+                this.implicit_cursor_expression();
+                }
+                break;
+            case 6:
+                this.enterOuterAlt(localContext, 6);
+                {
+                this.state = 18639;
+                this.selection_directive_expression();
+                }
+                break;
+            }
+        }
+    }`;
+
+const unaryCoreAlternatives = (tree: ParseTree): readonly string[] => {
+	const children = Array.from({ length: tree.getChildCount() }, (_, index) => tree.getChild(index)).filter((child): child is ParseTree => child !== null);
+	const own = tree instanceof Unary_expression_coreContext ? [tree.getChild(0)?.constructor.name ?? 'none'] : [];
+	return [...own, ...children.flatMap(unaryCoreAlternatives)];
+};
 
 const maxFunctionArguments = (tree: ParseTree): number => {
 	const children = Array.from({ length: tree.getChildCount() }, (_, index) => tree.getChild(index)).filter((child): child is ParseTree => child !== null);

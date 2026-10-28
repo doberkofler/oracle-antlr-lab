@@ -6,9 +6,10 @@ boundaries, and how a difference is classified.
 
 ## Status
 
-TypeScript changes from issues #1–#3, #18, and the combined final state are gated by
-[`experiment 009`](../experiments/009-semantic-conformance/conclusion.md) and
-[`experiment 019`](../experiments/019-general-element-part-prediction/conclusion.md).
+TypeScript changes from issues #1–#3, #18, #19, and the combined final state are
+gated by [`experiment 009`](../experiments/009-semantic-conformance/conclusion.md),
+[`experiment 019`](../experiments/019-general-element-part-prediction/conclusion.md),
+and [`experiment 021`](../experiments/021-unary-expression-core/conclusion.md).
 Java remains an unmodified control. The Java target retained 486 parser
 diagnostics on the frozen production corpus in
 [`experiment 003`](../experiments/003-production-scale/conclusion.md); its
@@ -62,8 +63,9 @@ The checked-in change sets are:
 | `issue-1-general-element-part`             |    #1 | `005-general-element-part-optimization` | none                                                  | `generalElementPart`                                  |
 | `issue-2-routine-name-and-general-element` |    #2 | `006-routine-name-and-general-element`  | `generalElementPart`                                  | `generalElement`, `generalElementPart`, `routineName` |
 | `issue-3-full-file-ll-fallback`            |    #3 | `007-full-file-ll-fallback`             | `generalElement`, `generalElementPart`, `routineName` | the five transforms accepted by issue #3              |
-| `issue-18-general-element-part-prediction` |   #18 | `019-general-element-part-prediction`   | the five transforms accepted by issue #3              | all six transforms                                    |
-| `combined-final`                           |    #6 | `009-semantic-conformance`              | none                                                  | all six transforms                                    |
+| `issue-18-general-element-part-prediction` |   #18 | `019-general-element-part-prediction`   | the five transforms accepted by issue #3              | the six transforms accepted by issue #18              |
+| `issue-19-unary-expression-core`           |   #19 | `021-unary-expression-core`             | the six transforms accepted by issue #18              | all seven transforms                                  |
+| `combined-final`                           |    #6 | `009-semantic-conformance`              | none                                                  | all seven transforms                                  |
 
 Every grammar or parser-recovery commit must have its own gate. A final combined
 result does not replace the per-change result.

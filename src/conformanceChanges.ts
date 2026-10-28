@@ -30,7 +30,10 @@ const ESTABLISHED_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
 	'routineName',
 ];
 
-/** Conformance gates for issues #1–#3, #18, and the combined final state. */
+/** Optimizations accepted before issue #19, frozen for the #19 gate. */
+const PRE_ISSUE_19_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [...ESTABLISHED_OPTIMIZATIONS, 'generalElementPartPrediction'];
+
+/** Conformance gates for issues #1–#3, #18, #19, and the combined final state. */
 export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 	{
 		id: 'issue-1-general-element-part',
@@ -65,6 +68,15 @@ export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 		experiment: '019-general-element-part-prediction',
 		title: 'Resolve general_element_part argument prediction with bounded lookahead',
 		control: ESTABLISHED_OPTIMIZATIONS,
+		candidate: PRE_ISSUE_19_OPTIMIZATIONS,
+		policy: 'none',
+	},
+	{
+		id: 'issue-19-unary-expression-core',
+		issue: 19,
+		experiment: '021-unary-expression-core',
+		title: 'Resolve unary_expression_core without adaptive prediction for unambiguous tokens',
+		control: PRE_ISSUE_19_OPTIMIZATIONS,
 		candidate: ALL_OPTIMIZATIONS,
 		policy: 'none',
 	},
