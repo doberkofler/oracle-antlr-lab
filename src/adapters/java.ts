@@ -26,11 +26,15 @@ for (const file of imageInputs) {
 
 const image = `oracle-antlr-lab-java:${imageDigest.digest('hex').slice(0, 12)}`;
 
-const docker = (args: readonly string[], inherit = false, forwardStderr = false): Promise<string> =>
+/** Receives per-file progress from a Java harness line such as `[3/1244] elapsed`. */
+export type JavaProgressListener = (completed: number, total: number) => void;
+
+const docker = (args: readonly string[], inherit = false, forwardStderr = false, onProgress?: JavaProgressListener): Promise<string> =>
 	new Promise((resolve, reject) => {
 		const child = spawn('docker', args, { cwd: root, stdio: inherit ? 'inherit' : ['ignore', 'pipe', 'pipe'] });
 		let stdout = '';
 		let stderr = '';
+		let progressPending = '';
 
 		if (!inherit && child.stdout !== null && child.stderr !== null) {
 			child.stdout.setEncoding('utf8');
@@ -43,6 +47,25 @@ const docker = (args: readonly string[], inherit = false, forwardStderr = false)
 
 				if (forwardStderr) {
 					process.stderr.write(`[java] ${chunk}`);
+				}
+
+				if (onProgress !== undefined) {
+					progressPending += chunk;
+
+					for (;;) {
+						const newline = progressPending.indexOf('\n');
+
+						if (newline < 0) {
+							break;
+						}
+						const line = progressPending.slice(0, newline);
+						progressPending = progressPending.slice(newline + 1);
+						const match = /\[(?<completed>\d+)\/(?<total>\d+)\] elapsed/u.exec(line);
+
+						if (match?.groups !== undefined) {
+							onProgress(Number(match.groups['completed']), Number(match.groups['total']));
+						}
+					}
 				}
 			});
 		}
@@ -191,6 +214,7 @@ const withPreparedCorpus = async <Result>(
  */
 export const runJavaConformance = async (
 	input: Readonly<{ manifestPath: string; indexes: readonly number[]; conditional?: boolean }>,
+	onProgress?: JavaProgressListener,
 ): Promise<readonly JavaConformanceObservation[]> => {
 	await ensureImage();
 	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
@@ -210,6 +234,7 @@ export const runJavaConformance = async (
 			],
 			false,
 			true,
+			onProgress,
 		),
 	);
 	const parsed = JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{ files: readonly JavaConformanceObservation[] }>;
@@ -228,6 +253,7 @@ export const runJavaConformance = async (
  */
 export const runJavaTokens = async (
 	input: Readonly<{ manifestPath: string; indexes: readonly number[]; conditional?: boolean }>,
+	onProgress?: JavaProgressListener,
 ): Promise<readonly JavaTokenObservation[]> => {
 	await ensureImage();
 	const manifest = JSON.parse(readFileSync(input.manifestPath, 'utf8')) as CorpusManifest;
@@ -237,6 +263,7 @@ export const runJavaTokens = async (
 			['run', '--rm', '--network', 'none', '-v', `${mountRoot}:/corpus:ro`, image, 'tokens', ...entries.map((entry) => `/corpus/files/${entry.file}`)],
 			false,
 			true,
+			onProgress,
 		),
 	);
 
@@ -253,6 +280,7 @@ export const runJavaTokens = async (
 /** Profiles selected opaque corpus files with ANTLR's Java profiling simulator. */
 export const runJavaProfile = async (
 	input: Readonly<{ manifestPath: string; indexes: readonly number[] }>,
+	onProgress?: JavaProgressListener,
 ): Promise<
 	Readonly<{
 		files: number;
@@ -275,7 +303,7 @@ export const runJavaProfile = async (
 
 		return `/corpus/files/${entry.file}`;
 	});
-	const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'profile', ...paths], false, true);
+	const output = await docker(['run', '--rm', '--network', 'none', '-v', `${corpusRoot}:/corpus:ro`, image, 'profile', ...paths], false, true, onProgress);
 	return JSON.parse(output.slice(output.indexOf('{'))) as Readonly<{
 		files: number;
 		elapsedMs: number;

@@ -1,6 +1,6 @@
 import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { CONFORMANCE_CHANGE_SETS, type ConformanceChangeSet } from '../src/conformanceChanges.ts';
 import {
 	assertOpaqueIdentities,
@@ -15,6 +15,7 @@ import {
 } from '../src/conformance.ts';
 import { loadManifest } from '../src/corpus.ts';
 import { type GeneratedParserOptimization } from '../src/generatedParserOptimization.ts';
+import { createProgressReporter, formatDuration } from '../src/progress.ts';
 
 const usage = `Usage: pnpm conformance [options]
 
@@ -111,13 +112,23 @@ if (parsed.dryRun) {
 }
 
 const observations = new Map<string, readonly ConformanceObservation[]>();
+const progress = createProgressReporter({ label: 'conformance', total: states.length * selected.length, unit: 'files' });
 
-for (const state of states) {
+for (const [stateIndex, state] of states.entries()) {
 	process.stdout.write(`Preparing generated parser state ${state.key}.\n`);
+	const prepareStartedAt = performance.now();
 	prepareState(state);
+	process.stdout.write(`Prepared ${state.key} in ${formatDuration(performance.now() - prepareStartedAt)}.\n`);
 	process.stdout.write(`Running conformance pass for ${state.key} over ${String(selected.length)} files.\n`);
-	observations.set(state.key, runState(state));
+	observations.set(
+		state.key,
+		await runState(state, (completed) => {
+			progress.advance(stateIndex * selected.length + completed, state.key);
+		}),
+	);
 }
+
+progress.finish(`${String(states.length)} states`);
 
 const gates = parsed.changeSets.map((change) => {
 	const control = observations.get(stateKey(change.control));
@@ -375,52 +386,90 @@ function prepareState(state: PreparedState): void {
 	}
 }
 
-function runState(state: PreparedState): readonly ConformanceObservation[] {
-	const result = spawnSync(process.execPath, [path.join(root, 'grammar', 'typescript', 'conformanceHarness.ts')], {
-		cwd: root,
-		env: {
-			...process.env,
-			LAB_MANIFEST: manifestPath,
-			LAB_FILES: filesDir,
-			LAB_GENERATED_PARSER_DIR: state.generatedDirectory,
-			LAB_STATE: state.key,
-			...(parsed.ids === undefined ? {} : { LAB_IDS: parsed.ids.join(',') }),
-		},
-		encoding: 'utf8',
-		maxBuffer: 100 * 1024 * 1024,
+function runState(state: PreparedState, onProgress: (completed: number) => void): Promise<readonly ConformanceObservation[]> {
+	return new Promise((resolve, reject) => {
+		const child = spawn(process.execPath, [path.join(root, 'grammar', 'typescript', 'conformanceHarness.ts')], {
+			cwd: root,
+			env: {
+				...process.env,
+				LAB_MANIFEST: manifestPath,
+				LAB_FILES: filesDir,
+				LAB_GENERATED_PARSER_DIR: state.generatedDirectory,
+				LAB_STATE: state.key,
+				...(parsed.ids === undefined ? {} : { LAB_IDS: parsed.ids.join(',') }),
+			},
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		let stdout = '';
+		let stderr = '';
+		let pending = '';
+
+		child.stdout.setEncoding('utf8');
+		child.stderr.setEncoding('utf8');
+		child.stdout.on('data', (chunk: string) => {
+			stdout += chunk;
+		});
+		child.stderr.on('data', (chunk: string) => {
+			stderr += chunk;
+			pending += chunk;
+
+			for (;;) {
+				const newline = pending.indexOf('\n');
+
+				if (newline < 0) {
+					break;
+				}
+				const line = pending.slice(0, newline);
+				pending = pending.slice(newline + 1);
+				const match = /\[(?<completed>\d+)\/(?<total>\d+)\] elapsed/u.exec(line);
+
+				if (match?.groups === undefined) {
+					process.stderr.write(`${line}\n`);
+				} else {
+					onProgress(Number(match.groups['completed']));
+				}
+			}
+		});
+		child.on('error', reject);
+		child.on('close', (code) => {
+			if (code !== 0) {
+				reject(new Error(`Conformance pass ${state.key} failed:\n${stderr}`));
+				return;
+			}
+
+			const start = stdout.indexOf('{');
+
+			if (start < 0) {
+				reject(new Error(`Conformance pass ${state.key} produced no JSON`));
+				return;
+			}
+
+			const parsedOutput: unknown = JSON.parse(stdout.slice(start));
+
+			if (!isStateOutput(parsedOutput)) {
+				reject(new Error(`Conformance pass ${state.key} produced an invalid observation set`));
+				return;
+			}
+
+			if (parsedOutput.files.length !== selected.length) {
+				reject(new Error(`Conformance pass ${state.key} covered ${String(parsedOutput.files.length)} of ${String(selected.length)} files`));
+				return;
+			}
+
+			const byIdentity = new Map(selected.map((file) => [file.file, file]));
+
+			for (const observation of parsedOutput.files) {
+				const file = byIdentity.get(observation.file);
+
+				if (file === undefined || file.sha256 !== observation.sha256 || file.bytes !== observation.bytes) {
+					reject(new Error(`Conformance pass ${state.key} does not match manifest identity ${observation.file}`));
+					return;
+				}
+			}
+
+			resolve(parsedOutput.files);
+		});
 	});
-
-	if (result.status !== 0) {
-		throw new Error(`Conformance pass ${state.key} failed:\n${result.stderr}`);
-	}
-
-	const start = result.stdout.indexOf('{');
-
-	if (start < 0) {
-		throw new Error(`Conformance pass ${state.key} produced no JSON`);
-	}
-
-	const parsedOutput: unknown = JSON.parse(result.stdout.slice(start));
-
-	if (!isStateOutput(parsedOutput)) {
-		throw new Error(`Conformance pass ${state.key} produced an invalid observation set`);
-	}
-
-	if (parsedOutput.files.length !== selected.length) {
-		throw new Error(`Conformance pass ${state.key} covered ${String(parsedOutput.files.length)} of ${String(selected.length)} files`);
-	}
-
-	const byIdentity = new Map(selected.map((file) => [file.file, file]));
-
-	for (const observation of parsedOutput.files) {
-		const file = byIdentity.get(observation.file);
-
-		if (file === undefined || file.sha256 !== observation.sha256 || file.bytes !== observation.bytes) {
-			throw new Error(`Conformance pass ${state.key} does not match manifest identity ${observation.file}`);
-		}
-	}
-
-	return parsedOutput.files;
 }
 
 function isStateOutput(value: unknown): value is Readonly<{ state: string; files: readonly ConformanceObservation[] }> {

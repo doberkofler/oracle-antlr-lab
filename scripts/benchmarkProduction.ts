@@ -6,6 +6,7 @@ import { typeScriptAdapter } from '../src/adapters/typescript.ts';
 import { type BenchmarkPolicy, assessHeapSafety, describePolicy, type HeapSafetyFinding } from '../src/benchmarkPolicy.ts';
 import { probeTypeScriptRuntime } from '../src/benchmarkRuntime.ts';
 import { loadManifest } from '../src/corpus.ts';
+import { formatDuration, formatPercentage } from '../src/progress.ts';
 import { type BenchmarkSelection, resolveBenchmarkSelection, type SelectionMode } from '../src/selection.ts';
 import { statistics } from '../src/stats.ts';
 import { type CorpusFile, type MetricStatistics, type ParseObservation, type ParserAdapter } from '../src/types.ts';
@@ -514,15 +515,6 @@ function renderMarkdown(
 		'Selection is tail-biased when mode is `tail` and covers the largest quartile when mode is `q4`; neither estimates the full corpus. Full-corpus validation remains required before accepting a parser optimization.',
 		'',
 	].join('\n');
-}
-
-function formatDuration(milliseconds: number): string {
-	const seconds = Math.round(milliseconds / 1_000);
-	return `${String(Math.floor(seconds / 60))}m ${String(seconds % 60).padStart(2, '0')}s`;
-}
-
-function formatPercentage(completed: number, total: number): string {
-	return `${((completed / total) * 100).toFixed(1)}%`;
 }
 
 function formatBytes(bytes: number): string {

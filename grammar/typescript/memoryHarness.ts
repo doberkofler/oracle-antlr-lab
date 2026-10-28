@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { Session } from 'node:inspector';
 import path from 'node:path';
 import { type MemoryCheckpoint, type MemoryEvidence, type MemoryPassBody, summarizeAllocationProfile } from '../../src/memory.ts';
+import { writeProgressLine } from '../../src/progress.ts';
 import { clearDfaAtBoundary, parseDfaCachePolicy } from './dfaCache.ts';
 import { evictDfaAtBoundary, parseSelectiveDfaSchedule } from './dfaEviction.ts';
 import { type FileEntry, parseSource } from './parse.ts';
@@ -90,7 +91,7 @@ for (const [position, entry] of selected.entries()) {
 	});
 
 	if (position + 1 === selected.length || (position + 1) % 10 === 0) {
-		process.stderr.write(`[${String(position + 1)}/${String(selected.length)}] elapsed ${formatDuration(performance.now() - startedAt)}\n`);
+		writeProgressLine(`[${String(position + 1)}/${String(selected.length)}] elapsed ${formatDuration(performance.now() - startedAt)}\n`);
 	}
 }
 

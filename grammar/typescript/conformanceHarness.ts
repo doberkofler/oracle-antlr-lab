@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { BaseErrorListener, CharStream, CommonTokenStream, Lexer, Parser, ParserRuleContext, type ParseTree, Token } from 'antlr4ng';
 import { prepareConditional } from '../../src/conditional.ts';
 import { type ConformanceObservation, type ConformancePrediction } from '../../src/conformance.ts';
+import { writeProgressLine } from '../../src/progress.ts';
 import { type FileEntry } from './parse.ts';
 import { treeSha256 } from './treeDigest.ts';
 
@@ -62,7 +63,7 @@ const files = selected.map((entry, index) => {
 	const completed = index + 1;
 
 	if (completed === 1 || completed % 10 === 0 || completed === selected.length) {
-		process.stderr.write(`[${state}] [${String(completed)}/${String(selected.length)}] elapsed ${formatDuration(performance.now() - startedAt)}\n`);
+		writeProgressLine(`[${state}] [${String(completed)}/${String(selected.length)}] elapsed ${formatDuration(performance.now() - startedAt)}\n`);
 	}
 
 	return observation;

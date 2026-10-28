@@ -5,6 +5,7 @@ import path from 'node:path';
 import { runJavaConformance, type JavaConformanceObservation } from '../src/adapters/java.ts';
 import { assertOpaqueIdentities } from '../src/conformance.ts';
 import { loadManifest } from '../src/corpus.ts';
+import { createProgressReporter } from '../src/progress.ts';
 
 type TypeScriptObservation = JavaConformanceObservation & Readonly<{ accepted: boolean }>;
 type HarnessOutput = Readonly<{ files: readonly Readonly<{ observation: TypeScriptObservation }>[] }>;
@@ -17,7 +18,18 @@ const { manifest, files } = loadManifest(manifestPath, filesDir);
 
 assertOpaqueIdentities(manifest.visibility, files);
 
-const [typeScript, java] = await Promise.all([runTypeScript(), runJavaConformance({ manifestPath, indexes: files.map((file) => file.id) })]);
+const typeScriptProgress = createProgressReporter({ label: 'cross-runtime typescript', total: files.length, unit: 'files' });
+const javaProgress = createProgressReporter({ label: 'cross-runtime java', total: files.length, unit: 'files' });
+const [typeScript, java] = await Promise.all([
+	runTypeScript((completed) => {
+		typeScriptProgress.advance(completed, 'parsing');
+	}),
+	runJavaConformance({ manifestPath, indexes: files.map((file) => file.id) }, (completed) => {
+		javaProgress.advance(completed, 'parsing');
+	}),
+]);
+typeScriptProgress.finish();
+javaProgress.finish();
 const javaByFile = new Map(java.map((observation) => [observation.file, observation]));
 const differences = files.flatMap((file, index) => {
 	const left = typeScript[index];
@@ -64,7 +76,7 @@ if (report.status === 'fail') {
 	process.exitCode = 1;
 }
 
-async function runTypeScript(): Promise<readonly TypeScriptObservation[]> {
+async function runTypeScript(onProgress: (completed: number) => void): Promise<readonly TypeScriptObservation[]> {
 	const harness = path.join(root, 'grammar', 'typescript', 'harness.ts');
 	const stdoutOutput = await new Promise<string>((resolve, reject) => {
 		const child = spawn(process.execPath, [harness], {
@@ -78,12 +90,34 @@ async function runTypeScript(): Promise<readonly TypeScriptObservation[]> {
 				LAB_WARMUPS: '0',
 				LAB_TREE_HASH: '1',
 			},
-			stdio: ['ignore', 'pipe', 'inherit'],
+			stdio: ['ignore', 'pipe', 'pipe'],
 		});
 		let stdout = '';
+		let pending = '';
 		child.stdout.setEncoding('utf8');
+		child.stderr.setEncoding('utf8');
 		child.stdout.on('data', (chunk: string) => {
 			stdout += chunk;
+		});
+		child.stderr.on('data', (chunk: string) => {
+			pending += chunk;
+
+			for (;;) {
+				const newline = pending.indexOf('\n');
+
+				if (newline < 0) {
+					break;
+				}
+				const line = pending.slice(0, newline);
+				pending = pending.slice(newline + 1);
+				const match = /\[(?<completed>\d+)\/(?<total>\d+)\] elapsed/u.exec(line);
+
+				if (match?.groups === undefined) {
+					process.stderr.write(`${line}\n`);
+				} else {
+					onProgress(Number(match.groups['completed']));
+				}
+			}
 		});
 		child.on('error', reject);
 		child.on('close', (code) => {
