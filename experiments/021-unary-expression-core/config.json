@@ -1,0 +1,23 @@
+{
+	"experiment": "021-unary-expression-core",
+	"issue": 19,
+	"question": "Can decision 2595 in unary_expression_core resolve from its first tokens without adaptive prediction while preserving precedence, acceptance, trees, diagnostics, and recovery?",
+	"control": "The six generated-parser transforms accepted before issue #19.",
+	"candidate": "The same six transforms plus a first-token transform for unary_expression_core: unique first tokens select their alternative, a plain name followed by an argument list is atom unless it is a dedicated standard-function keyword or contains a depth-one USING modeling clause, and CASE, cursor attributes, TIME literals, and SQL%BULK_* keep adaptive prediction.",
+	"commands": {
+		"control": "LAB_GENERATED_OPTIMIZATIONS=generalElement,collectionMethodCall,generalElementPart,generalElementPartPrediction,bulkCollectAlias,routineName pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 021-unary-expression-core-control",
+		"candidate": "pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 021-unary-expression-core",
+		"compare": "pnpm benchmark:compare --control results/021-unary-expression-core-control/raw-report.json --candidate results/021-unary-expression-core/raw-report.json --experiment 021-comparison",
+		"conformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance -- --manifest .work/private-production/manifest.json --change-set issue-19-unary-expression-core,combined-final --experiment 021-conformance",
+		"profile": "env -u NODE_OPTIONS node scripts/profileTypeScript.ts .work/private-production/manifest.json results/021-unary-expression-core/raw-report.json results/021-candidate-profile.json",
+		"verify": "pnpm verify"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus with the same manifest, file identities, and digests as experiments 011, 014, and 019. Three fresh-process cache-reuse passes per state.",
+	"acceptance": [
+		"Repeatable decision-2595 prediction reduction and a measurable full-corpus improvement.",
+		"Expression precedence and associativity unchanged.",
+		"No parse-tree, token, diagnostic, acceptance, or recovery difference.",
+		"No fallback or ambiguity regression.",
+		"Full 1,244-file semantic-conformance gate passes."
+	]
+}

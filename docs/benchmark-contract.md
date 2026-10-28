@@ -74,7 +74,7 @@ and the bounded-policy alternative. `--allow-unsafe-heap` records an explicit
 override in `config.heapSafety.override` instead of hiding the risk. A persistent
 Q4 campaign below 8,192 MiB warns but proceeds.
 
-Bounded policies, tail selections, and the 51-file public corpus run under the
+Bounded policies, tail selections, and the 52-file public corpus run under the
 runtime default heap. The recorded heap and cache policy describe the benchmark
 configuration, not a production requirement; each report also records
 `config.heapSafety.scope` and the production guidance. No campaign raises the

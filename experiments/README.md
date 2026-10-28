@@ -76,6 +76,10 @@ promoted.
   harness heap limit and DFA cache policy; a persistent-cache production-scale
   campaign below 8,192 MiB fails before measurement, and comparison rejects
   differing heap or cache identities unless explicitly overridden.
+- `021-unary-expression-core`: decision 2595 resolves from the first two tokens
+  except for dedicated function keywords, `USING` modeling clauses, cursor
+  attributes, and `CASE`. Core fell a further 7.7% with identical structures,
+  diagnostics, and fallback counts.
 
 ## Remaining queue
 

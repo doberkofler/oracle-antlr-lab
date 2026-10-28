@@ -185,6 +185,16 @@ Experiments 011–019 rebaseline and test the follow-up opportunities on officia
   (−33.6%, 1.51×); against the 103.888 s official baseline it is −31.0%. All
   1,244 files remain structurally identical, with fallback files and diagnostics
   unchanged at 15 and 107.
+- Experiment 021 resolves decision 2595 in `unary_expression_core` from the
+  first two tokens, keeping prediction only for dedicated function keywords,
+  `USING` modeling clauses, cursor attributes, `TIME` literals, and `CASE`.
+  Core fell from 68.140 s to 62.913 s against a same-session control (−7.7%,
+  paired −4.201 ms per file) and peak RSS fell 6.1%. Adaptive-prediction calls
+  at the decision fell 97.1% on the tail profile. All 1,244 files remain
+  structurally identical, with fallback files and diagnostics unchanged at 15
+  and 107.
+- `CASE` is a non-reserved keyword: malformed `CASE` input can fall back to
+  `atom`, so the case expression deliberately keeps adaptive prediction.
 - Six fallback files require LL for acceptance; nine require its recovery tree.
 - Transactional streaming extraction can avoid a representative 43.4 MB retained
   tree without breaking retained-tree callers; it does not reduce shared DFA
@@ -199,7 +209,7 @@ Experiments 011–019 rebaseline and test the follow-up opportunities on officia
   runtime rather than reading the parent process.
 - A persistent-cache production-scale campaign requires at least 8,192 MiB and
   fails before the first file otherwise. `--allow-unsafe-heap` records an
-  explicit override. Bounded policies, tail selections, and the 51-file public
+  explicit override. Bounded policies, tail selections, and the 52-file public
   corpus remain usable under the default heap.
 - Production reports record the effective heap, its origin, the complete DFA
   cache policy, and a policy fingerprint. Comparison rejects differing heap or
