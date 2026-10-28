@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { runJavaProfile } from '../src/adapters/java.ts';
+import { createProgressReporter, formatDuration } from '../src/progress.ts';
 import { median } from '../src/stats.ts';
 import { type ParseObservation } from '../src/types.ts';
 
@@ -28,9 +29,13 @@ const selected = report.corpus.files
 	.sort((left, right) => right.medianCoreMs - left.medianCoreMs)
 	.slice(0, 12);
 
-process.stdout.write('Profiling the 12 highest-cost opaque files; ETA 5–15 minutes.\n');
+process.stdout.write('Profiling the 12 highest-cost opaque files.\n');
 const startedAt = performance.now();
-const profile = await runJavaProfile({ manifestPath, indexes: selected.map((file) => file.id) });
+const progress = createProgressReporter({ label: 'java profile', total: selected.length, unit: 'files' });
+const profile = await runJavaProfile({ manifestPath, indexes: selected.map((file) => file.id) }, (completed) => {
+	progress.advance(completed, 'profiling');
+});
+progress.finish();
 const result = {
 	schemaVersion: 1,
 	experiment: '004-bottleneck-profile',
@@ -43,8 +48,3 @@ const result = {
 
 writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
 process.stdout.write(`Profile complete in ${formatDuration(result.elapsedMs)}: ${path.relative(root, outputPath)}\n`);
-
-function formatDuration(milliseconds: number): string {
-	const seconds = Math.round(milliseconds / 1_000);
-	return `${String(Math.floor(seconds / 60))}m ${String(seconds % 60).padStart(2, '0')}s`;
-}

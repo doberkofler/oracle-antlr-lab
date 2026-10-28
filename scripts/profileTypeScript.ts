@@ -6,6 +6,7 @@ import { CharStream, CommonTokenStream } from 'antlr4ng';
 import { PlSqlLexer } from '../grammar/typescript/generated/PlSqlLexer.ts';
 import { PlSqlParser } from '../grammar/typescript/generated/PlSqlParser.ts';
 import { prepareConditional } from '../src/conditional.ts';
+import { createProgressReporter } from '../src/progress.ts';
 import { median } from '../src/stats.ts';
 import { type ParseObservation } from '../src/types.ts';
 
@@ -43,11 +44,14 @@ const selected = report.corpus.files
 const filesDir = path.join(path.dirname(manifestPath), 'files');
 const decisions = new Map<number, DecisionTotal>();
 const startedAt = performance.now();
+const progress = createProgressReporter({ label: 'profile', total: selected.length, unit: 'files' });
 
 for (const [index, file] of selected.entries()) {
 	profileSource(prepareConditional(readFileSync(path.join(filesDir, file.file), 'utf8')));
-	process.stderr.write(`[${String(index + 1)}/${String(selected.length)}] elapsed ${formatDuration(performance.now() - startedAt)}\n`);
+	progress.advance(index + 1, file.file);
 }
+
+progress.finish();
 
 const decisionRows = [...decisions.entries()]
 	.map(([decision, total]) => {
@@ -142,9 +146,4 @@ function add<Key>(target: Map<Key, DecisionTotal>, key: Key, value: DecisionTota
 	total.llFallbacks += value.llFallbacks;
 	total.ambiguities += value.ambiguities;
 	target.set(key, total);
-}
-
-function formatDuration(milliseconds: number): string {
-	const seconds = Math.max(0, Math.round(milliseconds / 1_000));
-	return `${String(Math.floor(seconds / 60))}m ${String(seconds % 60).padStart(2, '0')}s`;
 }

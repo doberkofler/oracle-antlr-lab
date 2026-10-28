@@ -5,6 +5,7 @@ import { type LexedTokens, tokenizeSource, tokenName } from '../grammar/typescri
 import { runJavaTokens } from '../src/adapters/java.ts';
 import { assertOpaqueIdentities } from '../src/conformance.ts';
 import { loadManifest } from '../src/corpus.ts';
+import { createProgressReporter } from '../src/progress.ts';
 
 type TokenPosition = Readonly<{ type: number | null; name: string; channel: number | null }>;
 type Difference = Readonly<{
@@ -57,13 +58,17 @@ const filesDir = path.join(path.dirname(manifestPath), 'files');
 const { manifest, files } = loadManifest(manifestPath, filesDir);
 assertOpaqueIdentities(manifest.visibility, files);
 
+const progress = createProgressReporter({ label: 'token diagnosis', total: files.length * 2, unit: 'files' });
 const javaByFile = new Map(
-	(await runJavaTokens({ manifestPath, indexes: files.map((file) => file.id), conditional: javaInput === 'prepared' })).map((observation) => [
-		observation.file,
-		observation,
-	]),
+	(
+		await runJavaTokens({ manifestPath, indexes: files.map((file) => file.id), conditional: javaInput === 'prepared' }, (completed) => {
+			progress.advance(completed, 'java tokens');
+		})
+	).map((observation) => [observation.file, observation]),
 );
-const differences = files.flatMap((file) => {
+const differences: Difference[] = [];
+
+for (const [index, file] of files.entries()) {
 	const java = javaByFile.get(file.file);
 
 	if (java === undefined) {
@@ -71,25 +76,25 @@ const differences = files.flatMap((file) => {
 	}
 
 	const typeScript = tokenizeSource(readFileSync(path.join(filesDir, file.file), 'utf8'));
-	const index = firstDivergence(typeScript, java);
+	const divergence = firstDivergence(typeScript, java);
 
-	if (index < 0) {
-		return [];
-	}
-
-	return [
-		{
+	if (divergence >= 0) {
+		differences.push({
 			file: file.path,
 			bytes: file.bytes,
 			sha256: file.sha256,
-			index,
-			typeScript: position(typeScript, index),
-			java: position(java, index),
+			index: divergence,
+			typeScript: position(typeScript, divergence),
+			java: position(java, divergence),
 			typeScriptTokens: typeScript.types.length,
 			javaTokens: java.types.length,
-		},
-	];
-});
+		});
+	}
+
+	progress.advance(files.length + index + 1, 'typescript tokens');
+}
+
+progress.finish(`${String(differences.length)} differing files`);
 const classes = summarize(differences);
 const directives = differences.filter((difference) => difference.typeScript.name.startsWith('DOLLAR_') || difference.java.name.startsWith('DOLLAR_')).length;
 const result: DiagnosisReport = {

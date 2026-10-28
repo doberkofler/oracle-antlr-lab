@@ -14,6 +14,7 @@ import {
 	type SelectionMemoryReport,
 	type TimingPass,
 } from '../src/memory.ts';
+import { createProgressReporter } from '../src/progress.ts';
 import { resolveBenchmarkSelection, type SelectionMode, workspaceRelative } from '../src/selection.ts';
 import { type CorpusFile, type ParseObservation } from '../src/types.ts';
 
@@ -78,6 +79,12 @@ if (parsed.dryRun) {
 
 mkdirSync(rawDir, { recursive: true });
 const selectionReports: SelectionMemoryReport[] = [];
+const totalUnits = selections.reduce(
+	(total, selection) => total + adapterNames.length * (2 + (selection.mode === 'full' ? parsed.fullRepeats : parsed.repeats)),
+	0,
+);
+const progress = createProgressReporter({ label: 'memory profile', total: totalUnits, unit: 'passes' });
+let completedUnits = 0;
 
 for (const selection of selections) {
 	const files = selection.files;
@@ -99,6 +106,8 @@ for (const selection of selections) {
 		const observations = await runPass({ manifestPath, filesDir, indexes });
 		const timing = summarizeTiming(name, selection.mode, observations, indexes.length);
 		const instrumented: MemoryPass[] = [];
+		completedUnits += 1;
+		progress.advance(completedUnits, `${selection.mode}/${name} timing`);
 
 		for (let repetition = 1; repetition <= repeats; repetition += 1) {
 			const prefix = path.join(rawDir, `${selection.mode}-${name}-r${String(repetition)}`);
@@ -118,6 +127,8 @@ for (const selection of selections) {
 						})
 					: await runJavaMemory({ manifestPath, indexes, gcEvery: parsed.gcEvery, treePosition });
 			instrumented.push({ ...body, adapter: name, selection: selection.mode, repetition });
+			completedUnits += 1;
+			progress.advance(completedUnits, `${selection.mode}/${name} repeat ${String(repetition)}/${String(repeats)}`);
 		}
 
 		adapters.push({
@@ -139,6 +150,8 @@ for (const selection of selections) {
 		adapters,
 	});
 }
+
+progress.finish(`${String(selectionReports.length)} selections`);
 
 const report: MemoryReport = {
 	schemaVersion: 1,
@@ -263,6 +276,10 @@ function parseArguments(args: readonly string[]): Readonly<{
 		if (argument === '--help') {
 			process.stdout.write(usage);
 			process.exit(0);
+		}
+
+		if (argument === '--') {
+			continue;
 		}
 
 		if (argument === '--no-allocation') {

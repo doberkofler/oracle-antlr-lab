@@ -4,6 +4,7 @@ import path from 'node:path';
 import { decisionStateCounts, evictDfaAtBoundary, parseSelectiveDfaSchedule, totalDfaStates } from '../grammar/typescript/dfaEviction.ts';
 import { parseSource } from '../grammar/typescript/parse.ts';
 import { loadManifest } from '../src/corpus.ts';
+import { createProgressReporter } from '../src/progress.ts';
 
 const usage = `Usage: pnpm dfa:eviction [options]
 
@@ -84,6 +85,8 @@ let parseDiagnostics = 0;
 let fallbackFiles = 0;
 let parser: ReturnType<typeof parseSource>['parser'] | null = null;
 
+const progress = createProgressReporter({ label: 'dfa eviction', total: files.length, unit: 'files' });
+
 for (const [position, entry] of files.entries()) {
 	const source = readFileSync(path.join(filesDir, entry.file), 'utf8');
 	const result = parseSource(source, entry, { treeHash: parsed.treeHash });
@@ -119,11 +122,7 @@ for (const [position, entry] of files.entries()) {
 		}
 	}
 
-	if ((position + 1) % 100 === 0 || position + 1 === files.length) {
-		process.stderr.write(
-			`[${String(position + 1)}/${String(files.length)}] ${formatDuration(performance.now() - startedAt)} heap=${String(Math.round(process.memoryUsage().heapUsed / 1_048_576))} MiB states=${String(totalDfaStates(parser))}\n`,
-		);
-	}
+	progress.advance(position + 1, `heap=${String(Math.round(process.memoryUsage().heapUsed / 1_048_576))} MiB states=${String(totalDfaStates(parser))}`);
 }
 
 const summary = {
@@ -250,9 +249,4 @@ function compareObservations(controlText: string, candidate: readonly Observatio
 
 function missingParser(): never {
 	throw new Error('The corpus selection was empty');
-}
-
-function formatDuration(milliseconds: number): string {
-	const seconds = Math.max(0, Math.round(milliseconds / 1_000));
-	return `${String(Math.floor(seconds / 60))}m ${String(seconds % 60).padStart(2, '0')}s`;
 }

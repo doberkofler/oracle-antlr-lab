@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { writeProgressLine } from '../../src/progress.ts';
 import { clearDfaAtBoundary, parseDfaCachePolicy } from './dfaCache.ts';
 import { evictDfaAtBoundary, parseSelectiveDfaSchedule } from './dfaEviction.ts';
 import { type FileEntry, type HarnessObservation, parseSource } from './parse.ts';
@@ -68,7 +69,7 @@ const results = selected.map((entry, selectedIndex) => {
 		if (stage === 'pass' && (selectedIndex === 0 || (selectedIndex + 1) % 10 === 0 || selectedIndex + 1 === selected.length)) {
 			const completed = selectedIndex + 1;
 			const elapsedMs = performance.now() - campaignStartedAt;
-			process.stderr.write(`[${String(completed)}/${String(selected.length)}] elapsed ${formatDuration(elapsedMs)}\n`);
+			writeProgressLine(`[${String(completed)}/${String(selected.length)}] elapsed ${formatDuration(elapsedMs)}\n`);
 		}
 
 		return result;
