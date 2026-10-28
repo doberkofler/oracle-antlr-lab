@@ -107,6 +107,31 @@ end edge_nested;
 `,
 );
 
+writeFileSync(
+	path.join(sourceRoot, 'edge_outer_join.sql'),
+	`select a.id, b.value
+from a, b
+where a.id = b.id(+)
+and a.value = func(+1)
+/
+`,
+);
+writeFileSync(
+	path.join(sourceRoot, 'edge_treat.sql'),
+	`select treat(l_value as json) as normalized
+from t
+/
+`,
+);
+writeFileSync(
+	path.join(sourceRoot, 'edge_argument_recovery.sql'),
+	`select 1 + from dual
+/
+select func(1) from dual
+/
+`,
+);
+
 for (let index = 0; index < 31; index += 1) {
 	const declarations = Array.from({ length: 10 + index }, (_, position) => declaration(position)).join('\n');
 	writeFileSync(
