@@ -8,6 +8,7 @@ import {
 	optimizeCollectionMethodCall,
 	optimizeGeneralElement,
 	optimizeGeneralElementPart,
+	optimizeGeneralElementPartPrediction,
 	optimizeGeneratedParser,
 	optimizeRoutineName,
 } from '../src/generatedParserOptimization.ts';
@@ -72,6 +73,37 @@ describe('optimizeGeneralElementPart', () => {
 		parser.sql_script();
 
 		expect(parser.numberOfSyntaxErrors).toBe(0);
+	});
+});
+
+describe('optimizeGeneralElementPartPrediction', () => {
+	it('resolves ordinary arguments and preserves the outer-join and TREAT paths', () => {
+		const optimized = optimizeGeneralElementPartPrediction(gatedGeneralElementPartSource());
+
+		expect(optimized).toContain('this.numberOfSyntaxErrors === 0');
+		expect(optimized).toContain('this.tokenStream.LA(2) === PlSqlParser.PLUS_SIGN && this.tokenStream.LA(3) === PlSqlParser.RIGHT_PAREN');
+		expect(optimized).toContain('this.tokenStream.LA(2) === PlSqlParser.TREAT');
+		expect(optimized.match(/adaptivePredict\(this\.tokenStream, 2985/gu)).toHaveLength(2);
+	});
+
+	it('requires the guarded loop from optimizeGeneralElementPart', () => {
+		expect(() => optimizeGeneralElementPartPrediction(generalElementPartSource())).toThrow(/gated shape/u);
+	});
+
+	it.each([
+		['begin x := foo(1); end;', 1],
+		['begin x := foo(+1); end;', 1],
+		['begin x := foo(1)(2); end;', 2],
+		['begin x := foo(TREAT(y AS JSON)); end;', 1],
+		['select * from a, b where a.id = b.id(+);', 0],
+	] as const)('preserves argument and non-argument parentheses for %s', (source, expectedArguments) => {
+		const tokens = new CommonTokenStream(new PlSqlLexer(CharStream.fromString(source)));
+		const parser = new PlSqlParser(tokens);
+		parser.removeErrorListeners();
+		const tree = parser.sql_script();
+
+		expect(parser.numberOfSyntaxErrors).toBe(0);
+		expect(maxFunctionArguments(tree)).toBe(expectedArguments);
 	});
 });
 
@@ -187,6 +219,14 @@ describe('optimizeGeneratedParser', () => {
 
 		expect(optimized.match(/this\.predictWithLl\(29(?:81|82)\)/gu)).toHaveLength(3);
 	});
+
+	it('applies the argument prediction transform to the guarded loop', () => {
+		const source = gatedGeneralElementPartSource();
+		const optimized = optimizeGeneratedParser(source, ['generalElementPartPrediction']);
+
+		expect(optimized).toContain('this.numberOfSyntaxErrors === 0');
+		expect(optimized.match(/adaptivePredict\(this\.tokenStream, 2985/gu)).toHaveLength(2);
+	});
 });
 
 const routineNameSource = (): string => `    public routine_name(): Routine_nameContext {
@@ -234,6 +274,17 @@ const generalElementPartSource = (): string => `    public general_element_part(
                     }
                 }
                 alternative = this.interpreter.adaptivePredict(this.tokenStream, 2985, this.context);
+            }
+    }`;
+
+const gatedGeneralElementPartSource = (): string => `    public general_element_part(): General_element_partContext {
+            while (this.tokenStream.LA(1) === PlSqlParser.LEFT_PAREN) {
+                alternative = this.interpreter.adaptivePredict(this.tokenStream, 2985, this.context);
+                if (alternative !== 1) {
+                    break;
+                }
+                this.state = 20941;
+                this.function_argument();
             }
     }`;
 

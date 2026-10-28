@@ -1,0 +1,76 @@
+{
+	"schemaVersion": 1,
+	"experiment": "019-general-element-part-prediction",
+	"selection": "12 highest-cost files from experiment 004",
+	"method": "ProfilingATNSimulator attribution; instrumented timings are directional and are not benchmark results.",
+	"control": {
+		"decision2993": {
+			"decision": 2993,
+			"rule": "general_element_part",
+			"timeInPredictionMs": 16432,
+			"invocations": 10622,
+			"sllAtnTransitions": 52174,
+			"sllDfaTransitions": 1044188,
+			"llAtnTransitions": 1534,
+			"llFallbacks": 767,
+			"ambiguities": 0
+		}
+	},
+	"candidate": {
+		"decision2993": {
+			"decision": 2993,
+			"rule": "general_element_part",
+			"timeInPredictionMs": 6003,
+			"invocations": 2753,
+			"sllAtnTransitions": 16714,
+			"sllDfaTransitions": 261794,
+			"llAtnTransitions": 1416,
+			"llFallbacks": 708,
+			"ambiguities": 0
+		},
+		"top": [
+			{
+				"decision": 2990,
+				"rule": "general_element",
+				"timeInPredictionMs": 6318,
+				"invocations": 15633,
+				"llFallbacks": 1987
+			},
+			{
+				"decision": 2993,
+				"rule": "general_element_part",
+				"timeInPredictionMs": 6003,
+				"invocations": 2753,
+				"llFallbacks": 708
+			},
+			{
+				"decision": 2595,
+				"rule": "unary_expression_core",
+				"timeInPredictionMs": 4251,
+				"invocations": 54548,
+				"llFallbacks": 254
+			},
+			{
+				"decision": 2251,
+				"rule": "statement",
+				"timeInPredictionMs": 1434,
+				"invocations": 15807,
+				"llFallbacks": 114
+			},
+			{
+				"decision": 2989,
+				"rule": "general_element",
+				"timeInPredictionMs": 999,
+				"invocations": 9472,
+				"llFallbacks": 1142
+			},
+			{
+				"decision": 2622,
+				"rule": "atom",
+				"timeInPredictionMs": 655,
+				"invocations": 53156,
+				"llFallbacks": 338
+			}
+		]
+	}
+}

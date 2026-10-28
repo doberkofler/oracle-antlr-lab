@@ -16,7 +16,21 @@ export type ConformanceChangeSet = Readonly<{
 
 const ALL_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = GENERATED_PARSER_OPTIMIZATIONS;
 
-/** Conformance gates for issues #1–#3 and the combined final state. */
+/**
+ * Optimizations accepted before issue #18.
+ *
+ * Kept explicit so adding a later transform does not silently redefine the
+ * control or candidate of a historical gate.
+ */
+const ESTABLISHED_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
+	'generalElement',
+	'collectionMethodCall',
+	'generalElementPart',
+	'bulkCollectAlias',
+	'routineName',
+];
+
+/** Conformance gates for issues #1–#3, #18, and the combined final state. */
 export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 	{
 		id: 'issue-1-general-element-part',
@@ -42,8 +56,17 @@ export const CONFORMANCE_CHANGE_SETS: readonly ConformanceChangeSet[] = [
 		experiment: '007-full-file-ll-fallback',
 		title: 'Resolve collection-method and BULK COLLECT fallbacks',
 		control: ['generalElement', 'generalElementPart', 'routineName'],
-		candidate: ALL_OPTIMIZATIONS,
+		candidate: ESTABLISHED_OPTIMIZATIONS,
 		policy: 'fallback-removal',
+	},
+	{
+		id: 'issue-18-general-element-part-prediction',
+		issue: 18,
+		experiment: '019-general-element-part-prediction',
+		title: 'Resolve general_element_part argument prediction with bounded lookahead',
+		control: ESTABLISHED_OPTIMIZATIONS,
+		candidate: ALL_OPTIMIZATIONS,
+		policy: 'none',
 	},
 	{
 		id: 'combined-final',

@@ -37,6 +37,10 @@ const parseOptimizations = (value: string): readonly GeneratedParserOptimization
 		throw new Error('collectionMethodCall requires generalElement');
 	}
 
+	if (known.includes('generalElementPartPrediction') && !known.includes('generalElementPart')) {
+		throw new Error('generalElementPartPrediction requires generalElementPart');
+	}
+
 	return known;
 };
 

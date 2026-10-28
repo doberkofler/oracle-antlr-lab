@@ -36,6 +36,60 @@ export const optimizeGeneralElementPart = (source: string): string => {
 	return source.replace(GENERAL_ELEMENT_PART_METHOD, `${matchedPrefix}${replacement}${suffix}`);
 };
 
+const GENERAL_ELEMENT_PART_ARGUMENT_LOOP =
+	/(?<prefix>    public general_element_part\(\): General_element_partContext \{[\s\S]*?)(?<loop>            while \(this\.tokenStream\.LA\(1\) === PlSqlParser\.LEFT_PAREN\) \{\n                alternative = this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\);\n                if \(alternative !== 1\) \{\n                    break;\n                \}\n                this\.state = (?<argumentState>\d+);\n                this\.function_argument\(\);\n            \})(?<suffix>[\s\S]*?^    \})/mu;
+
+/**
+ * Resolves the `general_element_part` argument loop without adaptive prediction.
+ *
+ * The loop is entered only when `LEFT_PAREN` follows. Oracle's outer-join marker
+ * `(+)` is the only common construct that must leave the parenthesis to the
+ * caller, so it exits directly. `TREAT` keeps context-sensitive prediction
+ * because its parenthesized syntax is not a function-argument list. Every other
+ * parenthesis is an argument list on accepted input. After a syntax error the
+ * original prediction still runs so recovery behavior is unchanged.
+ *
+ * Requires {@link optimizeGeneralElementPart} to be applied first.
+ *
+ * @param source - Generated `PlSqlParser.ts` source.
+ * @returns Source whose argument loop avoids prediction for ordinary calls.
+ */
+export const optimizeGeneralElementPartPrediction = (source: string): string => {
+	const match = GENERAL_ELEMENT_PART_ARGUMENT_LOOP.exec(source);
+
+	if (match?.groups === undefined) {
+		throw new Error('Generated general_element_part loop did not match the gated shape; run optimizeGeneralElementPart first');
+	}
+	const decision = match.groups['decision'];
+	const argumentState = match.groups['argumentState'];
+	const matchedPrefix = match.groups['prefix'];
+	const suffix = match.groups['suffix'];
+
+	if (decision === undefined || argumentState === undefined || matchedPrefix === undefined || suffix === undefined) {
+		throw new Error('Generated general_element_part loop has incomplete captures');
+	}
+
+	const prediction = `this.interpreter.adaptivePredict(this.tokenStream, ${decision}, this.context)`;
+	const replacement = [
+		'            while (this.tokenStream.LA(1) === PlSqlParser.LEFT_PAREN) {',
+		'                alternative = this.numberOfSyntaxErrors === 0',
+		'                    ? (this.tokenStream.LA(2) === PlSqlParser.PLUS_SIGN && this.tokenStream.LA(3) === PlSqlParser.RIGHT_PAREN',
+		'                        ? 2',
+		'                        : this.tokenStream.LA(2) === PlSqlParser.TREAT',
+		`                            ? ${prediction}`,
+		'                            : 1)',
+		`                    : ${prediction};`,
+		'                if (alternative !== 1) {',
+		'                    break;',
+		'                }',
+		`                this.state = ${argumentState};`,
+		'                this.function_argument();',
+		'            }',
+	].join('\n');
+
+	return source.replace(GENERAL_ELEMENT_PART_ARGUMENT_LOOP, `${matchedPrefix}${replacement}${suffix}`);
+};
+
 const ROUTINE_NAME_LOOP =
 	/(?<prefix>    public routine_name\(\): Routine_nameContext \{[\s\S]*?)(?<loop>            this\.state = \d+;\n            this\.errorHandler\.sync\(this\);\n            alternative = this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\);\n            while \(alternative !== 2 && alternative !== antlr\.ATN\.INVALID_ALT_NUMBER\) \{\n                if \(alternative === 1\) \{\n                    \{\n                    \{\n                    this\.state = (?<periodState>\d+);\n                    this\.match\(PlSqlParser\.PERIOD\);\n                    this\.state = (?<expressionState>\d+);\n                    this\.id_expression\(\);\n                    \}\n                    \}\n                \}\n                this\.state = \d+;\n                this\.errorHandler\.sync\(this\);\n                alternative = this\.interpreter\.adaptivePredict\(this\.tokenStream, \d+, this\.context\);\n            \})(?<suffix>[\s\S]*?^    \})/mu;
 
@@ -247,13 +301,20 @@ export const optimizeBulkCollectAlias = (source: string): string => {
 };
 
 /** Generated-parser optimizations that experiments may enable independently. */
-export type GeneratedParserOptimization = 'bulkCollectAlias' | 'collectionMethodCall' | 'generalElement' | 'generalElementPart' | 'routineName';
+export type GeneratedParserOptimization =
+	| 'bulkCollectAlias'
+	| 'collectionMethodCall'
+	| 'generalElement'
+	| 'generalElementPart'
+	| 'generalElementPartPrediction'
+	| 'routineName';
 
 /** Every generated-parser optimization, in the order required by its transforms. */
 export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
 	'generalElement',
 	'collectionMethodCall',
 	'generalElementPart',
+	'generalElementPartPrediction',
 	'bulkCollectAlias',
 	'routineName',
 ];
@@ -263,6 +324,7 @@ const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) 
 	collectionMethodCall: optimizeCollectionMethodCall,
 	generalElement: optimizeGeneralElement,
 	generalElementPart: optimizeGeneralElementPart,
+	generalElementPartPrediction: optimizeGeneralElementPartPrediction,
 	routineName: optimizeRoutineName,
 };
 

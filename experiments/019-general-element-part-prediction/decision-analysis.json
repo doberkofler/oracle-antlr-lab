@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"experiment": "019-general-element-part-prediction",
+	"corpus": {
+		"id": "private-production-20261027",
+		"files": 1244,
+		"sourceBytes": 20944414,
+		"visibility": "private"
+	},
+	"method": "The pre-change parser was instrumented at decision 2993 during one complete cache-reuse pass. Token types, prediction mode, and the selected alternative were recorded; token, source, and diagnostic text were not retained in the published aggregate.",
+	"control": {
+		"decision": 2993,
+		"rule": "general_element_part",
+		"calls": 55402,
+		"llCalls": 2605,
+		"continue": 55248,
+		"exit": 154,
+		"exitPatterns": {
+			"parenthesisPlusParenthesis": 152,
+			"parenthesisTreat": 2
+		}
+	},
+	"interpretation": "On the frozen corpus, the loop exits only for Oracle's (+) outer-join marker and for TREAT. Every other parenthesized continuation was an argument list. The candidate therefore continues without prediction, exits on (+), keeps prediction for TREAT, and restores the original prediction after a syntax error."
+}

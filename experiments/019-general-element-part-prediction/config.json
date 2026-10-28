@@ -1,0 +1,22 @@
+{
+	"experiment": "019-general-element-part-prediction",
+	"issue": 18,
+	"question": "Can the remaining general_element_part argument-loop prediction be replaced by bounded lookahead without changing parse trees, diagnostics, acceptance, or recovery?",
+	"control": "The five generated-parser transforms accepted before issue #18, including the LEFT_PAREN loop guard from experiment 005.",
+	"candidate": "The same five transforms plus a bounded lookahead transform for the function_argument loop: ordinary parentheses continue, Oracle's (+) outer-join marker exits, TREAT keeps adaptive prediction, and syntax-error recovery keeps the original prediction.",
+	"commands": {
+		"control": "LAB_GENERATED_OPTIMIZATIONS=generalElement,collectionMethodCall,generalElementPart,bulkCollectAlias,routineName pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 019-general-element-part-prediction-control",
+		"candidate": "pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 019-general-element-part-prediction",
+		"conformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance -- --manifest .work/private-production/manifest.json --change-set issue-18-general-element-part-prediction --experiment 019-general-element-part-prediction",
+		"combinedConformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance -- --manifest .work/private-production/manifest.json --change-set combined-final --experiment 019-combined-conformance",
+		"profile": "env -u NODE_OPTIONS node scripts/profileTypeScript.ts .work/private-production/tail-manifest.json results/019-general-element-part-prediction/raw-report.json results/019-general-element-part-prediction-profile.json"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus with the same manifest, file identities, and digests as experiment 011. Three fresh-process cache-reuse passes per state.",
+	"acceptance": [
+		"Repeatable decision-2993 and full-corpus parser-core reduction.",
+		"Zero unexplained differences in parse trees, tokens, diagnostics, accepted units, or recovery.",
+		"No increase in full-file fallback or ambiguity.",
+		"Full 1,244-file semantic-conformance gate passes.",
+		"Changed behavior remains confined to clean-input parentheses that cannot be a function-argument list."
+	]
+}
