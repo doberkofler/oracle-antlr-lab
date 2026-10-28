@@ -64,8 +64,9 @@ The checked-in change sets are:
 | `issue-2-routine-name-and-general-element` |    #2 | `006-routine-name-and-general-element`  | `generalElementPart`                                  | `generalElement`, `generalElementPart`, `routineName` |
 | `issue-3-full-file-ll-fallback`            |    #3 | `007-full-file-ll-fallback`             | `generalElement`, `generalElementPart`, `routineName` | the five transforms accepted by issue #3              |
 | `issue-18-general-element-part-prediction` |   #18 | `019-general-element-part-prediction`   | the five transforms accepted by issue #3              | the six transforms accepted by issue #18              |
-| `issue-19-unary-expression-core`           |   #19 | `021-unary-expression-core`             | the six transforms accepted by issue #18              | all seven transforms                                  |
-| `combined-final`                           |    #6 | `009-semantic-conformance`              | none                                                  | all seven transforms                                  |
+| `issue-19-unary-expression-core`           |   #19 | `021-unary-expression-core`             | the six transforms accepted by issue #18              | the seven transforms accepted by issue #19            |
+| `issue-20-remaining-ll-fallbacks`          |   #20 | `022-remaining-ll-fallbacks`            | the seven transforms accepted by issue #19            | all nine transforms                                   |
+| `combined-final`                           |    #6 | `009-semantic-conformance`              | none                                                  | all nine transforms                                   |
 
 Every grammar or parser-recovery commit must have its own gate. A final combined
 result does not replace the per-change result.

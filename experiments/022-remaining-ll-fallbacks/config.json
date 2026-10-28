@@ -1,0 +1,24 @@
+{
+	"experiment": "022-remaining-ll-fallbacks",
+	"issue": 20,
+	"question": "Can the remaining valid full-file LL fallbacks be replaced by local decisions without corpus identity, source text, or file-order heuristics?",
+	"control": "The seven generated-parser transforms accepted before issue #20.",
+	"candidate": "The same seven transforms plus two local decisions: declaration sections defer to BEGIN, and the table_ref_aux alias decision defers to a bare JOIN.",
+	"commands": {
+		"control": "LAB_GENERATED_OPTIMIZATIONS=generalElement,collectionMethodCall,generalElementPart,generalElementPartPrediction,bulkCollectAlias,routineName,unaryExpressionCore pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 022-remaining-ll-fallbacks-control",
+		"candidate": "pnpm grammar:generate && NODE_OPTIONS=--max-old-space-size=8192 pnpm benchmark:production --manifest .work/private-production/manifest.json --selection full --repeats 3 --experiment 022-remaining-ll-fallbacks",
+		"compare": "pnpm benchmark:compare --control results/022-remaining-ll-fallbacks-control/raw-report.json --candidate results/022-remaining-ll-fallbacks/raw-report.json --experiment 022-comparison",
+		"conformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance -- --manifest .work/private-production/manifest.json --change-set issue-20-remaining-ll-fallbacks --experiment 022-conformance",
+		"combinedConformance": "NODE_OPTIONS=--max-old-space-size=8192 pnpm conformance -- --manifest .work/private-production/manifest.json --change-set combined-final --experiment 022-conformance",
+		"publicConformance": "pnpm conformance -- --manifest corpora/public/manifest.json --experiment 022-public-conformance",
+		"verify": "pnpm verify"
+	},
+	"selection": "Complete frozen 1,244-file opaque production corpus with the same manifest, file identities, and digests as experiments 011–021. Three fresh-process cache-reuse passes per state.",
+	"acceptance": [
+		"No corpus identity, source path, source text, or file-order heuristic.",
+		"Every removed full-file fallback is explained by a local grammar decision.",
+		"No parse-tree, token, diagnostic, acceptance, or recovery difference.",
+		"Full 1,244-file semantic-conformance gate passes.",
+		"A repeatable full-corpus parser-core improvement with unchanged fallback semantics for rejected files."
+	]
+}

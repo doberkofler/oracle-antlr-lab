@@ -115,8 +115,8 @@ describe('assertOpaqueIdentities', () => {
 });
 
 describe('conformance change sets', () => {
-	it('gates issues #1–#3, #18, #19, and the combined final state', () => {
-		expect(CONFORMANCE_CHANGE_SETS.map((change) => change.issue)).toEqual([1, 2, 3, 18, 19, 6]);
+	it('gates issues #1–#3, #18, #19, #20, and the combined final state', () => {
+		expect(CONFORMANCE_CHANGE_SETS.map((change) => change.issue)).toEqual([1, 2, 3, 18, 19, 20, 6]);
 		expect(CONFORMANCE_CHANGE_SETS[0]?.control).toEqual([]);
 		expect(CONFORMANCE_CHANGE_SETS[0]?.candidate).toEqual(['generalElementPart']);
 		expect(CONFORMANCE_CHANGE_SETS[1]?.control).toEqual(['generalElementPart']);
@@ -128,18 +128,31 @@ describe('conformance change sets', () => {
 		expect(CONFORMANCE_CHANGE_SETS[3]?.candidate).not.toContain('unaryExpressionCore');
 		expect(CONFORMANCE_CHANGE_SETS[4]?.control).toEqual(CONFORMANCE_CHANGE_SETS[3]?.candidate);
 		expect(CONFORMANCE_CHANGE_SETS[4]?.candidate).toContain('unaryExpressionCore');
-		expect(CONFORMANCE_CHANGE_SETS[5]?.control).toEqual([]);
+		expect(CONFORMANCE_CHANGE_SETS[4]?.candidate).not.toContain('declareSpecs');
+		expect(CONFORMANCE_CHANGE_SETS[5]?.control).toEqual(CONFORMANCE_CHANGE_SETS[4]?.candidate);
+		expect(CONFORMANCE_CHANGE_SETS[5]?.candidate).toContain('declareSpecs');
+		expect(CONFORMANCE_CHANGE_SETS[5]?.candidate).toContain('joinAlias');
+		expect(CONFORMANCE_CHANGE_SETS[6]?.control).toEqual([]);
 		expect(CONFORMANCE_CHANGE_SETS.map((change) => change.experiment)).toEqual([
 			'005-general-element-part-optimization',
 			'006-routine-name-and-general-element',
 			'007-full-file-ll-fallback',
 			'019-general-element-part-prediction',
 			'021-unary-expression-core',
+			'022-remaining-ll-fallbacks',
 			'009-semantic-conformance',
 		]);
 	});
 
 	it('marks only the fallback-removal change sets as intentionally different', () => {
-		expect(CONFORMANCE_CHANGE_SETS.map((change) => change.policy)).toEqual(['none', 'none', 'fallback-removal', 'none', 'none', 'fallback-removal']);
+		expect(CONFORMANCE_CHANGE_SETS.map((change) => change.policy)).toEqual([
+			'none',
+			'none',
+			'fallback-removal',
+			'none',
+			'none',
+			'fallback-removal',
+			'fallback-removal',
+		]);
 	});
 });

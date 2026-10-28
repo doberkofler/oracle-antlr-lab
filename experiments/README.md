@@ -80,10 +80,14 @@ promoted.
   except for dedicated function keywords, `USING` modeling clauses, cursor
   attributes, and `CASE`. Core fell a further 7.7% with identical structures,
   diagnostics, and fallback counts.
+- `022-remaining-ll-fallbacks`: declaration sections defer to `BEGIN` and the
+  `table_ref_aux` alias decision defers to a bare `JOIN`. Fallback files fell
+  from 15 to 9, core fell a further 1.03%, and all six accepted fallbacks were
+  replaced by documented local decisions with identical structures.
 
 ## Remaining queue
 
-1. Test local transforms for decisions 2990 and 2989 in `general_element` and
-   decision 2595 in `unary_expression_core`.
+1. Test local transforms for decisions 2990 and 2989 in `general_element`.
 2. Require a standalone Java conditional-compilation boundary before adoption.
-3. Localize the remaining valid LL fallbacks.
+3. Classify the nine remaining recovery fallbacks; they require a separate
+   recovery-tree and diagnostic gate.
