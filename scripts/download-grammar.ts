@@ -1,5 +1,6 @@
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 /**
@@ -8,14 +9,14 @@ import path from 'node:path';
  * grammar in place: a grammar change is a new patch and a new experiment.
  */
 const PIN = {
-	commit: '5be087cfe78c4eb78374a1c81324848876661f9a',
+	commit: 'b96e04db9d54bb313e542cc3e6ee913900a21520',
 	lexer: {
 		path: 'sql/plsql/PlSqlLexer.g4',
 		sha256: 'aaddaa2f9d40e10ab71e83a402499ae893aa7f03497a631e5c12f2c4cd1d2567',
 	},
 	parser: {
 		path: 'sql/plsql/PlSqlParser.g4',
-		sha256: '2437508c3e8126d0a09c4cc98fc12741a9d25350b4626350805afdcb74956827',
+		sha256: '271bd58495208231f0885132270f59a79aa11faffd8a1c5d1504f0c776af5d5c',
 	},
 	lexerBase: {
 		path: 'sql/plsql/Antlr4ng/PlSqlLexerBase.ts',
@@ -30,11 +31,20 @@ const PIN = {
 const root = path.resolve(import.meta.dirname, '..');
 const grammarRoot = path.join(root, 'grammar');
 const upstreamRoot = path.join(grammarRoot, 'upstream');
+const patchedRoot = path.join(grammarRoot, 'patched');
 const adaptedRoot = path.join(grammarRoot, 'adapted');
 const baseRoot = path.join(grammarRoot, 'typescript');
-type Patch = Readonly<{ file: string; find: string; replace: string; reason: string }>;
+const patchRoot = path.join(grammarRoot, 'patches');
 
-const patches: readonly Patch[] = [
+type Adaptation = Readonly<{ file: string; find: string; replace: string; reason: string }>;
+type SourcePatch = Readonly<{
+	file: string;
+	sha256: string;
+	reason: string;
+	upstreamPullRequest: string;
+}>;
+
+const adaptations: readonly Adaptation[] = [
 	{
 		file: 'PlSqlLexer.g4',
 		find: '// Insert here @header for C++ lexer.',
@@ -46,6 +56,51 @@ const patches: readonly Patch[] = [
 		find: '// Insert here @header for C++ parser.',
 		replace: '@header {import {PlSqlParserBase} from "../plSqlParserBase.js";}',
 		reason: 'TypeScript parser base import.',
+	},
+];
+
+const sourcePatches: readonly SourcePatch[] = [
+	{
+		file: '5132-atom-subquery-operation-part.patch',
+		sha256: 'c213ecde68029033a9b08e7611d2784f0292d3108d7adb348cb24fecb54c0563',
+		reason: 'Remove the redundant subquery_operation_part sequence from atom.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5132',
+	},
+	{
+		file: '5153-bare-join-predicate.patch',
+		sha256: '02eef45b16e7b63bea7817d518d561cd3437555c908ac968187f219c89337597',
+		reason: 'Treat bare JOIN as a join-clause starter in the TypeScript parser base.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5153',
+	},
+	{
+		file: '5154-compression-identifier.patch',
+		sha256: '462e5b90546216a4fe544323a3100b57f968f3527447efe5b170486bfa0e9b09',
+		reason: 'Allow COMPRESSION as a regular identifier.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5154',
+	},
+	{
+		file: '5155-json-serialize-expression.patch',
+		sha256: 'ca99d3b90510a5b730439b4e46125a00e12b3de555f65715be8708a8f2117133',
+		reason: 'Accept scalar expression input in JSON_SERIALIZE.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5155',
+	},
+	{
+		file: '5156-parenthesized-is-json-mode.patch',
+		sha256: 'edf619c0e4f923c9f0f126689bacff27a4e9127c6a421570e51cd43413d83a91',
+		reason: 'Accept parenthesized STRICT and LAX modifiers in IS JSON.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5156',
+	},
+	{
+		file: '5157-record-field-null.patch',
+		sha256: '040881e12600afdd61b672a0cff3987ead8e432b0375ca6c30be7b39e9ecac39',
+		reason: 'Accept explicit NULL constraints in record fields.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5157',
+	},
+	{
+		file: '5158-delimited-record-insert.patch',
+		sha256: 'c3936f33981a420d8bc0a4d272485c1f11e96781201576fe5be487d5aafaf848',
+		reason: 'Accept delimited record names in the PL/SQL INSERT extension.',
+		upstreamPullRequest: 'https://github.com/antlr/grammars-v4/pull/5158',
 	},
 ];
 
@@ -66,14 +121,33 @@ const fetchPinned = async (sourcePath: string, expectedDigest: string): Promise<
 	return bytes;
 };
 
-const applyPatch = (source: string, patch: Patch): string => {
-	const first = source.indexOf(patch.find);
+const applyAdaptation = (source: string, adaptation: Adaptation): string => {
+	const first = source.indexOf(adaptation.find);
 
-	if (first < 0 || first !== source.lastIndexOf(patch.find)) {
-		throw new Error(`Patch for ${patch.file} must match exactly once: ${patch.reason}`);
+	if (first < 0 || first !== source.lastIndexOf(adaptation.find)) {
+		throw new Error(`Adaptation for ${adaptation.file} must match exactly once: ${adaptation.reason}`);
 	}
 
-	return source.replace(patch.find, patch.replace);
+	return source.replace(adaptation.find, adaptation.replace);
+};
+
+const applySourcePatch = (patch: SourcePatch): void => {
+	const patchPath = path.join(patchRoot, patch.file);
+	const patchBytes = readFileSync(patchPath);
+	const actualDigest = createHash('sha256').update(patchBytes).digest('hex');
+
+	if (actualDigest !== patch.sha256) {
+		throw new Error(`${patch.file} digest mismatch: expected ${patch.sha256}, got ${actualDigest}`);
+	}
+
+	const result = spawnSync('git', ['apply', '--whitespace=nowarn', patchPath], {
+		cwd: root,
+		encoding: 'utf8',
+	});
+
+	if (result.status !== 0) {
+		throw new Error(`Unable to apply ${patch.file}: ${result.stderr.trim()}`);
+	}
 };
 
 const main = async (): Promise<void> => {
@@ -85,6 +159,7 @@ const main = async (): Promise<void> => {
 	]);
 
 	mkdirSync(upstreamRoot, { recursive: true });
+	mkdirSync(patchedRoot, { recursive: true });
 	mkdirSync(adaptedRoot, { recursive: true });
 	mkdirSync(baseRoot, { recursive: true });
 
@@ -92,36 +167,51 @@ const main = async (): Promise<void> => {
 	writeFileSync(path.join(upstreamRoot, 'PlSqlParser.g4'), parserBytes);
 	writeFileSync(path.join(upstreamRoot, 'PlSqlLexerBase.ts'), lexerBaseBytes);
 	writeFileSync(path.join(upstreamRoot, 'PlSqlParserBase.ts'), parserBaseBytes);
+	writeFileSync(path.join(patchedRoot, 'PlSqlParser.g4'), parserBytes);
+	writeFileSync(path.join(baseRoot, 'plSqlLexerBase.ts'), lexerBaseSource(lexerBaseBytes.toString('utf8')));
+	writeFileSync(path.join(baseRoot, 'plSqlParserBase.ts'), parserBaseSource(parserBaseBytes.toString('utf8')));
+
+	for (const patch of sourcePatches) {
+		applySourcePatch(patch);
+	}
 
 	let lexer = lexerBytes.toString('utf8');
-	let parser = parserBytes.toString('utf8');
+	let parser = readFileSync(path.join(patchedRoot, 'PlSqlParser.g4'), 'utf8');
 
-	for (const patch of patches) {
-		if (patch.file === 'PlSqlLexer.g4') {
-			lexer = applyPatch(lexer, patch);
+	for (const adaptation of adaptations) {
+		if (adaptation.file === 'PlSqlLexer.g4') {
+			lexer = applyAdaptation(lexer, adaptation);
 		} else {
-			parser = applyPatch(parser, patch);
+			parser = applyAdaptation(parser, adaptation);
 		}
 	}
 
 	writeFileSync(path.join(adaptedRoot, 'PlSqlLexer.g4'), lexer);
 	writeFileSync(path.join(adaptedRoot, 'PlSqlParser.g4'), parser);
-	writeFileSync(path.join(baseRoot, 'plSqlLexerBase.ts'), lexerBaseSource(lexerBaseBytes.toString('utf8')));
-	writeFileSync(path.join(baseRoot, 'plSqlParserBase.ts'), parserBaseSource(parserBaseBytes.toString('utf8')));
+
+	const patchedParser = readFileSync(path.join(patchedRoot, 'PlSqlParser.g4'));
+	const adaptedLexer = readFileSync(path.join(adaptedRoot, 'PlSqlLexer.g4'));
+	const adaptedParser = readFileSync(path.join(adaptedRoot, 'PlSqlParser.g4'));
+	const adaptedParserBase = readFileSync(path.join(baseRoot, 'plSqlParserBase.ts'));
 
 	const manifest = {
-		schemaVersion: 1,
+		schemaVersion: 2,
 		upstream: PIN,
-		patches: patches.map((patch) => ({ file: patch.file, reason: patch.reason })),
+		adaptations: adaptations.map((adaptation) => ({ file: adaptation.file, reason: adaptation.reason })),
+		patches: sourcePatches,
+		patched: {
+			parserSha256: createHash('sha256').update(patchedParser).digest('hex'),
+		},
 		adapted: {
-			lexerSha256: createHash('sha256').update(lexer).digest('hex'),
-			parserSha256: createHash('sha256').update(parser).digest('hex'),
+			lexerSha256: createHash('sha256').update(adaptedLexer).digest('hex'),
+			parserSha256: createHash('sha256').update(adaptedParser).digest('hex'),
+			parserBaseSha256: createHash('sha256').update(adaptedParserBase).digest('hex'),
 		},
 	};
 	writeFileSync(path.join(grammarRoot, 'pin.json'), `${JSON.stringify(manifest, null, '\t')}\n`);
 
 	process.stdout.write(
-		`Pinned ${PIN.commit}\nAdapted lexer ${manifest.adapted.lexerSha256.slice(0, 12)}\nAdapted parser ${manifest.adapted.parserSha256.slice(0, 12)}\n`,
+		`Pinned ${PIN.commit}\nApplied ${String(sourcePatches.length)} source patches\nAdapted lexer ${manifest.adapted.lexerSha256.slice(0, 12)}\nAdapted parser ${manifest.adapted.parserSha256.slice(0, 12)}\n`,
 	);
 };
 

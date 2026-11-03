@@ -4,12 +4,14 @@
 
 - Upstream project: [`antlr/grammars-v4`](https://github.com/antlr/grammars-v4)
 - Upstream paths: `sql/plsql/PlSqlLexer.g4`, `sql/plsql/PlSqlParser.g4`, and the corresponding `Antlr4ng` base classes
-- Pinned commit: `5be087cfe78c4eb78374a1c81324848876661f9a`
+- Pinned commit: `b96e04db9d54bb313e542cc3e6ee913900a21520`
 - License: Apache License 2.0
 
-`scripts/download-grammar.ts` verifies the upstream digests before applying the
-TypeScript target imports listed in `grammar/pin.json`. The grammar carries no
-local semantic patches.
+`scripts/download-grammar.ts` verifies the upstream and patch digests before
+applying the TypeScript target imports and the ordered patch series listed in
+`grammar/pin.json`. The semantic patches correspond to upstream PR #5132 and
+#5153–#5158; they remain local until those PRs merge into the pinned upstream
+revision.
 
 ## ANTLR runtimes and tools
 

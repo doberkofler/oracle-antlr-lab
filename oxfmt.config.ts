@@ -10,6 +10,7 @@ export default {
 		'grammar/typescript/plSqlLexerBase.ts',
 		'grammar/typescript/plSqlParserBase.ts',
 		'grammar/upstream/**',
+		'grammar/patched/**',
 		'grammar/adapted/**',
 		'.work/**',
 		'results/**',

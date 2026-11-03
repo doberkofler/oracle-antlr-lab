@@ -113,7 +113,8 @@ public abstract class PlSqlParserBase extends Parser {
 		}
 
 		int type = lt1.getType();
-		return !(type == PlSqlLexer.INNER || type == PlSqlLexer.CROSS || type == PlSqlLexer.NATURAL || type == PlSqlLexer.PARTITION
-				|| type == PlSqlLexer.FULL || type == PlSqlLexer.LEFT || type == PlSqlLexer.RIGHT || type == PlSqlLexer.OUTER);
+		return !(type == PlSqlLexer.JOIN || type == PlSqlLexer.INNER || type == PlSqlLexer.CROSS || type == PlSqlLexer.NATURAL
+				|| type == PlSqlLexer.PARTITION || type == PlSqlLexer.FULL || type == PlSqlLexer.LEFT || type == PlSqlLexer.RIGHT
+				|| type == PlSqlLexer.OUTER);
 	}
 }

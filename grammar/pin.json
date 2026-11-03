@@ -1,14 +1,14 @@
 {
-	"schemaVersion": 1,
+	"schemaVersion": 2,
 	"upstream": {
-		"commit": "5be087cfe78c4eb78374a1c81324848876661f9a",
+		"commit": "b96e04db9d54bb313e542cc3e6ee913900a21520",
 		"lexer": {
 			"path": "sql/plsql/PlSqlLexer.g4",
 			"sha256": "aaddaa2f9d40e10ab71e83a402499ae893aa7f03497a631e5c12f2c4cd1d2567"
 		},
 		"parser": {
 			"path": "sql/plsql/PlSqlParser.g4",
-			"sha256": "2437508c3e8126d0a09c4cc98fc12741a9d25350b4626350805afdcb74956827"
+			"sha256": "271bd58495208231f0885132270f59a79aa11faffd8a1c5d1504f0c776af5d5c"
 		},
 		"lexerBase": {
 			"path": "sql/plsql/Antlr4ng/PlSqlLexerBase.ts",
@@ -19,7 +19,7 @@
 			"sha256": "f83c2eab005f3174f2b506c7e553577f96c336fc18e7c456a58c273566c634eb"
 		}
 	},
-	"patches": [
+	"adaptations": [
 		{
 			"file": "PlSqlLexer.g4",
 			"reason": "TypeScript lexer base import."
@@ -29,8 +29,56 @@
 			"reason": "TypeScript parser base import."
 		}
 	],
+	"patches": [
+		{
+			"file": "5132-atom-subquery-operation-part.patch",
+			"sha256": "c213ecde68029033a9b08e7611d2784f0292d3108d7adb348cb24fecb54c0563",
+			"reason": "Remove the redundant subquery_operation_part sequence from atom.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5132"
+		},
+		{
+			"file": "5153-bare-join-predicate.patch",
+			"sha256": "02eef45b16e7b63bea7817d518d561cd3437555c908ac968187f219c89337597",
+			"reason": "Treat bare JOIN as a join-clause starter in the TypeScript parser base.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5153"
+		},
+		{
+			"file": "5154-compression-identifier.patch",
+			"sha256": "462e5b90546216a4fe544323a3100b57f968f3527447efe5b170486bfa0e9b09",
+			"reason": "Allow COMPRESSION as a regular identifier.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5154"
+		},
+		{
+			"file": "5155-json-serialize-expression.patch",
+			"sha256": "ca99d3b90510a5b730439b4e46125a00e12b3de555f65715be8708a8f2117133",
+			"reason": "Accept scalar expression input in JSON_SERIALIZE.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5155"
+		},
+		{
+			"file": "5156-parenthesized-is-json-mode.patch",
+			"sha256": "edf619c0e4f923c9f0f126689bacff27a4e9127c6a421570e51cd43413d83a91",
+			"reason": "Accept parenthesized STRICT and LAX modifiers in IS JSON.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5156"
+		},
+		{
+			"file": "5157-record-field-null.patch",
+			"sha256": "040881e12600afdd61b672a0cff3987ead8e432b0375ca6c30be7b39e9ecac39",
+			"reason": "Accept explicit NULL constraints in record fields.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5157"
+		},
+		{
+			"file": "5158-delimited-record-insert.patch",
+			"sha256": "c3936f33981a420d8bc0a4d272485c1f11e96781201576fe5be487d5aafaf848",
+			"reason": "Accept delimited record names in the PL/SQL INSERT extension.",
+			"upstreamPullRequest": "https://github.com/antlr/grammars-v4/pull/5158"
+		}
+	],
+	"patched": {
+		"parserSha256": "592733617486cb835e37f6c58a8eb40ab5c9d24d29ce58e193ad16d369563b87"
+	},
 	"adapted": {
 		"lexerSha256": "1c9e968dc8fb13743cc23863920035a60eb80cc376fb56b38d4f54c69f3880d5",
-		"parserSha256": "69cabb87021c814ab05562ff79b959ccfb71012da33944b94ad9c2b381a27ce1"
+		"parserSha256": "314e8a357576dde42f400f9c634037f35bc577b8b731874650acf74d3aa3302f",
+		"parserBaseSha256": "db721c61bfaa316244375296450507e44dec6f4353cdf105c0178a92672905ff"
 	}
 }

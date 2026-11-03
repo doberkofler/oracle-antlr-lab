@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { PlSqlLexer } from '../grammar/typescript/generated/PlSqlLexer.ts';
 import { PlSqlParser, Unary_expression_coreContext } from '../grammar/typescript/generated/PlSqlParser.ts';
 import {
+	DEFAULT_GENERATED_PARSER_OPTIMIZATIONS,
+	GENERATED_PARSER_OPTIMIZATIONS,
 	optimizeBulkCollectAlias,
 	optimizeCollectionMethodCall,
 	optimizeDeclareSpecs,
@@ -296,6 +298,11 @@ describe('optimizeDeclareSpecs', () => {
 });
 
 describe('optimizeJoinAlias', () => {
+	it('remains reproducible without being enabled for the patched grammar', () => {
+		expect(DEFAULT_GENERATED_PARSER_OPTIMIZATIONS).not.toContain('joinAlias');
+		expect(GENERATED_PARSER_OPTIMIZATIONS).toContain('joinAlias');
+	});
+
 	it('defers the table alias decision to a bare JOIN', () => {
 		const optimized = optimizeJoinAlias(tableRefAuxSource());
 

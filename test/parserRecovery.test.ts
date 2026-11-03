@@ -123,7 +123,7 @@ end;`;
 		expect(parse(source, mode).errors).toBeGreaterThan(0);
 	});
 
-	it.each(modes)('reports DATE NULL in a record type in %s mode', (mode) => {
-		expect(parse('create or replace package p as type r is record (a date null); end p;', mode).errors).toBeGreaterThan(0);
+	it.each(modes)('accepts explicit NULL in a record type in %s mode', (mode) => {
+		expect(parse('create or replace package p as type r is record (a date null); end p;', mode).errors).toBe(0);
 	});
 });

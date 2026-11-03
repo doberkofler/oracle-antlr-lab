@@ -11,7 +11,8 @@ This repository measures parser behavior. It does not ship an Oracle adapter.
 
 ## Grammar changes
 
-Never edit `grammar/upstream/`, `grammar/adapted/`, or generated code by hand.
+Never edit `grammar/upstream/`, `grammar/patched/`, `grammar/adapted/`, or
+generated code by hand.
 
 A grammar change is a new reviewed patch in `grammar/patches/` plus:
 

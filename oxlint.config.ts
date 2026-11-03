@@ -6,6 +6,7 @@ export default defineConfig({
 	ignorePatterns: [
 		'grammar/typescript/generated/**',
 		'grammar/upstream/**',
+		'grammar/patched/**',
 		'grammar/adapted/**',
 		'grammar/typescript/plSqlLexerBase.ts',
 		'grammar/typescript/plSqlParserBase.ts',

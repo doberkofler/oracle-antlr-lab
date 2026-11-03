@@ -1,7 +1,12 @@
+import { spawnSync } from 'node:child_process';
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
-import { type GeneratedParserOptimization, GENERATED_PARSER_OPTIMIZATIONS, optimizeGeneratedParser } from '../src/generatedParserOptimization.ts';
+import {
+	DEFAULT_GENERATED_PARSER_OPTIMIZATIONS,
+	type GeneratedParserOptimization,
+	GENERATED_PARSER_OPTIMIZATIONS,
+	optimizeGeneratedParser,
+} from '../src/generatedParserOptimization.ts';
 
 const KNOWN_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = GENERATED_PARSER_OPTIMIZATIONS;
 
@@ -57,7 +62,7 @@ const runner = path.join(root, 'node_modules', 'antlr-ng', 'dist', 'cli', 'runne
 const lexer = path.join(output, 'PlSqlLexer.ts');
 const parser = path.join(output, 'PlSqlParser.ts');
 const visitor = path.join(output, 'PlSqlParserVisitor.ts');
-const optimizations = parseOptimizations(process.env['LAB_GENERATED_OPTIMIZATIONS'] ?? GENERATED_PARSER_OPTIMIZATIONS.join(','));
+const optimizations = parseOptimizations(process.env['LAB_GENERATED_OPTIMIZATIONS'] ?? DEFAULT_GENERATED_PARSER_OPTIMIZATIONS.join(','));
 
 rmSync(output, { recursive: true, force: true });
 

@@ -37,9 +37,10 @@ pnpm grammar:generate
 pnpm benchmark:quick
 ```
 
-`pnpm grammar:download` fetches the pinned `antlr/grammars-v4` commit and
-verifies every upstream digest before adding the TypeScript target imports.
-The pinned identity and adaptation list are written to `grammar/pin.json`.
+`pnpm grammar:download` fetches the pinned `antlr/grammars-v4` commit, verifies
+every upstream digest, applies the ordered patches under `grammar/patches/`, and
+adds the TypeScript target imports. The upstream identity, patch digests, source
+PRs, and adapted digests are written to `grammar/pin.json`.
 
 `pnpm benchmark:quick` runs 15 files from the public synthetic corpus with one
 cold repetition. Full defaults use three cold repetitions, one warmup, and five

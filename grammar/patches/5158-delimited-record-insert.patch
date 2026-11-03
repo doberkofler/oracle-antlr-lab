@@ -1,0 +1,11 @@
+diff --git a/grammar/patched/PlSqlParser.g4 b/grammar/patched/PlSqlParser.g4
+--- a/grammar/patched/PlSqlParser.g4
++++ b/grammar/patched/PlSqlParser.g4
+@@ -6547,6 +6547,6 @@ insert_into_clause
+ values_clause
+     : VALUES (
+-        REGULAR_ID
++        record_name
+         | '(' expressions_ ')' (COMMA '(' expressions_ ')')*
+         | collection_expression
+     )

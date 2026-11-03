@@ -582,12 +582,12 @@ const TABLE_REF_AUX_ALIAS_DECISION =
 	/(?<switch>switch \(this\.interpreter\.adaptivePredict\(this\.tokenStream, (?<decision>\d+), this\.context\) \) \{\n[ \t]*case 1:\n[ \t]*\{\n[ \t]*this\.state = \d+;\n[ \t]*if \(!\(this\.isNotStartOfJoin\(\)\)\))/u;
 
 /**
- * Resolves a bare `JOIN` before the `table_ref_aux` alias decision.
+ * Reproduces the historical bare-`JOIN` generated-parser optimization.
  *
- * `isNotStartOfJoin` excludes every join starter except `JOIN` itself, so SLL
- * can consume `JOIN` as a table alias and then fail at the joined table.
- * `JOIN` is reserved and cannot be an alias, so the alias alternative cannot
- * match and the join clause owns the token.
+ * Before grammars-v4#5153, `isNotStartOfJoin` excluded every join starter
+ * except `JOIN` itself, so SLL could consume `JOIN` as a table alias and then
+ * fail at the joined table. `JOIN` is reserved and cannot be an alias, so the
+ * alias alternative cannot match and the join clause owns the token.
  *
  * @param source - Generated `PlSqlParser.ts` source.
  * @returns Source whose `table_ref_aux` alias decision defers to `JOIN`.
@@ -622,8 +622,8 @@ export type GeneratedParserOptimization =
 	| 'routineName'
 	| 'unaryExpressionCore';
 
-/** Every generated-parser optimization, in the order required by its transforms. */
-export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
+/** Generated-parser optimizations enabled for the current grammar. */
+export const DEFAULT_GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [
 	'generalElement',
 	'collectionMethodCall',
 	'generalElementPart',
@@ -632,8 +632,16 @@ export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimizatio
 	'routineName',
 	'unaryExpressionCore',
 	'declareSpecs',
-	'joinAlias',
 ];
+
+/**
+ * Every generated-parser optimization, in transform order.
+ *
+ * `joinAlias` remains available to reproduce experiment 022. The patched
+ * parser base now handles bare `JOIN` directly, so current generation does not
+ * apply that redundant generated-source transform.
+ */
+export const GENERATED_PARSER_OPTIMIZATIONS: readonly GeneratedParserOptimization[] = [...DEFAULT_GENERATED_PARSER_OPTIMIZATIONS, 'joinAlias'];
 
 const OPTIMIZERS: Readonly<Record<GeneratedParserOptimization, (source: string) => string>> = {
 	bulkCollectAlias: optimizeBulkCollectAlias,

@@ -53,9 +53,16 @@ returned to the external qualification suite.
 
 ## 4. Open grammar gaps
 
-| Construct                                                                       | Upstream request | Laboratory status                                                                        |
-| ------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------- |
-| Constant-sized type parameters, `IS JSON(STRICT)`, `DATE NULL`, record `INSERT` | None yet         | Source origins known; Oracle 19c compile proof still required before upstream submission |
+| Construct                                 | Upstream request                                                                                                       | Laboratory status                                                 |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Constant-sized type parameters            | None                                                                                                                   | Open; no local patch                                              |
+| Redundant set-operation suffix in `atom`  | [#4348](https://github.com/antlr/grammars-v4/issues/4348) / [PR #5132](https://github.com/antlr/grammars-v4/pull/5132) | Patched locally; rebased upstream CI passes                       |
+| Bare `JOIN` predicate                     | [#5164](https://github.com/antlr/grammars-v4/issues/5164) / [PR #5153](https://github.com/antlr/grammars-v4/pull/5153) | Patched locally in TypeScript and Java; upstream PR pending       |
+| `COMPRESSION` identifier                  | [#5160](https://github.com/antlr/grammars-v4/issues/5160) / [PR #5154](https://github.com/antlr/grammars-v4/pull/5154) | Patched locally; Oracle 19.19 compatibility evidence recorded     |
+| `JSON_SERIALIZE` expression input         | [#5159](https://github.com/antlr/grammars-v4/issues/5159) / [PR #5155](https://github.com/antlr/grammars-v4/pull/5155) | Patched locally with the narrower `concatenation` rule            |
+| Parenthesized `IS JSON (STRICT\|LAX)`     | [#5162](https://github.com/antlr/grammars-v4/issues/5162) / [PR #5156](https://github.com/antlr/grammars-v4/pull/5156) | Patched locally; unparenthesized forms retained                   |
+| Explicit `NULL` record fields             | [#5163](https://github.com/antlr/grammars-v4/issues/5163) / [PR #5157](https://github.com/antlr/grammars-v4/pull/5157) | Patched locally from Oracle 19.19 compatibility evidence          |
+| Delimited record names in record `INSERT` | [#5161](https://github.com/antlr/grammars-v4/issues/5161) / [PR #5158](https://github.com/antlr/grammars-v4/pull/5158) | Patched locally with `record_name`; ordinary record form retained |
 
 ## 5. Baseline finding
 
@@ -160,8 +167,12 @@ Final status of the optimization sequence:
 
 ## 9. Official-grammar findings
 
-Experiments 011–019 rebaseline and test the follow-up opportunities on official
-`grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`.
+Experiments 011–022 rebaseline and test the follow-up opportunities on the
+historical official pin
+`grammars-v4@5be087cfe78c4eb78374a1c81324848876661f9a`. The current working pin is
+`grammars-v4@b96e04db9d54bb313e542cc3e6ee913900a21520` plus the ordered local
+patches for upstream PR #5132 and #5153–#5158. Retained benchmark numbers remain
+bound to the historical pin until a new campaign is promoted.
 
 - The official-grammar baseline before issue #18 was 103.888 s with 6.546 GB peak
   RSS, 107 diagnostics, and 15 fallback files. The persistent-cache campaign
@@ -202,6 +213,9 @@ Experiments 011–019 rebaseline and test the follow-up opportunities on officia
   and keep LL for their recovery tree. All 1,244 files remain structurally
   identical with diagnostics unchanged at 107. The cumulative result is
   `156.093 s → 60.889 s` (−61.0%, 2.56×, 95.204 s saved per pass).
+- PR #5153 moves the bare-`JOIN` decision into every upstream target base. The
+  lab keeps `joinAlias` available for historical experiment reproduction but no
+  longer enables that generated-source transform by default.
 - `CASE` is a non-reserved keyword: malformed `CASE` input can fall back to
   `atom`, so the case expression deliberately keeps adaptive prediction.
 - The nine remaining fallback files are rejected in both prediction modes; LL is

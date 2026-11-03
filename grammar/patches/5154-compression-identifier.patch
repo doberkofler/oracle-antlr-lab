@@ -1,0 +1,11 @@
+diff --git a/grammar/patched/PlSqlParser.g4 b/grammar/patched/PlSqlParser.g4
+--- a/grammar/patched/PlSqlParser.g4
++++ b/grammar/patched/PlSqlParser.g4
+@@ -7912,6 +7912,7 @@ regular_id
+     | CONSTRUCTOR
+     | CUSTOMDATUM
+     | CASESENSITIVE
++    | COMPRESSION
+     | COUNTED
+     | DATE
+     | DECIMAL

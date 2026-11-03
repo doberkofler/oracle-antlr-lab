@@ -1,0 +1,12 @@
+diff --git a/grammar/patched/PlSqlParser.g4 b/grammar/patched/PlSqlParser.g4
+--- a/grammar/patched/PlSqlParser.g4
++++ b/grammar/patched/PlSqlParser.g4
+@@ -6894,7 +6894,7 @@ atom
+     | constant
+     | inquiry_directive
+     | general_element outer_join_sign?
+-    | '(' subquery ')' subquery_operation_part*
++    | '(' subquery ')'
+     | '(' expression ')' ('.' general_element_part)*
+     | '(' expressions_ ')'
+     ;
